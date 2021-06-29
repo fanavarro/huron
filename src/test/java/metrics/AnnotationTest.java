@@ -16,8 +16,6 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
  */
 public class AnnotationTest {
 	
-	/** The Constant ONTOLOGY. */
-	private static final String ONTOLOGY = "example1.owl";
 
 	/**
 	 * Test.
@@ -30,7 +28,7 @@ public class AnnotationTest {
 	@Test
 	public void test() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
 		OWLOntologyManager m = OWLManager.createOWLOntologyManager();
-		OWLOntology ontology = m.loadOntologyFromOntologyDocument(this.getClass().getResourceAsStream(ONTOLOGY));
+		OWLOntology ontology = m.loadOntologyFromOntologyDocument(this.getClass().getResourceAsStream("/example1.owl"));
 		List<Metric> metrics = Arrays.asList(new NamesPerClassMetric(), new SynonymsPerClassMetric(),
 				new DescriptionsPerClassMetric(), new NamesPerObjectPropertyMetric(), new SynonymsPerObjectPropertyMetric(),
 				new DescriptionsPerObjectPropertyMetric(), new NamesPerDataPropertyMetric(), new SynonymsPerDataPropertyMetric(),

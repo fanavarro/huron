@@ -1,6 +1,6 @@
 package metrics;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -11,10 +11,10 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 /**
- * The Class NamesPerPropertyMetricTest.
+ * The Class SynonymsPerClassMetricTest.
  */
-public class NamesPerPropertyMetricTest {
-
+public class SynonymsPerClassMetricTest {
+	
 	/**
 	 * Test calculate.
 	 *
@@ -25,12 +25,12 @@ public class NamesPerPropertyMetricTest {
 	@Test
 	public void testCalculate() throws FileNotFoundException, IOException, Exception {
 		OWLOntologyManager m = OWLManager.createOWLOntologyManager();
-		OWLOntology ontology = m.loadOntologyFromOntologyDocument(this.getClass().getResourceAsStream("example1.owl"));
-		Metric metric = new NamesPerPropertyMetric();
+		OWLOntology ontology = m.loadOntologyFromOntologyDocument(this.getClass().getResourceAsStream("/example1.owl"));
+		Metric metric = new SynonymsPerClassMetric();
 		metric.setOntology(ontology);
 		double res = metric.calculate();
 		
-		assertEquals(7.0/6.0, res, 0.01);
+		assertEquals(0.13, res, 0.01);
 	}
 
 }

@@ -8,7 +8,10 @@ import java.io.IOException;
 import java.util.LinkedList;
 
 import org.junit.Test;
+import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 import um.ontoenrich.config.LaInputParameters;
 import um.ontoenrich.config.TypeOfDelimiterStrategy;
@@ -32,7 +35,9 @@ public class SystematicNamingMetricTest {
 
 		// STEP 1: create the object
 		Metric m1 = new SystematicNamingMetric();
-		m1.setOntologyPath(getSourceOntology("example1.owl"));
+		OWLOntologyManager m = OWLManager.createOWLOntologyManager();
+		OWLOntology ontology = m.loadOntologyFromOntologyDocument(this.getClass().getResourceAsStream("/example1.owl"));
+		m1.setOntology(ontology);
 		m1.setParameters(getXmlParametersLexicalAnalysis());
 
 		// STEP 2: calculate the metric
@@ -53,7 +58,9 @@ public class SystematicNamingMetricTest {
 
 		// STEP 1: create the object
 		Metric m1 = new SystematicNamingMetric();
-		m1.setOntologyPath(getSourceOntology("example2.owl"));
+		OWLOntologyManager m = OWLManager.createOWLOntologyManager();
+		OWLOntology ontology = m.loadOntologyFromOntologyDocument(this.getClass().getResourceAsStream("/example2.owl"));
+		m1.setOntology(ontology);
 		m1.setParameters(getXmlParametersLexicalAnalysis());
 		m1.openDetailedOutputFile(new File("outputFileComplementary.tsv"));
 
@@ -64,15 +71,6 @@ public class SystematicNamingMetricTest {
 
 	}
 
-	/**
-	 * Gets the source ontology.
-	 *
-	 * @param filename the filename
-	 * @return the source ontology
-	 */
-	private static String getSourceOntology(String filename) {
-		return (new File("src/test/metrics/" + filename)).getAbsolutePath();
-	}
 
 	/**
 	 * Gets the xml parameters lexical analysis.

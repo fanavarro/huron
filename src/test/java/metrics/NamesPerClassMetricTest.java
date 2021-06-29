@@ -11,10 +11,10 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 /**
- * The Class SynonymsPerClassMetricTest.
+ * The Class NamesPerClassMetricTest.
  */
-public class SynonymsPerClassMetricTest {
-	
+public class NamesPerClassMetricTest {
+
 	/**
 	 * Test calculate.
 	 *
@@ -25,12 +25,12 @@ public class SynonymsPerClassMetricTest {
 	@Test
 	public void testCalculate() throws FileNotFoundException, IOException, Exception {
 		OWLOntologyManager m = OWLManager.createOWLOntologyManager();
-		OWLOntology ontology = m.loadOntologyFromOntologyDocument(this.getClass().getResourceAsStream("example1.owl"));
-		Metric metric = new SynonymsPerClassMetric();
+		OWLOntology ontology = m.loadOntologyFromOntologyDocument(this.getClass().getResourceAsStream("/example1.owl"));
+		Metric metric = new NamesPerClassMetric();
 		metric.setOntology(ontology);
 		double res = metric.calculate();
 		
-		assertEquals(0.13, res, 0.01);
+		assertEquals(2.0, res, 0.01);
 	}
 
 }

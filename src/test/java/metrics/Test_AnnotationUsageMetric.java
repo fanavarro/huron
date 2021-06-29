@@ -5,15 +5,16 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.junit.Test;
+import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 /**
  * The Class Test_AnnotationUsageMetric.
  */
 public class Test_AnnotationUsageMetric {
 
-	/** The Constant ONTOLOGY. */
-	private static final String ONTOLOGY = "example1.owl";
 	
 	/** The Constant ANNOTATION. */
 	private static final String ANNOTATION = "http://www.w3.org/2000/01/rdf-schema#label";
@@ -28,20 +29,11 @@ public class Test_AnnotationUsageMetric {
 	 */
 	@Test
 	public void test() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
-		Metric m = new AnnotationUsageMetric(ANNOTATION);
-		m.setOntologyPath(getSourceOntology(ONTOLOGY));
-		double res = m.calculate();
+		Metric m1 = new AnnotationUsageMetric(ANNOTATION);
+		OWLOntologyManager m = OWLManager.createOWLOntologyManager();
+		OWLOntology ontology = m.loadOntologyFromOntologyDocument(this.getClass().getResourceAsStream("/example1.owl"));
+		m1.setOntology(ontology);
+		double res = m1.calculate();
 		System.out.println(String.format("Usage of %s is %d", ANNOTATION, (int)res));
 	}
-	
-	/**
-	 * Gets the source ontology.
-	 *
-	 * @param filename the filename
-	 * @return the source ontology
-	 */
-	private static String getSourceOntology(String filename) {
-		return (new File("src/test/metrics/" + filename)).getAbsolutePath();
-	}
-
 }
