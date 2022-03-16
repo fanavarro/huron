@@ -33,9 +33,13 @@ public abstract class AnnotationsPerEntityAbstractMetric extends Metric {
 	
 	/** The Constant IAO_OBO_FOUNDRY_UNIQUE_NAME. */
 	private static final IRI IAO_OBO_FOUNDRY_UNIQUE_NAME = IRI.create(Prefixes.IAO + "0000589");
+	
+	/** The Constant FOAF_NAME. */
+	private static final IRI FOAF_NAME = IRI.create(Prefixes.FOAF + "name");
 
-	/** The Constant SKOS_ALT_LABEL. */
+
 	/* Annotation properties referring synonyms */
+	/** The Constant SKOS_ALT_LABEL. */
 	private static final IRI SKOS_ALT_LABEL = IRI.create(Prefixes.SKOS + "altLabel");
 	
 	/** The Constant OBO_HAS_EXACT_SYNONYM. */
@@ -55,9 +59,21 @@ public abstract class AnnotationsPerEntityAbstractMetric extends Metric {
 	
 	/** The Constant IAO_ALTERNATIVE_NAME. */
 	private static final IRI IAO_ALTERNATIVE_NAME = IRI.create(Prefixes.IAO + "0000118");
+	
+	/** The Constant OBI_FGED_ALT_NAME */
+	private static final IRI OBI_FGED_ALT_NAME = IRI.create(Prefixes.OBI + "9991119");
+	
+	/** The Constant OBI_IEDB_ALT_NAME */
+	private static final IRI OBI_IEDB_ALT_NAME = IRI.create(Prefixes.OBI + "9991118");
+	
+	/** The Constant OBI_ISA_ALT_NAME */
+	private static final IRI OBI_ISA_ALT_NAME = IRI.create(Prefixes.OBI + "0001847");
+	
+	/** The Constant OBI_NIAID_ALT_NAME */
+	private static final IRI OBI_NIAID_ALT_NAME = IRI.create(Prefixes.OBI + "0001886");
 
-	/** The Constant IAO_OFFICIAL_DEFINITION. */
 	/* Annotation properties referring definitions, comments or explanations */
+	/** The Constant IAO_OFFICIAL_DEFINITION. */
 	private static final IRI IAO_OFFICIAL_DEFINITION = IRI.create(Prefixes.IAO + "0000115");
 	
 	/** The Constant SKOS_DEFINITION. */
@@ -74,12 +90,12 @@ public abstract class AnnotationsPerEntityAbstractMetric extends Metric {
 
 	/** The Constant NAME_PROPERTIES. */
 	protected static final List<IRI> NAME_PROPERTIES = Arrays.asList(SKOS_PREFERRED_LABEL, RDFS_LABEL, SCHEMA_NAME,
-			NCIT_PREFERRED_NAME, IAO_OBO_FOUNDRY_UNIQUE_NAME);
+			NCIT_PREFERRED_NAME, IAO_OBO_FOUNDRY_UNIQUE_NAME, FOAF_NAME);
 
 	/** The Constant SYNONYM_PROPERTIES. */
 	protected static final List<IRI> SYNONYM_PROPERTIES = Arrays.asList(SKOS_ALT_LABEL, OBO_HAS_EXACT_SYNONYM,
 			OBO_HAS_RELATED_SYNONYM, OBO_HAS_BROAD_SYNONYM, OBO_HAS_NARROW_SYNONYM, NCIT_FULLY_QUALIFIED_SYNONYM,
-			IAO_ALTERNATIVE_NAME);
+			IAO_ALTERNATIVE_NAME, OBI_FGED_ALT_NAME, OBI_IEDB_ALT_NAME, OBI_ISA_ALT_NAME, OBI_NIAID_ALT_NAME);
 
 	/** The Constant DESCRIPTION_PROPERTIES. */
 	protected static final List<IRI> DESCRIPTION_PROPERTIES = Arrays.asList(IAO_OFFICIAL_DEFINITION, SKOS_DEFINITION,

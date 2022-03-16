@@ -31,4 +31,10 @@ public class Prefixes {
 	
 	/** The Constant SCHEMA. */
 	public static final String SCHEMA = "http://schema.org/";
+	
+	/** The Constant FOAF. */
+	public static final String FOAF = "http://xmlns.com/foaf/0.1/";
+	
+	/** The Constant OBI*/
+	public static final String OBI = "http://purl.obolibrary.org/obo/OBI_";
 }
