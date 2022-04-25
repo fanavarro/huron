@@ -38,6 +38,9 @@ public class LexicallySuggestLogicallyDefineMetric extends Metric {
 	/** The Constant LOGGER. */
 	private final static Logger LOGGER = Logger.getLogger(LexicallySuggestLogicallyDefineMetric.class.getName());
 	
+	/** The max depth taken into account to check if two classes are axiomatically related */
+	private static final int MAX_DEPTH = 5;
+	
 	/** The Constant NAME. */
 	private static final String NAME = "Lexically suggest logically define";
 
@@ -100,7 +103,7 @@ public class LexicallySuggestLogicallyDefineMetric extends Metric {
 					if (OntologyUtils.isObsolete(owlClassCi, getOntology())) {
 						continue;
 					}
-					if (ontologyGraphService.isRelated(reasoner, owlClassA, owlClassCi, IGNORED_AXIOMS)) {
+					if (ontologyGraphService.isRelated(reasoner, owlClassA, owlClassCi, IGNORED_AXIOMS, MAX_DEPTH)) {
 						localPositiveCases.add(owlClassCi);
 					} else {
 						localNegativeCases.add(owlClassCi);

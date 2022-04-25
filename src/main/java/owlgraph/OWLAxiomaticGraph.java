@@ -33,8 +33,13 @@ public class OWLAxiomaticGraph extends OWLGraph<OWLAxiom>{
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -7770042274902855272L;
 	
+	public static final int NO_DEPTH_LIMIT = -1;
+	
 	/** The ignored axioms. */
 	private Collection<AxiomType<?>> ignoredAxioms;
+	
+	/** Depth limit to expand the graph  */
+	private int depthSearchLimit = NO_DEPTH_LIMIT;
 	
 	/**
 	 * Instantiates a new OWL axiomatic graph.
@@ -89,6 +94,20 @@ public class OWLAxiomaticGraph extends OWLGraph<OWLAxiom>{
 	/**
 	 * Instantiates a new OWL axiomatic graph.
 	 *
+	 * @param ontology the ontology
+	 * @param reasonerFactory the reasoner factory
+	 * @param includeImportsClosure the include imports closure
+	 * @param ignoredAxioms the ignored axioms
+	 * @param maxDepth Maximum depth to take into account when expanding nodes in the graph.
+	 */
+	public OWLAxiomaticGraph(OWLOntology ontology, OWLReasonerFactory reasonerFactory, boolean includeImportsClosure, Collection<AxiomType<?>> ignoredAxioms, int maxDepth) {
+		this(ontology, reasonerFactory, includeImportsClosure, ignoredAxioms);
+		this.depthSearchLimit = maxDepth;
+	}
+	
+	/**
+	 * Instantiates a new OWL axiomatic graph.
+	 *
 	 * @param reasoner the reasoner
 	 * @param includeImportsClosure the include imports closure
 	 * @param ignoredAxioms the ignored axioms
@@ -96,6 +115,19 @@ public class OWLAxiomaticGraph extends OWLGraph<OWLAxiom>{
 	public OWLAxiomaticGraph(OWLReasoner reasoner, boolean includeImportsClosure, Collection<AxiomType<?>> ignoredAxioms) {
 		super(reasoner, includeImportsClosure);
 		this.ignoredAxioms = ignoredAxioms;
+	}
+	
+	/**
+	 * Instantiates a new OWL axiomatic graph.
+	 *
+	 * @param reasoner the reasoner
+	 * @param includeImportsClosure the include imports closure
+	 * @param ignoredAxioms the ignored axioms
+	 * @param maxDepth Maximum depth to take into account when expanding nodes in the graph.
+	 */
+	public OWLAxiomaticGraph(OWLReasoner reasoner, boolean includeImportsClosure, Collection<AxiomType<?>> ignoredAxioms, int maxDepth) {
+		this(reasoner, includeImportsClosure, ignoredAxioms);
+		this.depthSearchLimit = maxDepth;
 	}
 	
 
@@ -156,7 +188,7 @@ public class OWLAxiomaticGraph extends OWLGraph<OWLAxiom>{
 		ShortestPathAlgorithm<OWLClass, OWLAxiom> shortestPathAlgorithm = new ShortestPathAlgorithm<OWLClass, OWLAxiom>();
 		ShortestPathInput<OWLClass, OWLAxiom> input = new ShortestPathInput<OWLClass, OWLAxiom>(); 
 		input.setGraph(this);
-		input.setMaxDepth(-1);
+		input.setMaxDepth(this.depthSearchLimit);
 		input.setSourceNode(a);
 		input.setTargetNode(b);
 		ShortestPathOutput<OWLClass, OWLAxiom> output = shortestPathAlgorithm.apply(input);
