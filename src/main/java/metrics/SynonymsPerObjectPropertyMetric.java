@@ -7,6 +7,7 @@ import java.util.Locale;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
+import services.OntologyUtils;
 import um.ontoenrich.config.LaInputParameters;
 
 /**
@@ -26,6 +27,9 @@ public class SynonymsPerObjectPropertyMetric extends AnnotationsPerEntityAbstrac
 		int numberOfSynonyms = 0;
 		int numberOfEntities = 0;
 		for(OWLObjectProperty objectProperty : super.getOntology().getObjectPropertiesInSignature()){
+			if (OntologyUtils.isObsolete(objectProperty, getOntology()) || objectProperty.isOWLTopObjectProperty()) {
+				continue;
+			}
 			int localNumberOfSynonyms = getNumberOfSynonyms(objectProperty);
 			super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%d\n", this.getName(), objectProperty.toStringID(), localNumberOfSynonyms));
 			numberOfSynonyms = numberOfSynonyms + localNumberOfSynonyms;

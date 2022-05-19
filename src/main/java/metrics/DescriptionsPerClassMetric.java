@@ -27,7 +27,7 @@ public class DescriptionsPerClassMetric extends AnnotationsPerEntityAbstractMetr
 		int numberOfDescriptions = 0;
 		int numberOfEntities = 0;
 		for(OWLClass owlClass : super.getOntology().getClassesInSignature()){
-			if (OntologyUtils.isObsolete(owlClass, getOntology())) {
+			if (OntologyUtils.isObsolete(owlClass, getOntology()) || owlClass.isOWLThing()) {
 				continue;
 			}
 			int localNumberOfdescriptions = getNumberOfDescriptions(owlClass);

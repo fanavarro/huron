@@ -4,7 +4,7 @@ import java.util.Set;
 
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
-import org.semanticweb.owlapi.model.OWLClass;
+import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
 
@@ -18,12 +18,12 @@ public class OntologyUtils {
 	/**
 	 * Checks if a class is obsolete or not.
 	 *
-	 * @param owlClass the owl class
+	 * @param owlEntity the owl class
 	 * @param ontology the ontology
 	 * @return true, if is obsolete
 	 */
-	public static boolean isObsolete(OWLClass owlClass, OWLOntology ontology) {
-		Set<OWLAnnotationAssertionAxiom> axioms = owlClass.getAnnotationAssertionAxioms(ontology);
+	public static boolean isObsolete(OWLEntity owlEntity, OWLOntology ontology) {
+		Set<OWLAnnotationAssertionAxiom> axioms = owlEntity.getAnnotationAssertionAxioms(ontology);
 		for (OWLAnnotationAssertionAxiom axiom : axioms) {
 			IRI propertyIRI = axiom.getProperty().asOWLAnnotationProperty().getIRI();
 			if (propertyIRI.equals(OWLRDFVocabulary.OWL_DEPRECATED.getIRI())
@@ -36,5 +36,16 @@ public class OntologyUtils {
 			}
 		}
 		return false;
+	}
+	
+	public static Set<OWLAnnotationAssertionAxiom> getOWLAnnotationAssertionAxiom(OWLEntity entity, OWLOntology ontology, boolean includeImports) {
+		Set<OWLAnnotationAssertionAxiom> annotationAssertionAxioms = entity.getAnnotationAssertionAxioms(ontology);
+		if (includeImports) {
+			for (OWLOntology importedOntology : ontology.getImports()) {
+				Set<OWLAnnotationAssertionAxiom> importedAnnotationAssertionAxioms = entity.getAnnotationAssertionAxioms(importedOntology);
+				annotationAssertionAxioms.addAll(importedAnnotationAssertionAxioms);
+			}
+		}
+		return annotationAssertionAxioms;
 	}
 }

@@ -7,6 +7,7 @@ import java.util.Locale;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
+import services.OntologyUtils;
 import um.ontoenrich.config.LaInputParameters;
 
 /**
@@ -26,6 +27,9 @@ public class NamesPerObjectPropertyMetric extends AnnotationsPerEntityAbstractMe
 		int numberOfNames = 0;
 		int numberOfEntities = 0;
 		for(OWLObjectProperty owlObjectProperty : super.getOntology().getObjectPropertiesInSignature()){
+			if (OntologyUtils.isObsolete(owlObjectProperty, getOntology()) || owlObjectProperty.isOWLTopObjectProperty()) {
+				continue;
+			}
 			int localNumberOfNames = getNumberOfNames(owlObjectProperty);
 			super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%d\n", this.getName(), owlObjectProperty.toStringID(), localNumberOfNames));
 			numberOfNames = numberOfNames + localNumberOfNames;

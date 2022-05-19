@@ -9,6 +9,7 @@ import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
+import services.OntologyUtils;
 import um.ontoenrich.config.LaInputParameters;
 
 /**
@@ -29,7 +30,7 @@ public class DescriptionsPerPropertyMetric extends AnnotationsPerEntityAbstractM
 		int totalProperties = 0;
 		
 		for(OWLObjectProperty owlObjectProperty : super.getOntology().getObjectPropertiesInSignature()){
-			if(owlObjectProperty.isOWLTopObjectProperty()){
+			if(OntologyUtils.isObsolete(owlObjectProperty, getOntology()) || owlObjectProperty.isOWLTopObjectProperty()){
 				continue;
 			}
 			totalProperties++;
@@ -39,7 +40,7 @@ public class DescriptionsPerPropertyMetric extends AnnotationsPerEntityAbstractM
 		}
 		
 		for(OWLDataProperty owlDataProperty : super.getOntology().getDataPropertiesInSignature()){
-			if(owlDataProperty.isOWLTopDataProperty()){
+			if(OntologyUtils.isObsolete(owlDataProperty, getOntology()) || owlDataProperty.isOWLTopDataProperty()){
 				continue;
 			}
 			totalProperties++;
@@ -49,6 +50,9 @@ public class DescriptionsPerPropertyMetric extends AnnotationsPerEntityAbstractM
 		}
 		
 		for(OWLAnnotationProperty owlAnnotationProperty : super.getOntology().getAnnotationPropertiesInSignature()){
+			if(OntologyUtils.isObsolete(owlAnnotationProperty, getOntology())){
+				continue;
+			}
 			totalProperties++;
 			int localNumberOfdescriptions = getNumberOfDescriptions(owlAnnotationProperty);
 			super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%d\n", this.getName(), owlAnnotationProperty.toStringID(), localNumberOfdescriptions));

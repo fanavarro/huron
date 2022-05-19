@@ -7,6 +7,7 @@ import java.util.Locale;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
+import services.OntologyUtils;
 import um.ontoenrich.config.LaInputParameters;
 
 /**
@@ -26,6 +27,9 @@ public class DescriptionsPerAnnotationPropertyMetric extends AnnotationsPerEntit
 		int numberOfDescriptions = 0;
 		int numberOfEntities = 0;
 		for(OWLAnnotationProperty annotationProperty : super.getOntology().getAnnotationPropertiesInSignature()){
+			if (OntologyUtils.isObsolete(annotationProperty, getOntology())) {
+				continue;
+			}
 			int localNumberOfdescriptions = getNumberOfDescriptions(annotationProperty);
 			super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%d\n", this.getName(), annotationProperty.toStringID(), localNumberOfdescriptions));
 			numberOfDescriptions = numberOfDescriptions + localNumberOfdescriptions;

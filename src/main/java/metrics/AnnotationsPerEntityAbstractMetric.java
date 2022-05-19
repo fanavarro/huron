@@ -2,6 +2,7 @@ package metrics;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import org.semanticweb.owlapi.model.AxiomType;
 import org.semanticweb.owlapi.model.IRI;
@@ -12,11 +13,13 @@ import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLEntity;
 
 import main.Prefixes;
+import services.OntologyUtils;
 
 /**
  * The Class AnnotationsPerEntityAbstractMetric.
  */
 public abstract class AnnotationsPerEntityAbstractMetric extends Metric {
+	private static final boolean INCLUDE_IMPORTED_ANNOTATIONS = true;
 	
 	/** The Constant SKOS_PREFERRED_LABEL. */
 	/* Annotation properties referring names */
@@ -147,28 +150,28 @@ public abstract class AnnotationsPerEntityAbstractMetric extends Metric {
 		return usage;
 	}
 
-	/**
-	 * Gets the usage in object properties.
-	 *
-	 * @param annotationIRI the annotation IRI
-	 * @return the usage in object properties
-	 */
-	protected int getUsageInObjectProperties(IRI annotationIRI) {
-		int usage = 0;
-		if (getOntology().containsAnnotationPropertyInSignature(annotationIRI)) {
-			OWLAnnotationProperty annotationProperty = getOntology().getOWLOntologyManager().getOWLDataFactory()
-					.getOWLAnnotationProperty(annotationIRI);
-			for (OWLAxiom axiom : annotationProperty.getReferencingAxioms(getOntology())) {
-				if (axiom.isOfType(AxiomType.ANNOTATION_ASSERTION)) {
-					OWLAnnotationSubject subject = ((OWLAnnotationAssertionAxiom) axiom).getSubject();
-					if (subject instanceof IRI && getOntology().containsObjectPropertyInSignature((IRI) subject)) {
-						usage = usage + 1;
-					}
-				}
-			}
-		}
-		return usage;
-	}
+//	/**
+//	 * Gets the usage in object properties.
+//	 *
+//	 * @param annotationIRI the annotation IRI
+//	 * @return the usage in object properties
+//	 */
+//	protected int getUsageInObjectProperties(IRI annotationIRI) {
+//		int usage = 0;
+//		if (getOntology().containsAnnotationPropertyInSignature(annotationIRI)) {
+//			OWLAnnotationProperty annotationProperty = getOntology().getOWLOntologyManager().getOWLDataFactory()
+//					.getOWLAnnotationProperty(annotationIRI);
+//			for (OWLAxiom axiom : annotationProperty.getReferencingAxioms(getOntology())) {
+//				if (axiom.isOfType(AxiomType.ANNOTATION_ASSERTION)) {
+//					OWLAnnotationSubject subject = ((OWLAnnotationAssertionAxiom) axiom).getSubject();
+//					if (subject instanceof IRI && getOntology().containsObjectPropertyInSignature((IRI) subject)) {
+//						usage = usage + 1;
+//					}
+//				}
+//			}
+//		}
+//		return usage;
+//	}
 
 	/**
 	 * Gets the usage in annotation properties.
@@ -199,10 +202,10 @@ public abstract class AnnotationsPerEntityAbstractMetric extends Metric {
 	 * @param annotationIRI the annotation IRI
 	 * @return the usage in properties
 	 */
-	protected int getUsageInProperties(IRI annotationIRI) {
-		return this.getUsageInAnnotationProperties(annotationIRI) + this.getUsageInDataProperties(annotationIRI)
-				+ this.getUsageInObjectProperties(annotationIRI);
-	}
+//	protected int getUsageInProperties(IRI annotationIRI) {
+//		return this.getUsageInAnnotationProperties(annotationIRI) + this.getUsageInDataProperties(annotationIRI)
+//				+ this.getUsageInObjectProperties(annotationIRI);
+//	}
 	
 	/**
 	 * Gets the number of annotations.
@@ -213,7 +216,8 @@ public abstract class AnnotationsPerEntityAbstractMetric extends Metric {
 	 */
 	protected int getNumberOfAnnotations(OWLEntity entity, List<IRI> annotationsToCheck){
 		int numberOfAnnotations = 0;
-		for(OWLAnnotationAssertionAxiom annotationAssertionAxiom : entity.getAnnotationAssertionAxioms(getOntology())){
+		Set<OWLAnnotationAssertionAxiom> annotationAssertionAxioms = OntologyUtils.getOWLAnnotationAssertionAxiom(entity, this.getOntology(), INCLUDE_IMPORTED_ANNOTATIONS);
+		for(OWLAnnotationAssertionAxiom annotationAssertionAxiom : annotationAssertionAxioms){
 			if(annotationsToCheck.contains(annotationAssertionAxiom.getProperty().getIRI())){
 				numberOfAnnotations = numberOfAnnotations + 1;
 			}
