@@ -19,7 +19,18 @@ Particularly, this application is able to compute the following metrics, which a
     - *Descriptions per object property*. The average descriptions per object property in the ontology.
     - *Descriptions per data property*. The average descriptions per data property in the ontology.
     - *Descriptions per annotation property*. The average descriptions per annotation property in the ontology.
-
+    - *Classes with no name*. The ratio of number of classes with no names to all classes in the ontology
+    - *Classes with no synonym*. The ratio of number of classes with no synonym to all classes in the ontology
+    - *Classes with no description*. The ratio of number of classes with no description to all classes in the ontology
+    - *Object properties with no name*. The ratio of number of object properties with no name to all object properties in the ontology
+    - *Object properties with no synonym*. The ratio of number of object properties with no synonym to all object properties in the ontology
+    - *Object properties with no description*. The ratio of number of object properties with no description to all object properties in the ontology
+    - *Data properties with no name*. The ratio of number of data properties with no name to all data properties in the ontology
+    - *Data properties with no synonym*. The ratio of number of data properties with no synonym to all data properties in the ontology
+    - *Data properties with no description*. The ratio of number of data properties with no description to all data properties in the ontology
+    - *Annotation properties with no name*. The ratio of number of annotation properties with no name to all annotation properties in the ontology
+    - *Annotation properties with no synonym*. The ratio of number of annotation properties with no synonym to all annotation properties in the ontology
+    - *Annotation properties with no description*. The ratio of number of annotation properties with no description to all annotation properties in the ontology
 
 
 # Usage
