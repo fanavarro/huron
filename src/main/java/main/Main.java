@@ -25,11 +25,21 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import metrics.AnnotationPropertiesWithNoDescriptionMetric;
+import metrics.AnnotationPropertiesWithNoNameMetric;
+import metrics.AnnotationPropertiesWithNoSynonymMetric;
+import metrics.ClassesWithNoDescriptionMetric;
+import metrics.ClassesWithNoNameMetric;
+import metrics.ClassesWithNoSynonymMetric;
+import metrics.DataPropertiesWithNoDescriptionMetric;
+import metrics.DataPropertiesWithNoNameMetric;
+import metrics.DataPropertiesWithNoSynonymMetric;
 import metrics.DescriptionsPerAnnotationPropertyMetric;
 import metrics.DescriptionsPerClassMetric;
 import metrics.DescriptionsPerDataPropertyMetric;
 import metrics.DescriptionsPerObjectPropertyMetric;
 import metrics.DescriptionsPerPropertyMetric;
+import metrics.DetailedOutputHeaderMetricInterface;
 import metrics.LexicallySuggestLogicallyDefineMetric;
 import metrics.Metric;
 import metrics.NamesPerAnnotationPropertyMetric;
@@ -38,12 +48,16 @@ import metrics.NamesPerDataPropertyMetric;
 import metrics.NamesPerObjectPropertyMetric;
 import metrics.NamesPerPropertyMetric;
 import metrics.NumberOfClassesMetric;
+import metrics.ObjectPropertiesWithNoDescriptionMetric;
+import metrics.ObjectPropertiesWithNoNameMetric;
+import metrics.ObjectPropertiesWithNoSynonymMetric;
 import metrics.SynonymsPerAnnotationPropertyMetric;
 import metrics.SynonymsPerClassMetric;
 import metrics.SynonymsPerDataPropertyMetric;
 import metrics.SynonymsPerObjectPropertyMetric;
 import metrics.SynonymsPerPropertyMetric;
 import metrics.SystematicNamingMetric;
+import tasks.MetricCalculationDetailedTaskResult;
 import tasks.MetricCalculationTask;
 import tasks.MetricCalculationTaskResult;
 import um.ontoenrich.config.LaInputParameters;
@@ -70,6 +84,7 @@ public class Main {
 		setLogLevel(cmd.getOptionValue('l', Level.INFO.getName()));
 		File inputFile = new File(cmd.getOptionValue('i'));
 		File outputFile = new File(cmd.getOptionValue('o'));
+		File detailedOutputFile;
 		int threads = Integer.parseInt(cmd.getOptionValue('t', "1"));
 		boolean includeDetailedFiles = cmd.hasOption('v');
 		
@@ -81,6 +96,8 @@ public class Main {
 		if(outputFile.exists() && !outputFile.isFile()){
 			LOGGER.log(Level.SEVERE, String.format("'%s' exists but it is not a file.", args[1]));
 			return;
+		}else {
+			detailedOutputFile = new File(outputFile.getParent() + outputFile.separatorChar + "detailed_" + outputFile.getName());
 		}
 
 		List<File> ontologyFiles = new ArrayList<File>();
@@ -100,7 +117,7 @@ public class Main {
 		List<Metric> metrics = getMetricsToCalculate(ontologyFiles);
 		List<MetricCalculationTask> tasks = getMetricCalculationTasks(ontologyFiles, metrics, includeDetailedFiles);
 		
-		executeWithoutTaskExecutor(outputFile, tasks);
+		executeWithoutTaskExecutor(outputFile, detailedOutputFile,  tasks);
 		//executeWithTaskExecutor(outputFile, tasks, threads);
 
 	}
@@ -112,21 +129,36 @@ public class Main {
 	 * @param tasks the tasks
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	private static void executeWithoutTaskExecutor(File outputFile, List<MetricCalculationTask> tasks) throws IOException{
+	private static void executeWithoutTaskExecutor(File outputFile, File detailedOutputFile, List<MetricCalculationTask> tasks) throws IOException{
+		
 		FileWriter fileWriter = new FileWriter(outputFile);
 		PrintWriter printWriter = new PrintWriter(fileWriter);
 		printWriter.print("File\tMetric\tValue\n");
+			
+		FileWriter detailedFileWriter = new FileWriter(detailedOutputFile);
+		PrintWriter detailedPrintWriter = new PrintWriter(detailedFileWriter);
+		detailedPrintWriter.print("File\tMetric\tValue\tNumberOfEntities\tTotalEntities\n");
+		
 		for (MetricCalculationTask task : tasks) {
 			try {
 				List<MetricCalculationTaskResult> results = task.call();
+
 				for(MetricCalculationTaskResult result : results){
-					printWriter.printf(Locale.ROOT, "%s\t%s\t%.3f\n", result.getOwlFile(), result.getMetricName(), result.getResult());
+					if (Class.forName("tasks.MetricCalculationDetailedTaskResult").isInstance(result)) {
+						MetricCalculationDetailedTaskResult r = (MetricCalculationDetailedTaskResult) result;
+						detailedPrintWriter.printf(Locale.ROOT, "%s\t%s\t%.3f\t%d\t%d\n", result.getOwlFile(), result.getMetricName(), result.getResult(), r.getDividend(), r.getDivisor());
+						detailedPrintWriter.flush();
+					}else {
+						printWriter.printf(Locale.ROOT, "%s\t%s\t%.3f\n", result.getOwlFile(), result.getMetricName(), result.getResult());
+						printWriter.flush();
+					}
 				}
 			} catch (Exception e) {
 				String msg = String.format("Error processing %s:\n%s", task.getOntologyFile().getAbsolutePath(), e.getMessage());
 				LOGGER.log(Level.SEVERE, msg, e);
 			}
 		}
+		detailedPrintWriter.close();
 		printWriter.close();
 	}
 
@@ -267,25 +299,38 @@ public class Main {
 	private static List<Metric> getMetricsToCalculate(List<File> ontologyFiles){
 		LOGGER.log(Level.INFO, "Obtaining metrics to calculate");
 		List<Metric> metrics = new ArrayList<Metric>();
-		metrics.add(new LexicallySuggestLogicallyDefineMetric());
-		metrics.add(new SystematicNamingMetric());
+//		metrics.add(new LexicallySuggestLogicallyDefineMetric());
+//		metrics.add(new SystematicNamingMetric());
 		metrics.add(new NumberOfClassesMetric());
-		metrics.add(new NamesPerClassMetric());
-		metrics.add(new NamesPerPropertyMetric());
-		metrics.add(new NamesPerAnnotationPropertyMetric());
-		metrics.add(new NamesPerDataPropertyMetric());
-		metrics.add(new NamesPerObjectPropertyMetric());
-		metrics.add(new SynonymsPerClassMetric());
-		metrics.add(new SynonymsPerPropertyMetric());
-		metrics.add(new SynonymsPerAnnotationPropertyMetric());
-		metrics.add(new SynonymsPerDataPropertyMetric());
-		metrics.add(new SynonymsPerObjectPropertyMetric());
-		metrics.add(new DescriptionsPerClassMetric());
-		metrics.add(new DescriptionsPerPropertyMetric());
-		metrics.add(new DescriptionsPerAnnotationPropertyMetric());
-		metrics.add(new DescriptionsPerDataPropertyMetric());
-		metrics.add(new DescriptionsPerObjectPropertyMetric());
-
+//		metrics.add(new NamesPerClassMetric());
+//		metrics.add(new NamesPerPropertyMetric());
+//		metrics.add(new NamesPerAnnotationPropertyMetric());
+//		metrics.add(new NamesPerDataPropertyMetric());
+//		metrics.add(new NamesPerObjectPropertyMetric());
+//		metrics.add(new SynonymsPerClassMetric());
+//		metrics.add(new SynonymsPerPropertyMetric());
+//		metrics.add(new SynonymsPerAnnotationPropertyMetric());
+//		metrics.add(new SynonymsPerDataPropertyMetric());
+//		metrics.add(new SynonymsPerObjectPropertyMetric());
+//		metrics.add(new DescriptionsPerClassMetric());
+//		metrics.add(new DescriptionsPerPropertyMetric());
+//		metrics.add(new DescriptionsPerAnnotationPropertyMetric());
+//		metrics.add(new DescriptionsPerDataPropertyMetric());
+//		metrics.add(new DescriptionsPerObjectPropertyMetric());
+		metrics.add(new ClassesWithNoNameMetric());
+		metrics.add(new ClassesWithNoSynonymMetric());
+		metrics.add(new ClassesWithNoDescriptionMetric());
+		metrics.add(new ObjectPropertiesWithNoNameMetric());
+		metrics.add(new ObjectPropertiesWithNoSynonymMetric());
+		metrics.add(new ObjectPropertiesWithNoDescriptionMetric());
+		metrics.add(new DataPropertiesWithNoNameMetric());
+		metrics.add(new DataPropertiesWithNoSynonymMetric());
+		metrics.add(new DataPropertiesWithNoDescriptionMetric());		
+		metrics.add(new AnnotationPropertiesWithNoNameMetric());
+		metrics.add(new AnnotationPropertiesWithNoSynonymMetric());
+		metrics.add(new AnnotationPropertiesWithNoDescriptionMetric());
+			
+		
 		LOGGER.log(Level.INFO, "Metrics obtained");
 		return metrics;
 	}

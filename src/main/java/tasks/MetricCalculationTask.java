@@ -13,6 +13,7 @@ import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
+import metrics.DetailedOutputHeaderMetricInterface;
 import metrics.Metric;
 import um.ontoenrich.config.LaInputParameters;
 
@@ -55,7 +56,8 @@ public class MetricCalculationTask implements Callable<List<MetricCalculationTas
 		this.metrics = metric;
 		this.ontologyFile = ontologyFile;
 		this.parameters = parameters;
-		this.includeDetailFiles = includeDetailFiles;
+		this.includeDetailFiles = includeDetailFiles;	
+		
 		if(this.includeDetailFiles){
 			File detailsFileFolder = new File(DETAIL_FILES_FOLDER);
 			if(!detailsFileFolder.exists() || !detailsFileFolder.isDirectory()){
@@ -90,8 +92,15 @@ public class MetricCalculationTask implements Callable<List<MetricCalculationTas
 			if(this.includeDetailFiles){
 				metric.closeDetailedOutputFile();
 			}
-			results.add(new MetricCalculationTaskResult(metric.getName(), result, ontologyFile.getName()));
+			
+			if (metric instanceof DetailedOutputHeaderMetricInterface) {
+				DetailedOutputHeaderMetricInterface m = (DetailedOutputHeaderMetricInterface) metric;
+				results.add(new MetricCalculationDetailedTaskResult(metric.getName(), result, ontologyFile.getName(), m.getDividend(), m.getDivisor()));
+			}else {
+				results.add(new MetricCalculationTaskResult(metric.getName(), result, ontologyFile.getName()));
+			}
 			LOGGER.log(Level.INFO, String.format("%s for %s\t-Done", metric.getName(), ontologyFile.getName()));
+
 		}
 		ontologyManager.removeOntology(ontology);
 		return results;
