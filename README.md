@@ -3,22 +3,7 @@ Command line java application for ontology metrics calculation.
 
 Particularly, this application is able to compute the following metrics, which are classified in structural accuracy and readability metrics:
 
-- Structural accuracy metrics:
-    - *Lexically suggest logically define (LSLD)*. It computes the degree in which classes whose label is detected as a lexical regularity in the ontology are semantically connected to another classes exhibiting the lexical regularity.
-    - *Systematic naming*. It computes the degree in which the subclasses of the classes whose label is a lexical regularity exhibit the lexical regularity.
 - Readability metrics:
-    - *Names per class*. The average names per class in the ontology.
-    - *Names per object property*. The average names per object property in the ontology.
-    - *Names per data property*. The average names per data property in the ontology.
-    - *Names per annotation property*. The average names per annotation property in the ontology.
-    - *Synonyms per class*. The average synonyms per class in the ontology.
-    - *Synonyms per object property*. The average synonyms per object property in the ontology.
-    - *Synonyms per data property*. The average synonyms per data property in the ontology.
-    - *Synonyms per annotation property*. The average synonyms per annotation property in the ontology.
-    - *Descriptions per class*. The average descriptions per class in the ontology.
-    - *Descriptions per object property*. The average descriptions per object property in the ontology.
-    - *Descriptions per data property*. The average descriptions per data property in the ontology.
-    - *Descriptions per annotation property*. The average descriptions per annotation property in the ontology.
     - *Classes with no name*. The ratio of number of classes with no names to all classes in the ontology
     - *Classes with no synonym*. The ratio of number of classes with no synonym to all classes in the ontology
     - *Classes with no description*. The ratio of number of classes with no description to all classes in the ontology
