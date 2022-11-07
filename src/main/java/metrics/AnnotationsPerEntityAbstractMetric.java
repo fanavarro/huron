@@ -40,6 +40,9 @@ public abstract class AnnotationsPerEntityAbstractMetric extends Metric {
 	/** The Constant FOAF_NAME. */
 	private static final IRI FOAF_NAME = IRI.create(Prefixes.FOAF + "name");
 
+	/** The Constant IAO_OBO_FOUNDRY__PREFERRED_NAME. */
+	private static final IRI IAO_OBO_FOUNDRY_PREFERRED_TERM = IRI.create(Prefixes.IAO + "0000111");
+
 
 	/* Annotation properties referring synonyms */
 	/** The Constant SKOS_ALT_LABEL. */
@@ -93,7 +96,7 @@ public abstract class AnnotationsPerEntityAbstractMetric extends Metric {
 
 	/** The Constant NAME_PROPERTIES. */
 	protected static final List<IRI> NAME_PROPERTIES = Arrays.asList(SKOS_PREFERRED_LABEL, RDFS_LABEL, SCHEMA_NAME,
-			NCIT_PREFERRED_NAME, IAO_OBO_FOUNDRY_UNIQUE_NAME, FOAF_NAME);
+			NCIT_PREFERRED_NAME, IAO_OBO_FOUNDRY_UNIQUE_NAME, FOAF_NAME, IAO_OBO_FOUNDRY_PREFERRED_TERM);
 
 	/** The Constant SYNONYM_PROPERTIES. */
 	protected static final List<IRI> SYNONYM_PROPERTIES = Arrays.asList(SKOS_ALT_LABEL, OBO_HAS_EXACT_SYNONYM,

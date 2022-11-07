@@ -70,7 +70,12 @@ public class MetricCalculationTask implements Callable<List<MetricCalculationTas
 		}
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * Load the ontology from a file name and set it into the metric object. 
+	 * Invoke calculate for each metric.
+	 * Set the result into a new MetricCalculationTaskResult object.
+	 * 
+	 * @return A list of MetricCalculationTaskResult
 	 * @see java.util.concurrent.Callable#call()
 	 */
 	@Override

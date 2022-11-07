@@ -8,14 +8,28 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import services.OntologyUtils;
 import um.ontoenrich.config.LaInputParameters;
 
+/**
+ * This class calculates the ratio of number of classes with no names to the number of all classes.
+ * 
+ * @author fjredondo
+ */
 public class ClassesWithNoNameMetric extends AnnotationsPerEntityAbstractMetric implements DetailedOutputHeaderMetricInterface {
 	
-	/** The Constant NAME. */
+	/** The Constant METRIC_NAME. */
 	private static final String METRIC_NAME = "Classes with no name";
+	
+	/** Divisor of the metric ratio */
 	private int totalEntities = 0;
+	
+	/** Dividend of the metric ratio */
 	private int numberOfEntitiesWithNoAnnotation = 0;
 	
-	
+	/**
+	 * Get the entities from the ontology and obtain the annotations number of each entity to calculate the metric ratio.
+	 * Also, saves the totalEntities and numberOfEntitiesWithNoAnnotation.
+	 * 
+	 * @return The metric ratio
+	 */
 	@Override
 	public double calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
 		// TODO Auto-generated method stub
@@ -45,21 +59,32 @@ public class ClassesWithNoNameMetric extends AnnotationsPerEntityAbstractMetric 
 
 	}
 
+	/**
+	 * Get the name of the metric
+	 * @return String
+	 */
 	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
 		return METRIC_NAME;
 	}
 
+	/**
+	 * Get the divisor part of the metric ratio
+	 * @return int
+	 */
 	@Override
 	public int getDivisor() {
 		return totalEntities;
 	}
 
+	/**
+	 * Get the dividend part of the metric ratio
+	 * @return int
+	 */
 	@Override
 	public int getDividend() {
 		return numberOfEntitiesWithNoAnnotation;
 	}	
-
 
 }

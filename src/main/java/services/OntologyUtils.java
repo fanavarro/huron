@@ -38,6 +38,14 @@ public class OntologyUtils {
 		return false;
 	}
 	
+	/**
+	 * Gets all the annotations assertion axioms of one entity type from an ontology.   
+	 * 
+	 * @param entity
+	 * @param ontology
+	 * @param includeImports
+	 * @return a set of OWLAnnotationAssertionAxiom
+	 */
 	public static Set<OWLAnnotationAssertionAxiom> getOWLAnnotationAssertionAxiom(OWLEntity entity, OWLOntology ontology, boolean includeImports) {
 		Set<OWLAnnotationAssertionAxiom> annotationAssertionAxioms = entity.getAnnotationAssertionAxioms(ontology);
 		if (includeImports) {

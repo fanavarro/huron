@@ -144,13 +144,14 @@ public class Main {
 				List<MetricCalculationTaskResult> results = task.call();
 
 				for(MetricCalculationTaskResult result : results){
+					
+					printWriter.printf(Locale.ROOT, "%s\t%s\t%.3f\n", result.getOwlFile(), result.getMetricName(), result.getResult());
+					printWriter.flush();
+					
 					if (Class.forName("tasks.MetricCalculationDetailedTaskResult").isInstance(result)) {
 						MetricCalculationDetailedTaskResult r = (MetricCalculationDetailedTaskResult) result;
 						detailedPrintWriter.printf(Locale.ROOT, "%s\t%s\t%.3f\t%d\t%d\n", result.getOwlFile(), result.getMetricName(), result.getResult(), r.getDividend(), r.getDivisor());
-						detailedPrintWriter.flush();
-					}else {
-						printWriter.printf(Locale.ROOT, "%s\t%s\t%.3f\n", result.getOwlFile(), result.getMetricName(), result.getResult());
-						printWriter.flush();
+						detailedPrintWriter.flush();						
 					}
 				}
 			} catch (Exception e) {
@@ -301,7 +302,7 @@ public class Main {
 		List<Metric> metrics = new ArrayList<Metric>();
 //		metrics.add(new LexicallySuggestLogicallyDefineMetric());
 //		metrics.add(new SystematicNamingMetric());
-		metrics.add(new NumberOfClassesMetric());
+//		metrics.add(new NumberOfClassesMetric());
 //		metrics.add(new NamesPerClassMetric());
 //		metrics.add(new NamesPerPropertyMetric());
 //		metrics.add(new NamesPerAnnotationPropertyMetric());
