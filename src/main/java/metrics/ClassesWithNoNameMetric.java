@@ -27,13 +27,12 @@ public class ClassesWithNoNameMetric extends AnnotationsPerEntityAbstractMetric 
 	/**
 	 * Get the entities from the ontology and obtain the annotations number of each entity to calculate the metric ratio.
 	 * Also, saves the totalEntities and numberOfEntitiesWithNoAnnotation.
-	 * 
+	 * Writes the following fields: Metric, Class (IRI) and WithNoName (boolean), in a file.
 	 * @return The metric ratio
 	 */
 	@Override
 	public double calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
-		// TODO Auto-generated method stub
-		super.writeToDetailedOutputFile("Metric\tClass\n");
+		super.writeToDetailedOutputFile("Metric\tClass\tWithNoName\n");
 		int numberOfClassesWithNoName = 0;
 		int numberOfEntities = 0;
 		for(OWLClass owlClass : super.getOntology().getClassesInSignature()){
@@ -42,8 +41,10 @@ public class ClassesWithNoNameMetric extends AnnotationsPerEntityAbstractMetric 
 			}			
 			int localNumberOfNames = getNumberOfNames(owlClass);
 			if (localNumberOfNames == 0) {
-			super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\n", this.getName(), owlClass.toStringID()));
+				super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%b\n", this.getName(), owlClass.toStringID(), true));
 				numberOfClassesWithNoName++;
+			}else {
+				super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%b\n", this.getName(), owlClass.toStringID(), false));
 			}
 			numberOfEntities ++;
 		}
@@ -65,7 +66,6 @@ public class ClassesWithNoNameMetric extends AnnotationsPerEntityAbstractMetric 
 	 */
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
 		return METRIC_NAME;
 	}
 

@@ -19,15 +19,17 @@ public class AnnotationPropertiesWithNoNameMetric extends AnnotationsPerEntityAb
 	@Override
 	public double calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
 		// TODO Auto-generated method stub
-		super.writeToDetailedOutputFile("Metric\tAnnotationProperty\n");
+		super.writeToDetailedOutputFile("Metric\tAnnotationProperty\tWithNoName\n");
 		int numberOfAnnotationPropertiesWithNoName = 0;
 		int numberOfEntities = 0;
 		for(OWLAnnotationProperty owlAnnotationProperty : super.getOntology().getAnnotationPropertiesInSignature()){
 		
 			int localNumberOfNames = getNumberOfNames(owlAnnotationProperty);
 			if (localNumberOfNames == 0) {
-				super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\n", this.getName(), owlAnnotationProperty.toStringID()));
+				super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%b\n", this.getName(), owlAnnotationProperty.toStringID(), true));
 				numberOfAnnotationPropertiesWithNoName++;
+			}else {
+				super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%b\n", this.getName(), owlAnnotationProperty.toStringID(), false));
 			}
 			numberOfEntities ++;
 		}

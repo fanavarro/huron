@@ -19,7 +19,7 @@ public class ObjectPropertiesWithNoDescriptionMetric extends AnnotationsPerEntit
 	@Override
 	public double calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
 		// TODO Auto-generated method stub
-		super.writeToDetailedOutputFile("Metric\tObjectProperty\n");
+		super.writeToDetailedOutputFile("Metric\tObjectProperty\tWithNoDescription\n");
 		int numberOfObjectPropertiesWithNoDescription = 0;
 		int numberOfEntities = 0;
 		for(OWLObjectProperty owlObjectProperty : super.getOntology().getObjectPropertiesInSignature()){
@@ -28,8 +28,10 @@ public class ObjectPropertiesWithNoDescriptionMetric extends AnnotationsPerEntit
 			}			
 			int localNumberOfDescriptions = this.getNumberOfDescriptions(owlObjectProperty);
 			if (localNumberOfDescriptions == 0) {
-				super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\n", this.getName(), owlObjectProperty.toStringID()));
+				super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%b\n", this.getName(), owlObjectProperty.toStringID(), true));
 				numberOfObjectPropertiesWithNoDescription++;
+			}else {
+				super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%b\n", this.getName(), owlObjectProperty.toStringID(), false));
 			}
 			numberOfEntities ++;
 		}

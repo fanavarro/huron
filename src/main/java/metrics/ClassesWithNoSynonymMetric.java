@@ -20,7 +20,7 @@ public class ClassesWithNoSynonymMetric extends AnnotationsPerEntityAbstractMetr
 	@Override
 	public double calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
 		// TODO Auto-generated method stub
-		super.writeToDetailedOutputFile("Metric\tClass\n");
+		super.writeToDetailedOutputFile("Metric\tClass\tWithNoSynonym\n");
 		int numberOfClassesWithNoSynonym = 0;
 		int numberOfEntities = 0;
 		for(OWLClass owlClass : super.getOntology().getClassesInSignature()){
@@ -29,8 +29,10 @@ public class ClassesWithNoSynonymMetric extends AnnotationsPerEntityAbstractMetr
 			}				
 			int localNumberOfSynonyms = this.getNumberOfSynonyms(owlClass);
 			if (localNumberOfSynonyms == 0) {
-			super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\n", this.getName(), owlClass.toStringID()));
+				super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%b\n", this.getName(), owlClass.toStringID(), true));
 			numberOfClassesWithNoSynonym++;
+			}else {
+				super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%b\n", this.getName(), owlClass.toStringID(), false));
 			}
 			numberOfEntities ++;
 		}

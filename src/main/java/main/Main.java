@@ -318,6 +318,7 @@ public class Main {
 //		metrics.add(new DescriptionsPerAnnotationPropertyMetric());
 //		metrics.add(new DescriptionsPerDataPropertyMetric());
 //		metrics.add(new DescriptionsPerObjectPropertyMetric());
+		
 		metrics.add(new ClassesWithNoNameMetric());
 		metrics.add(new ClassesWithNoSynonymMetric());
 		metrics.add(new ClassesWithNoDescriptionMetric());
