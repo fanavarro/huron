@@ -14,7 +14,6 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 import metrics.Metric;
-import um.ontoenrich.config.LaInputParameters;
 
 /**
  * The Class MetricCalculationTask.
@@ -36,8 +35,6 @@ public class MetricCalculationTask implements Callable<List<MetricCalculationTas
 	/** The ontology. */
 	private OWLOntology ontology;
 	
-	/** The parameters. */
-	private LaInputParameters parameters;
 	
 	/** The include detail files. */
 	private boolean includeDetailFiles;
@@ -50,11 +47,10 @@ public class MetricCalculationTask implements Callable<List<MetricCalculationTas
 	 * @param parameters the parameters
 	 * @param includeDetailFiles the include detail files
 	 */
-	public MetricCalculationTask(List<Metric> metric, File ontologyFile, LaInputParameters parameters, boolean includeDetailFiles) {
+	public MetricCalculationTask(List<Metric> metric, File ontologyFile, boolean includeDetailFiles) {
 		super();
 		this.metrics = metric;
 		this.ontologyFile = ontologyFile;
-		this.parameters = parameters;
 		this.includeDetailFiles = includeDetailFiles;
 		if(this.includeDetailFiles){
 			File detailsFileFolder = new File(DETAIL_FILES_FOLDER);
@@ -77,11 +73,10 @@ public class MetricCalculationTask implements Callable<List<MetricCalculationTas
 	 * @param includeDetailFiles the include detail files
 	 * @param detailedFilesFolder the folder where the detailed file will be saved.
 	 */
-	public MetricCalculationTask(List<Metric> metric, File ontologyFile, LaInputParameters parameters, boolean includeDetailFiles, File detailsFileFolder) {
+	public MetricCalculationTask(List<Metric> metric, File ontologyFile, boolean includeDetailFiles, File detailsFileFolder) {
 		super();
 		this.metrics = metric;
 		this.ontologyFile = ontologyFile;
-		this.parameters = parameters;
 		this.includeDetailFiles = includeDetailFiles;
 		if(this.includeDetailFiles){
 			if(!detailsFileFolder.exists() || !detailsFileFolder.isDirectory()){
@@ -107,7 +102,6 @@ public class MetricCalculationTask implements Callable<List<MetricCalculationTas
 		for (Metric metric : metrics) {
 			LOGGER.log(Level.INFO, String.format("%s for %s\t-Calculating", metric.getName(), ontologyFile.getName()));
 			metric.setOntology(ontology);
-			metric.setParameters(parameters);
 			String detailedFileName = ontologyFile.getName() + "_" + metric.getName().replace(' ', '_') + ".tsv";
 			if(this.includeDetailFiles){
 				metric.openDetailedOutputFile(new File(DETAIL_FILES_FOLDER + '/' + detailedFileName));

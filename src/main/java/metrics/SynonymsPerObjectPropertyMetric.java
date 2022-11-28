@@ -8,7 +8,6 @@ import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import services.OntologyUtils;
-import um.ontoenrich.config.LaInputParameters;
 
 /**
  * The Class SynonymsPerObjectPropertyMetric.
@@ -38,14 +37,6 @@ public class SynonymsPerObjectPropertyMetric extends AnnotationsPerEntityAbstrac
 		return ((double) (numberOfSynonyms)) / numberOfEntities;
 	}
 
-	/* (non-Javadoc)
-	 * @see metrics.Metric#setParameters(um.ontoenrich.config.LaInputParameters)
-	 */
-	@Override
-	public void setParameters(LaInputParameters parameters) {
-		// Not used
-		
-	}
 
 	/* (non-Javadoc)
 	 * @see metrics.Metric#getName()

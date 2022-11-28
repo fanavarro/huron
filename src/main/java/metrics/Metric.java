@@ -11,7 +11,6 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
-import um.ontoenrich.config.LaInputParameters;
 
 /**
  * The Class Metric.
@@ -42,12 +41,6 @@ public abstract class Metric {
 	public abstract double calculate()
 			throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception;
 
-	/**
-	 * Sets the parameters.
-	 *
-	 * @param parameters the new parameters
-	 */
-	public abstract void setParameters(LaInputParameters parameters);
 
 	/**
 	 * Gets the name.

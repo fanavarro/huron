@@ -10,7 +10,6 @@ import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import services.OntologyUtils;
-import um.ontoenrich.config.LaInputParameters;
 
 /**
  * The Class NamesPerPropertyMetric.
@@ -61,13 +60,7 @@ public class NamesPerPropertyMetric extends AnnotationsPerEntityAbstractMetric{
 		return ((double) (numberOfNames)) / totalProperties;
 	}
 
-	/* (non-Javadoc)
-	 * @see metrics.Metric#setParameters(um.ontoenrich.config.LaInputParameters)
-	 */
-	@Override
-	public void setParameters(LaInputParameters parameters) {
-		
-	}
+
 
 	/* (non-Javadoc)
 	 * @see metrics.Metric#getName()

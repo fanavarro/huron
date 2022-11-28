@@ -8,7 +8,6 @@ import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import services.OntologyUtils;
-import um.ontoenrich.config.LaInputParameters;
 
 /**
  * The Class DescriptionsPerAnnotationPropertyMetric.
@@ -39,21 +38,12 @@ public class DescriptionsPerAnnotationPropertyMetric extends AnnotationsPerEntit
 
 	}
 
-	/* (non-Javadoc)
-	 * @see metrics.Metric#setParameters(um.ontoenrich.config.LaInputParameters)
-	 */
-	@Override
-	public void setParameters(LaInputParameters parameters) {
-		// Not used
-		
-	}
 
 	/* (non-Javadoc)
 	 * @see metrics.Metric#getName()
 	 */
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
 		return NAME;
 	}
 }

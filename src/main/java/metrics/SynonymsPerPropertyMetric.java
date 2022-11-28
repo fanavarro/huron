@@ -10,7 +10,6 @@ import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import services.OntologyUtils;
-import um.ontoenrich.config.LaInputParameters;
 
 /**
  * The Class SynonymsPerPropertyMetric.
@@ -62,11 +61,6 @@ public class SynonymsPerPropertyMetric extends AnnotationsPerEntityAbstractMetri
 	
 	}
 
-	/* (non-Javadoc)
-	 * @see metrics.Metric#setParameters(um.ontoenrich.config.LaInputParameters)
-	 */
-	@Override
-	public void setParameters(LaInputParameters parameters) {}
 
 	/* (non-Javadoc)
 	 * @see metrics.Metric#getName()

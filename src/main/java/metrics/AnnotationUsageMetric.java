@@ -10,7 +10,6 @@ import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
-import um.ontoenrich.config.LaInputParameters;
 
 /**
  * The Class AnnotationUsageMetric.
@@ -58,14 +57,6 @@ public class AnnotationUsageMetric extends Metric {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see metrics.Metric#setParameters(um.ontoenrich.config.LaInputParameters)
-	 */
-	@Override
-	public void setParameters(LaInputParameters parameters) {
-		// TODO Not used
-
-	}
 
 	/* (non-Javadoc)
 	 * @see metrics.Metric#getName()

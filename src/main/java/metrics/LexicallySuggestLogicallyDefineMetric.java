@@ -7,8 +7,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.ontoenrich.beans.Label;
+import org.ontoenrich.config.TypeOfDelimiterStrategy;
+import org.ontoenrich.config.TypeOfTargetEntity;
+import org.ontoenrich.core.LexicalEnvironment;
+import org.ontoenrich.core.LexicalRegularity;
+import org.ontoenrich.filters.RemoveNoClasses;
 import org.semanticweb.elk.owlapi.ElkReasonerFactory;
 import org.semanticweb.owlapi.model.AxiomType;
 import org.semanticweb.owlapi.model.IRI;
@@ -19,16 +26,9 @@ import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory;
 
-import de.lmu.ifi.dbs.elki.logging.Logging.Level;
 import services.OntologyGraphService;
 import services.OntologyGraphServiceImpl;
 import services.OntologyUtils;
-import um.filter.type.noclasses.LaFilterNoClasses;
-import um.ontoenrich.LexAnal;
-import um.ontoenrich.config.LaInputParameters;
-import um.ontoenrich.localEnvironment.Label;
-import um.ontoenrich.localEnvironment.LexicalAnalysis;
-import um.ontoenrich.localEnvironment.Pattern;
 
 /**
  * The Class LexicallySuggestLogicallyDefineMetric.
@@ -41,6 +41,8 @@ public class LexicallySuggestLogicallyDefineMetric extends Metric {
 	/** The max depth taken into account to check if two classes are axiomatically related */
 	private static final int MAX_DEPTH = 5;
 	
+	private static final float ONTOENRICH_LABEL_COVERAGE_THRESHOLD = 0.1f;
+	
 	/** The Constant NAME. */
 	private static final String NAME = "Lexically suggest logically define";
 
@@ -48,8 +50,7 @@ public class LexicallySuggestLogicallyDefineMetric extends Metric {
 	private static final List<AxiomType<?>> IGNORED_AXIOMS = Arrays.asList(AxiomType.DISJOINT_CLASSES,
 			AxiomType.DISJOINT_DATA_PROPERTIES, AxiomType.DISJOINT_OBJECT_PROPERTIES, AxiomType.DISJOINT_UNION);
 	
-	/** The parameters. */
-	private LaInputParameters parameters;
+	
 	
 	/** The reasoner. */
 	private OWLReasoner reasoner;
@@ -70,31 +71,33 @@ public class LexicallySuggestLogicallyDefineMetric extends Metric {
 	public double calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
 		/* Write header for detailed output file */
 		super.writeToDetailedOutputFile("Metric\tClass\tClass depth\tLR\tPositive Cases\tPositive cases average depth\tPositive cases average distance to LR class\tNegative Cases\tNegative cases average depth\tNegative cases average distance to LR class\tMetric Value\n" );
-		// STEP 1: calculate the LA
-		LexAnal la = new LexAnal(getOntology(), getParameters(), null);
+		
+		// STEP 1: create the lexical environment
+		LexicalEnvironment lexicalEnvironment = this.getLexicalEnvironment();
 
 		// INIT owlReasoner
 		reasoner = createReasoner(getOntology());
 
-		// STEP 2: get(0) because the parameters must have just one coverage
-		// threshold
-		LexicalAnalysis myLa = la.listLexicalAnalysis.get(0);
+		// STEP 2: Perform lexical analysis with threshold
+		int numberOfClassesThreshold = this.calculateNumberOfClassesThresholdFromCoverage(ONTOENRICH_LABEL_COVERAGE_THRESHOLD);
+		List<LexicalRegularity> lexicalRegularities = lexicalEnvironment.searchAllPatterns(numberOfClassesThreshold /* Minimum Coverage (in labels) */);
+		
+		
 
 		// STEP 3: apply a filter to get just LRs that are classes
-		LaFilterNoClasses f1 = new LaFilterNoClasses("f1", myLa);
-		f1.applyFilter(false);
+		RemoveNoClasses.execute(lexicalRegularities);
 
 		// STEP 4: calculate the metric
 		int positiveCasesCount = 0;
 		int negativeCasesCount = 0;
-		for (Pattern p : myLa.patternsList) {
-			for (OWLClass owlClassA : this.getRepresentingClasses(la, p)) {
+		for (LexicalRegularity lexicalRegularity : lexicalRegularities) {
+			for (OWLClass owlClassA : this.getRepresentingClasses(lexicalEnvironment, lexicalRegularity)) {
 				Set<OWLClass> localPositiveCases = new HashSet<OWLClass>();
 				Set<OWLClass> localNegativeCases = new HashSet<OWLClass>();
 				if (OntologyUtils.isObsolete(owlClassA, getOntology())) {
 					continue;
 				}
-				for (Label l : p.idLabelsWhereItAppears) {
+				for (Label l : lexicalRegularity.idLabelsWhereItAppears) {
 					if (l.getIdLabel().equals(owlClassA.toStringID())) {
 						continue;
 					}
@@ -107,8 +110,8 @@ public class LexicallySuggestLogicallyDefineMetric extends Metric {
 						localPositiveCases.add(owlClassCi);
 					} else {
 						localNegativeCases.add(owlClassCi);
-						LOGGER.log(Level.VERBOSE, String.format("%s(%s) not related with %s(%s)",
-								owlClassA.toStringID(), p.strPattern, owlClassCi.toStringID(), l.getStrLabel()));
+						LOGGER.log(Level.INFO, String.format("%s(%s) not related with %s(%s)",
+								owlClassA.toStringID(), lexicalRegularity.strPattern, owlClassCi.toStringID(), l.getStrLabel()));
 					}
 				}
 				double localMetricResult = (double) localPositiveCases.size() / (localPositiveCases.size() + localNegativeCases.size());
@@ -118,7 +121,7 @@ public class LexicallySuggestLogicallyDefineMetric extends Metric {
 					double averageDepthLocalNegativeCases = this.getAverageDepth(localNegativeCases);
 					double averageDistanceToLRClassLocalPositiveCases = this.getAverageDistanceToDepth(localPositiveCases, owlClassADepth);
 					double averageDistanceToLRClassLocalNegativeCases = this.getAverageDistanceToDepth(localNegativeCases, owlClassADepth);
-					super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%d\t%s\t%d\t%.3f\t%.3f\t%d\t%.3f\t%.3f\t%.3f\n", this.getName(), owlClassA.toStringID(), owlClassADepth, p.strPattern, localPositiveCases.size(), averageDepthLocalPositiveCases, averageDistanceToLRClassLocalPositiveCases, localNegativeCases.size(), averageDepthLocalNegativeCases, averageDistanceToLRClassLocalNegativeCases, localMetricResult));
+					super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%d\t%s\t%d\t%.3f\t%.3f\t%d\t%.3f\t%.3f\t%.3f\n", this.getName(), owlClassA.toStringID(), owlClassADepth, lexicalRegularity.strPattern, localPositiveCases.size(), averageDepthLocalPositiveCases, averageDistanceToLRClassLocalPositiveCases, localNegativeCases.size(), averageDepthLocalNegativeCases, averageDistanceToLRClassLocalNegativeCases, localMetricResult));
 				}
 				positiveCasesCount += localPositiveCases.size();
 				negativeCasesCount += localNegativeCases.size();
@@ -131,6 +134,14 @@ public class LexicallySuggestLogicallyDefineMetric extends Metric {
 		// STEP 5: return the calculated value
 		return (double) positiveCasesCount / (positiveCasesCount + negativeCasesCount);
 
+	}
+
+	private int calculateNumberOfClassesThresholdFromCoverage(float ontoenrichLabelCoverageThreshold) {
+		// TODO: Choose if we calculate this with or without obsolete classes.
+		// Now, we are not taken into account obsolete classes for calculating the coverage in order to have the same results than the previous implementation.
+		//long nClasses = this.getOntology().getClassesInSignature().parallelStream().filter(owlClass -> (!OntologyUtils.isObsolete(owlClass, getOntology()))).count();
+		long nClasses = this.getOntology().getClassesInSignature().size(); 
+		return Math.round((float)(nClasses) * ontoenrichLabelCoverageThreshold);
 	}
 
 	/**
@@ -179,12 +190,13 @@ public class LexicallySuggestLogicallyDefineMetric extends Metric {
 	 * @param p the p
 	 * @return the representing classes
 	 */
-	private Set<OWLClass> getRepresentingClasses(LexAnal la, Pattern p) {
-		Set<Label> labels = la.localEnvironment.getLabel(p);
+	private Set<OWLClass> getRepresentingClasses(LexicalEnvironment lexicalEnvironment, LexicalRegularity lexicalRegularity) {
+		
+		Set<Label> labels = lexicalEnvironment.getLabel(lexicalRegularity);
 		Set<OWLClass> classes = new HashSet<OWLClass>();
 		for (Label label : labels) {
 			label.getIdLabel();
-			OWLClass owlClass = la.localEnvironment.owlApiOntology.getOWLOntologyManager().getOWLDataFactory()
+			OWLClass owlClass = lexicalEnvironment.owlApiOntology.getOWLOntologyManager().getOWLDataFactory()
 					.getOWLClass(IRI.create(label.getIdLabel()));
 			classes.add(owlClass);
 		}
@@ -209,22 +221,17 @@ public class LexicallySuggestLogicallyDefineMetric extends Metric {
 		}
 		return reasoner;
 	}
-
-	/**
-	 * Gets the parameters.
-	 *
-	 * @return the parameters
-	 */
-	public LaInputParameters getParameters() {
-		return parameters;
+	
+	private LexicalEnvironment getLexicalEnvironment() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
+		LexicalEnvironment le = new LexicalEnvironment(
+				TypeOfTargetEntity.CLASS_RDF_LABELS, 
+				false /* Case Sensitive */, 
+				TypeOfDelimiterStrategy.CHARACTER_BLANK,
+				this.getOntology(),
+				null /* discardedStopwordsNodes*/);
+		return le;
 	}
 
-	/* (non-Javadoc)
-	 * @see metrics.Metric#setParameters(um.ontoenrich.config.LaInputParameters)
-	 */
-	public void setParameters(LaInputParameters parameters) {
-		this.parameters = parameters;
-	}
 
 	/* (non-Javadoc)
 	 * @see metrics.Metric#getName()

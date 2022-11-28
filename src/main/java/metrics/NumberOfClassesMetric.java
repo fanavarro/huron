@@ -5,8 +5,6 @@ import java.io.IOException;
 
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
-import um.ontoenrich.config.LaInputParameters;
-
 /**
  * The Class NumberOfClassesMetric.
  */
@@ -23,13 +21,7 @@ public class NumberOfClassesMetric extends Metric {
 		return getOntology().getClassesInSignature().size();
 	}
 
-	/* (non-Javadoc)
-	 * @see metrics.Metric#setParameters(um.ontoenrich.config.LaInputParameters)
-	 */
-	@Override
-	public void setParameters(LaInputParameters parameters) {
-		// Not used
-	}
+
 
 	/* (non-Javadoc)
 	 * @see metrics.Metric#getName()

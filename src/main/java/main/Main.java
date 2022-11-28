@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
@@ -46,9 +45,6 @@ import metrics.SynonymsPerPropertyMetric;
 import metrics.SystematicNamingMetric;
 import tasks.MetricCalculationTask;
 import tasks.MetricCalculationTaskResult;
-import um.ontoenrich.config.LaInputParameters;
-import um.ontoenrich.config.TypeOfDelimiterStrategy;
-import um.ontoenrich.config.TypeOfTargetEntity;
 
 /**
  * The Class Main.
@@ -172,38 +168,13 @@ public class Main {
 	private static List<MetricCalculationTask> getMetricCalculationTasks(List<File> ontologyFiles, List<Metric> metrics, boolean includeDetailedFiles){
 		List<MetricCalculationTask> tasks = new ArrayList<MetricCalculationTask>();
 		for(File ontologyFile : ontologyFiles){
-			LaInputParameters parameters = getXmlParametersLexicalAnalysis(ontologyFile.getName());
-			tasks.add(new MetricCalculationTask(metrics, ontologyFile, parameters, includeDetailedFiles));
+			tasks.add(new MetricCalculationTask(metrics, ontologyFile, includeDetailedFiles));
 			
 		}
 		return tasks;
 	}
 
-	/**
-	 * Gets the xml parameters lexical analysis.
-	 *
-	 * @param description the description
-	 * @return the xml parameters lexical analysis
-	 */
-	private static LaInputParameters getXmlParametersLexicalAnalysis(String description) {
-		Boolean caseSensitive = false;
-		TypeOfTargetEntity typeTargetEntitites = TypeOfTargetEntity.CLASS_RDF_LABELS;
-		TypeOfDelimiterStrategy typeDelimiterStrat = TypeOfDelimiterStrategy.CHARACTER_BLANK;
-		LinkedList<Double> coverages = new LinkedList<Double>();
-		coverages.add(0.1);
-		LinkedList<Integer> lengths = null;
 
-		LaInputParameters laInput = new LaInputParameters();
-		laInput.setDescription(description);
-		laInput.setTargetEntity(typeTargetEntitites);
-		laInput.setDelimiterStrategy(typeDelimiterStrat);
-		laInput.setCaseSensitive(caseSensitive);
-		laInput.setCoverages(coverages);
-		laInput.setLengths(lengths);
-
-		return laInput;
-
-	}
 	
 	/**
 	 * Generate options.
