@@ -67,6 +67,32 @@ public class MetricCalculationTask implements Callable<List<MetricCalculationTas
 			}
 		}
 	}
+	
+	/**
+	 * Instantiates a new metric calculation task.
+	 *
+	 * @param metric the metric
+	 * @param ontologyFile the ontology file
+	 * @param parameters the parameters
+	 * @param includeDetailFiles the include detail files
+	 * @param detailedFilesFolder the folder where the detailed file will be saved.
+	 */
+	public MetricCalculationTask(List<Metric> metric, File ontologyFile, LaInputParameters parameters, boolean includeDetailFiles, File detailsFileFolder) {
+		super();
+		this.metrics = metric;
+		this.ontologyFile = ontologyFile;
+		this.parameters = parameters;
+		this.includeDetailFiles = includeDetailFiles;
+		if(this.includeDetailFiles){
+			if(!detailsFileFolder.exists() || !detailsFileFolder.isDirectory()){
+				try {
+					Files.createDirectories(detailsFileFolder.toPath());
+				} catch (IOException e) {
+					LOGGER.log(Level.WARNING, "Error creating folder for detailed files. Ignoring detailed files...", e);
+				}
+			}
+		}
+	}
 
 	/* (non-Javadoc)
 	 * @see java.util.concurrent.Callable#call()
