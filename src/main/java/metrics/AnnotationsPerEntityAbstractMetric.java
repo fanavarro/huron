@@ -115,7 +115,8 @@ public abstract class AnnotationsPerEntityAbstractMetric extends Metric {
 		if (getOntology().containsAnnotationPropertyInSignature(annotationIRI)) {
 			OWLAnnotationProperty annotationProperty = getOntology().getOWLOntologyManager().getOWLDataFactory()
 					.getOWLAnnotationProperty(annotationIRI);
-			for (OWLAxiom axiom : annotationProperty.getReferencingAxioms(getOntology())) {
+			
+			for (OWLAxiom axiom : getOntology().getReferencingAxioms(annotationProperty)) {
 				if (axiom.isOfType(AxiomType.ANNOTATION_ASSERTION)) {
 					OWLAnnotationSubject subject = ((OWLAnnotationAssertionAxiom) axiom).getSubject();
 					if (subject instanceof IRI && getOntology().containsClassInSignature((IRI) subject)) {
@@ -138,7 +139,7 @@ public abstract class AnnotationsPerEntityAbstractMetric extends Metric {
 		if (getOntology().containsAnnotationPropertyInSignature(annotationIRI)) {
 			OWLAnnotationProperty annotationProperty = getOntology().getOWLOntologyManager().getOWLDataFactory()
 					.getOWLAnnotationProperty(annotationIRI);
-			for (OWLAxiom axiom : annotationProperty.getReferencingAxioms(getOntology())) {
+			for (OWLAxiom axiom : getOntology().getReferencingAxioms(annotationProperty)) {
 				if (axiom.isOfType(AxiomType.ANNOTATION_ASSERTION)) {
 					OWLAnnotationSubject subject = ((OWLAnnotationAssertionAxiom) axiom).getSubject();
 					if (subject instanceof IRI && getOntology().containsDataPropertyInSignature((IRI) subject)) {
@@ -184,7 +185,7 @@ public abstract class AnnotationsPerEntityAbstractMetric extends Metric {
 		if (getOntology().containsAnnotationPropertyInSignature(annotationIRI)) {
 			OWLAnnotationProperty annotationProperty = getOntology().getOWLOntologyManager().getOWLDataFactory()
 					.getOWLAnnotationProperty(annotationIRI);
-			for (OWLAxiom axiom : annotationProperty.getReferencingAxioms(getOntology())) {
+			for (OWLAxiom axiom : getOntology().getReferencingAxioms(annotationProperty)) {
 				if (axiom.isOfType(AxiomType.ANNOTATION_ASSERTION)) {
 					OWLAnnotationSubject subject = ((OWLAnnotationAssertionAxiom) axiom).getSubject();
 					if (subject instanceof IRI && getOntology().containsAnnotationPropertyInSignature((IRI) subject)) {

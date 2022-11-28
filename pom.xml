@@ -10,7 +10,7 @@
 		<commons-cli.version>1.4</commons-cli.version>
 		<graphlib.version>0.0.3</graphlib.version>
 		<ontoenrich-core.version>2.0.0-SNAPSHOT</ontoenrich-core.version>
-		<elk-reasoner.version>0.4.1</elk-reasoner.version>
+		<elk.version>0.5.0-SNAPSHOT</elk.version>
 		<commons-collections4.version>4.4</commons-collections4.version>
 	</properties>
 	<build>
@@ -55,16 +55,11 @@
 
 		<dependency>
 			<groupId>org.semanticweb.elk</groupId>
-			<artifactId>elk-reasoner</artifactId>
-			<version>${elk-reasoner.version}</version>
+			<artifactId>elk-owlapi5</artifactId>
+			<version>${elk.version}</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.semanticweb.elk/elk-owlapi -->
-		<dependency>
-			<groupId>org.semanticweb.elk</groupId>
-			<artifactId>elk-owlapi</artifactId>
-			<version>${elk-reasoner.version}</version>
-		</dependency>
+
 
 		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-collections4 -->
 		<dependency>

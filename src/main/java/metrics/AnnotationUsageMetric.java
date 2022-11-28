@@ -46,7 +46,7 @@ public class AnnotationUsageMetric extends Metric {
 		if (getOntology().containsAnnotationPropertyInSignature(annotationIRI)) {
 			OWLAnnotationProperty annotationProperty = getOntology().getOWLOntologyManager().getOWLDataFactory()
 					.getOWLAnnotationProperty(annotationIRI);
-			Set<OWLAxiom> referencingAxioms = annotationProperty.getReferencingAxioms(getOntology());
+			Set<OWLAxiom> referencingAxioms = getOntology().getReferencingAxioms(annotationProperty);
 			for(OWLAxiom axiom : referencingAxioms){
 				if(axiom.isOfType(AxiomType.ANNOTATION_ASSERTION)){
 					usage++;

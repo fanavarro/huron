@@ -1,9 +1,11 @@
 package owlgraph;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.parameters.Imports;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 
@@ -77,7 +79,7 @@ public abstract class OWLGraph<E> extends AbstractGraph<OWLClass, E>{
 	 */
 	@Override
 	public Set<OWLClass> getNodes() {
-		return ontology.getClassesInSignature(includeImportsClosure);
+		return ontology.classesInSignature(Imports.fromBoolean(includeImportsClosure)).collect(Collectors.toSet());
 	}
 	
 	/**

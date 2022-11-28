@@ -38,6 +38,8 @@ public class MetricCalculationTask implements Callable<List<MetricCalculationTas
 	
 	/** The include detail files. */
 	private boolean includeDetailFiles;
+	
+	private File detailedFileFolder;
 
 	/**
 	 * Instantiates a new metric calculation task.
@@ -52,11 +54,12 @@ public class MetricCalculationTask implements Callable<List<MetricCalculationTas
 		this.metrics = metric;
 		this.ontologyFile = ontologyFile;
 		this.includeDetailFiles = includeDetailFiles;
+		this.detailedFileFolder = null;
 		if(this.includeDetailFiles){
-			File detailsFileFolder = new File(DETAIL_FILES_FOLDER);
-			if(!detailsFileFolder.exists() || !detailsFileFolder.isDirectory()){
+			this.detailedFileFolder = new File(DETAIL_FILES_FOLDER);
+			if(!this.detailedFileFolder.exists() || !this.detailedFileFolder.isDirectory()){
 				try {
-					Files.createDirectories(detailsFileFolder.toPath());
+					Files.createDirectories(this.detailedFileFolder.toPath());
 				} catch (IOException e) {
 					LOGGER.log(Level.WARNING, "Error creating folder for detailed files. Ignoring detailed files...", e);
 				}
@@ -79,6 +82,7 @@ public class MetricCalculationTask implements Callable<List<MetricCalculationTas
 		this.ontologyFile = ontologyFile;
 		this.includeDetailFiles = includeDetailFiles;
 		if(this.includeDetailFiles){
+			this.detailedFileFolder = detailsFileFolder;
 			if(!detailsFileFolder.exists() || !detailsFileFolder.isDirectory()){
 				try {
 					Files.createDirectories(detailsFileFolder.toPath());
@@ -104,7 +108,7 @@ public class MetricCalculationTask implements Callable<List<MetricCalculationTas
 			metric.setOntology(ontology);
 			String detailedFileName = ontologyFile.getName() + "_" + metric.getName().replace(' ', '_') + ".tsv";
 			if(this.includeDetailFiles){
-				metric.openDetailedOutputFile(new File(DETAIL_FILES_FOLDER + '/' + detailedFileName));
+				metric.openDetailedOutputFile(new File(this.detailedFileFolder, detailedFileName));
 			}
 			double result = metric.calculate();
 			if(this.includeDetailFiles){

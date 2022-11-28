@@ -138,7 +138,7 @@ public class OWLAxiomaticGraph extends OWLGraph<OWLAxiom>{
 	@Override
 	public Map<OWLAxiom, Set<OWLClass>> getAdjacentNodesByEdgeMap(OWLClass node) {
 		Map<OWLAxiom, Set<OWLClass>> adjacentNodesWithEdges = new HashMap<>();
-		Set<OWLAxiom> axioms = node.getReferencingAxioms(getOntology());
+		Set<OWLAxiom> axioms = getOntology().getReferencingAxioms(node);
 		for(OWLAxiom axiom : axioms){
 			if(ignoreAxiom(axiom, node)){
 				continue;
@@ -170,7 +170,7 @@ public class OWLAxiomaticGraph extends OWLGraph<OWLAxiom>{
 			return !node.equals(aux.getSubClass());
 		} else if (axiom instanceof OWLEquivalentClassesAxiom){
 			OWLEquivalentClassesAxiom aux = (OWLEquivalentClassesAxiom) axiom;
-			List<OWLClassExpression> classExpressions = aux.getClassExpressionsAsList();
+			List<OWLClassExpression> classExpressions = aux.getOperandsAsList();
 			return !node.equals(classExpressions.get(0));
 		}
 		return false;
