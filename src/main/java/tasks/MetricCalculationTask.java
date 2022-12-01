@@ -76,9 +76,9 @@ public class MetricCalculationTask implements Callable<List<MetricCalculationTas
 	 * @param includeDetailFiles the include detail files
 	 * @param detailedFilesFolder the folder where the detailed file will be saved.
 	 */
-	public MetricCalculationTask(List<Metric> metric, File ontologyFile, boolean includeDetailFiles, File detailsFileFolder) {
+	public MetricCalculationTask(List<Metric> metrics, File ontologyFile, boolean includeDetailFiles, File detailsFileFolder) {
 		super();
-		this.metrics = metric;
+		this.metrics = metrics;
 		this.ontologyFile = ontologyFile;
 		this.includeDetailFiles = includeDetailFiles;
 		if(this.includeDetailFiles){
@@ -99,15 +99,15 @@ public class MetricCalculationTask implements Callable<List<MetricCalculationTas
 	@Override
 	public List<MetricCalculationTaskResult> call() throws Exception {
 		List<MetricCalculationTaskResult> results = new ArrayList<MetricCalculationTaskResult>();
-		OWLOntologyManager ontologyManager = OWLManager.createOWLOntologyManager();
+		OWLOntologyManager ontologyManager = OWLManager.createConcurrentOWLOntologyManager();
 		LOGGER.log(Level.INFO, String.format("Loading %s", ontologyFile.getName()));
 		ontology = ontologyManager.loadOntologyFromOntologyDocument(ontologyFile);
 		LOGGER.log(Level.INFO, String.format(" %s loaded", ontologyFile.getName()));
 		for (Metric metric : metrics) {
 			LOGGER.log(Level.INFO, String.format("%s for %s\t-Calculating", metric.getName(), ontologyFile.getName()));
 			metric.setOntology(ontology);
-			String detailedFileName = ontologyFile.getName() + "_" + metric.getName().replace(' ', '_') + ".tsv";
 			if(this.includeDetailFiles){
+				String detailedFileName = ontologyFile.getName() + "_" + metric.getName().replace(' ', '_') + ".tsv";
 				metric.openDetailedOutputFile(new File(this.detailedFileFolder, detailedFileName));
 			}
 			double result = metric.calculate();
@@ -117,7 +117,11 @@ public class MetricCalculationTask implements Callable<List<MetricCalculationTas
 			results.add(new MetricCalculationTaskResult(metric.getName(), result, ontologyFile.getName()));
 			LOGGER.log(Level.INFO, String.format("%s for %s\t-Done", metric.getName(), ontologyFile.getName()));
 		}
-		ontologyManager.removeOntology(ontology);
+		
+		/* Release memory */
+		ontologyManager.clearOntologies();
+		ontologyManager.getOntologyStorers().clear();
+		ontologyManager.getIRIMappers().clear();
 		return results;
 	}
 	

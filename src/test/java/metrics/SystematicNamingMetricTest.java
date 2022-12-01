@@ -2,9 +2,10 @@ package metrics;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import org.junit.Test;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -50,12 +51,14 @@ public class SystematicNamingMetricTest {
 	@Test
 	public void testExample2() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
 
+		// CREATE TEMP FILE
+		Path tempFile = Files.createTempFile("outputFileComplementary", ".tsv");
 		// STEP 1: create the object
 		Metric m1 = new SystematicNamingMetric();
 		OWLOntologyManager m = OWLManager.createOWLOntologyManager();
 		OWLOntology ontology = m.loadOntologyFromOntologyDocument(this.getClass().getResourceAsStream("/example2.owl"));
 		m1.setOntology(ontology);
-		m1.openDetailedOutputFile(new File("outputFileComplementary.tsv"));
+		m1.openDetailedOutputFile(tempFile.toFile());
 
 		// STEP 2: calculate the metric
 		double res = m1.calculate();
