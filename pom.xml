@@ -12,7 +12,7 @@
 		<ontoenrich-core.version>2.0.0-SNAPSHOT</ontoenrich-core.version>
 		<elk.version>0.5.0-SNAPSHOT</elk.version>
 		<commons-collections4.version>4.4</commons-collections4.version>
-		<owlapi.version>5.1.20</owlapi.version>
+		<owlapi.version>5.1.10</owlapi.version>
 	</properties>
 	<build>
 		<plugins>
@@ -71,7 +71,7 @@
 		<profile>
 			<id>java13</id>
 			<activation>
-				<activeByDefault>true</activeByDefault>
+				<activeByDefault>false</activeByDefault>
 			</activation>
 			<properties>
 				<profile.name>java13</profile.name>
@@ -82,7 +82,7 @@
 		<profile>
 			<id>java8</id>
 			<activation>
-				<activeByDefault>false</activeByDefault>
+				<activeByDefault>true</activeByDefault>
 			</activation>
 			<properties>
 				<profile.name>java8</profile.name>
