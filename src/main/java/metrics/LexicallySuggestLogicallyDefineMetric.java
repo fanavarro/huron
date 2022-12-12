@@ -110,7 +110,7 @@ public class LexicallySuggestLogicallyDefineMetric extends Metric {
 						localPositiveCases.add(owlClassCi);
 					} else {
 						localNegativeCases.add(owlClassCi);
-						LOGGER.log(Level.INFO, String.format("%s(%s) not related with %s(%s)",
+						LOGGER.log(Level.INFO, String.format("%s(%s) not related with %s (%s)",
 								owlClassA.toStringID(), lexicalRegularity.strPattern, owlClassCi.toStringID(), l.getStrLabel()));
 					}
 				}
