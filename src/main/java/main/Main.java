@@ -93,37 +93,9 @@ public class Main {
 
 			})));
 		}
-		List<Metric> metrics = getMetricsToCalculate(ontologyFiles);
-		List<MetricCalculationTask> tasks = getMetricCalculationTasks(ontologyFiles, metrics, includeDetailedFiles);
-		
-		executeWithoutTaskExecutor(outputFile, tasks);
-		//executeWithTaskExecutor(outputFile, tasks, threads);
+		List<MetricCalculationTask> tasks = getMetricCalculationTasks(ontologyFiles, includeDetailedFiles);
+		executeWithTaskExecutor(outputFile, tasks, threads);
 
-	}
-	
-	/**
-	 * Execute without task executor.
-	 *
-	 * @param outputFile the output file
-	 * @param tasks the tasks
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	private static void executeWithoutTaskExecutor(File outputFile, List<MetricCalculationTask> tasks) throws IOException{
-		FileWriter fileWriter = new FileWriter(outputFile);
-		PrintWriter printWriter = new PrintWriter(fileWriter);
-		printWriter.print("File\tMetric\tValue\n");
-		for (MetricCalculationTask task : tasks) {
-			try {
-				List<MetricCalculationTaskResult> results = task.call();
-				for(MetricCalculationTaskResult result : results){
-					printWriter.printf(Locale.ROOT, "%s\t%s\t%.3f\n", result.getOwlFile(), result.getMetricName(), result.getResult());
-				}
-			} catch (Exception e) {
-				String msg = String.format("Error processing %s:\n%s", task.getOntologyFile().getAbsolutePath(), e.getMessage());
-				LOGGER.log(Level.SEVERE, msg, e);
-			}
-		}
-		printWriter.close();
 	}
 
 	/**
@@ -138,7 +110,6 @@ public class Main {
 	private static void executeWithTaskExecutor(File outputFile, List<MetricCalculationTask> tasks, int threads)
 			throws InterruptedException, IOException {
 		ExecutorService executor = Executors.newFixedThreadPool(threads);
-		//ExecutorService executor = Executors.newSingleThreadExecutor(); // The owlapi version used in this project is not thread-safe...	
 		List<Future<List<MetricCalculationTaskResult>>> futureResults = executor.invokeAll(tasks);
 		FileWriter fileWriter = new FileWriter(outputFile);
 		PrintWriter printWriter = new PrintWriter(fileWriter);
@@ -165,10 +136,10 @@ public class Main {
 	 * @param includeDetailedFiles the include detailed files
 	 * @return the metric calculation tasks
 	 */
-	private static List<MetricCalculationTask> getMetricCalculationTasks(List<File> ontologyFiles, List<Metric> metrics, boolean includeDetailedFiles){
+	private static List<MetricCalculationTask> getMetricCalculationTasks(List<File> ontologyFiles, boolean includeDetailedFiles){
 		List<MetricCalculationTask> tasks = new ArrayList<MetricCalculationTask>();
 		for(File ontologyFile : ontologyFiles){
-			tasks.add(new MetricCalculationTask(metrics, ontologyFile, includeDetailedFiles));
+			tasks.add(new MetricCalculationTask(getMetricsToCalculate(), ontologyFile, includeDetailedFiles));
 			
 		}
 		return tasks;
@@ -235,7 +206,7 @@ public class Main {
 	 * @param ontologyFiles the ontology files
 	 * @return the metrics to calculate
 	 */
-	private static List<Metric> getMetricsToCalculate(List<File> ontologyFiles){
+	private static List<Metric> getMetricsToCalculate(){
 		LOGGER.log(Level.INFO, "Obtaining metrics to calculate");
 		List<Metric> metrics = new ArrayList<Metric>();
 		metrics.add(new LexicallySuggestLogicallyDefineMetric());

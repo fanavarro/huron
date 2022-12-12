@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 import metrics.Metric;
@@ -97,7 +98,7 @@ public class MetricCalculationTask implements Callable<List<MetricCalculationTas
 	 * @see java.util.concurrent.Callable#call()
 	 */
 	@Override
-	public List<MetricCalculationTaskResult> call() throws Exception {
+	public List<MetricCalculationTaskResult> call() throws OWLOntologyCreationException, IOException  {
 		List<MetricCalculationTaskResult> results = new ArrayList<MetricCalculationTaskResult>();
 		OWLOntologyManager ontologyManager = OWLManager.createConcurrentOWLOntologyManager();
 		LOGGER.log(Level.INFO, String.format("Loading %s", ontologyFile.getName()));
@@ -110,7 +111,12 @@ public class MetricCalculationTask implements Callable<List<MetricCalculationTas
 				String detailedFileName = ontologyFile.getName() + "_" + metric.getName().replace(' ', '_') + ".tsv";
 				metric.openDetailedOutputFile(new File(this.detailedFileFolder, detailedFileName));
 			}
-			double result = metric.calculate();
+			double result = Double.NaN;
+			try {
+				result = metric.calculate();
+			} catch (Exception e) {
+				LOGGER.log(Level.SEVERE, String.format("Error calculating the '%s' metric", metric.getName()), e);
+			}
 			if(this.includeDetailFiles){
 				metric.closeDetailedOutputFile();
 			}
