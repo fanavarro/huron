@@ -42,7 +42,7 @@ public class OntologyUtils {
 	public static Set<OWLAnnotationAssertionAxiom> getOWLAnnotationAssertionAxiom(OWLEntity entity, OWLOntology ontology, boolean includeImports) {
 		Set<OWLAnnotationAssertionAxiom> annotationAssertionAxioms = ontology.annotationAssertionAxioms(entity.getIRI()).collect(Collectors.toSet());
 		if (includeImports) {
-			for (OWLOntology importedOntology : ontology.getImports()) {
+			for (OWLOntology importedOntology : ontology.imports().collect(Collectors.toList())) {
 				Set<OWLAnnotationAssertionAxiom> importedAnnotationAssertionAxioms = importedOntology.annotationAssertionAxioms(entity.getIRI()).collect(Collectors.toSet());
 				annotationAssertionAxioms.addAll(importedAnnotationAssertionAxioms);
 			}
