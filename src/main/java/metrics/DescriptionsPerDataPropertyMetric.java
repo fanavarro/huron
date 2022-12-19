@@ -3,6 +3,7 @@ package metrics;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
@@ -25,7 +26,7 @@ public class DescriptionsPerDataPropertyMetric extends AnnotationsPerEntityAbstr
 		super.writeToDetailedOutputFile("Metric\tData Property\tMetric Value\n");
 		int numberOfDescriptions = 0;
 		int numberOfEntities = 0;
-		for(OWLDataProperty owlDataProperty : super.getOntology().getDataPropertiesInSignature()){
+		for(OWLDataProperty owlDataProperty : super.getOntology().dataPropertiesInSignature().collect(Collectors.toList())){
 			if (OntologyUtils.isObsolete(owlDataProperty, getOntology()) || owlDataProperty.isOWLTopDataProperty()) {
 				continue;
 			}

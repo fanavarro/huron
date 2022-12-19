@@ -3,6 +3,7 @@ package metrics;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
@@ -25,7 +26,7 @@ public class NamesPerClassMetric extends AnnotationsPerEntityAbstractMetric {
 		super.writeToDetailedOutputFile("Metric\tClass\tMetric Value\n");
 		int numberOfNames = 0;
 		int numberOfEntities = 0;
-		for(OWLClass owlClass : super.getOntology().getClassesInSignature()){
+		for(OWLClass owlClass : super.getOntology().classesInSignature().collect(Collectors.toList())){
 			if (OntologyUtils.isObsolete(owlClass, getOntology()) || owlClass.isOWLThing()) {
 				continue;
 			}

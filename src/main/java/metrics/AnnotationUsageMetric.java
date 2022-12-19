@@ -3,6 +3,7 @@ package metrics;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.semanticweb.owlapi.model.AxiomType;
 import org.semanticweb.owlapi.model.IRI;
@@ -46,7 +47,7 @@ public class AnnotationUsageMetric extends Metric {
 		if (getOntology().containsAnnotationPropertyInSignature(annotationIRI)) {
 			OWLAnnotationProperty annotationProperty = getOntology().getOWLOntologyManager().getOWLDataFactory()
 					.getOWLAnnotationProperty(annotationIRI);
-			Set<OWLAxiom> referencingAxioms = getOntology().getReferencingAxioms(annotationProperty);
+			Set<OWLAxiom> referencingAxioms = getOntology().referencingAxioms(annotationProperty).collect(Collectors.toSet());
 			for(OWLAxiom axiom : referencingAxioms){
 				if(axiom.isOfType(AxiomType.ANNOTATION_ASSERTION)){
 					usage++;

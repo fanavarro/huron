@@ -5,6 +5,8 @@ import java.io.IOException;
 
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
+import services.OntologyUtils;
+
 /**
  * The Class NumberOfClassesMetric.
  */
@@ -18,7 +20,7 @@ public class NumberOfClassesMetric extends Metric {
 	 */
 	@Override
 	public double calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
-		return getOntology().getClassesInSignature().size();
+		return getOntology().classesInSignature().filter(owlClass -> (!OntologyUtils.isObsolete(owlClass, getOntology()))).count();
 	}
 
 

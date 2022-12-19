@@ -8,6 +8,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.SetUtils;
 import org.ontoenrich.beans.Label;
@@ -32,12 +33,10 @@ import services.OntologyUtils;
 /**
  * The Class SystematicNamingMetric.
  */
-public class SystematicNamingMetric extends Metric {
+public class SystematicNamingMetric extends OntoenrichMetric {
 	
 	/** The Constant LOGGER. */
 	private final static Logger LOGGER = Logger.getLogger(SystematicNamingMetric.class.getName());
-	
-	private static final float ONTOENRICH_LABEL_COVERAGE_THRESHOLD = 0.1f;
 	
 	/** The Constant METRIC_NAME. */
 	private static final String METRIC_NAME = "Systematic naming";
@@ -69,7 +68,7 @@ public class SystematicNamingMetric extends Metric {
 		reasoner = createReasoner(getOntology());
 
 		// STEP 2: Perform lexical analysis with threshold
-		int numberOfClassesThreshold = this.calculateNumberOfClassesThresholdFromCoverage(ONTOENRICH_LABEL_COVERAGE_THRESHOLD);
+		int numberOfClassesThreshold = this.getNumberOfClassesThreshold();
 		List<LexicalRegularity> lexicalRegularities = lexicalEnvironment.searchAllPatterns(numberOfClassesThreshold /* Minimum Coverage (in labels) */);
 				
 
@@ -85,7 +84,7 @@ public class SystematicNamingMetric extends Metric {
 				if (OntologyUtils.isObsolete(owlClassA, getOntology())) {
 					continue;
 				}
-				Set<OWLClass> subClassesOfA = reasoner.getSubClasses(owlClassA, false).getFlattened();
+				Set<OWLClass> subClassesOfA = reasoner.getSubClasses(owlClassA, false).entities().collect(Collectors.toSet());
 				subClassesOfA.remove(getOntology().getOWLOntologyManager().getOWLDataFactory().getOWLNothing());
 				Set<OWLClass> classeslexicallyRelatedWithA = this.getClassesWithPattern(lexicalRegularity);
 				classeslexicallyRelatedWithA.remove(owlClassA);
@@ -177,14 +176,6 @@ public class SystematicNamingMetric extends Metric {
 			
 		}
 		return classesWithPattern;
-	}
-	
-	private int calculateNumberOfClassesThresholdFromCoverage(float ontoenrichLabelCoverageThreshold) {
-		// TODO: Choose if we calculate this with or without obsolete classes.
-		// Now, we are not taken into account obsolete classes for calculating the coverage in order to have the same results than the previous implementation.
-		//long nClasses = this.getOntology().getClassesInSignature().parallelStream().filter(owlClass -> (!OntologyUtils.isObsolete(owlClass, getOntology()))).count();
-		long nClasses = this.getOntology().getClassesInSignature().size(); 
-		return Math.round((float)(nClasses) * ontoenrichLabelCoverageThreshold);
 	}
 
 	/**

@@ -3,6 +3,7 @@ package metrics;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLDataProperty;
@@ -28,7 +29,7 @@ public class SynonymsPerPropertyMetric extends AnnotationsPerEntityAbstractMetri
 		int numberOfSynonyms = 0;
 		int totalProperties = 0;
 		
-		for(OWLObjectProperty owlObjectProperty : super.getOntology().getObjectPropertiesInSignature()){
+		for(OWLObjectProperty owlObjectProperty : super.getOntology().objectPropertiesInSignature().collect(Collectors.toList())){
 			if(OntologyUtils.isObsolete(owlObjectProperty, getOntology()) || owlObjectProperty.isOWLTopObjectProperty()){
 				continue;
 			}
@@ -38,7 +39,7 @@ public class SynonymsPerPropertyMetric extends AnnotationsPerEntityAbstractMetri
 			numberOfSynonyms = numberOfSynonyms + localNumberOfSynonyms;
 		}
 		
-		for(OWLDataProperty owlDataProperty : super.getOntology().getDataPropertiesInSignature()){
+		for(OWLDataProperty owlDataProperty : super.getOntology().dataPropertiesInSignature().collect(Collectors.toList())){
 			if(OntologyUtils.isObsolete(owlDataProperty, getOntology()) || owlDataProperty.isOWLTopDataProperty()){
 				continue;
 			}
@@ -48,7 +49,7 @@ public class SynonymsPerPropertyMetric extends AnnotationsPerEntityAbstractMetri
 			numberOfSynonyms = numberOfSynonyms + localNumberOfSynonyms;
 		}
 		
-		for(OWLAnnotationProperty owlAnnotationProperty : super.getOntology().getAnnotationPropertiesInSignature()){
+		for(OWLAnnotationProperty owlAnnotationProperty : super.getOntology().annotationPropertiesInSignature().collect(Collectors.toList())){
 			if(OntologyUtils.isObsolete(owlAnnotationProperty, getOntology())){
 				continue;
 			}

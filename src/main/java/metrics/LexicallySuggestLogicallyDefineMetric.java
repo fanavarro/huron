@@ -33,15 +33,13 @@ import services.OntologyUtils;
 /**
  * The Class LexicallySuggestLogicallyDefineMetric.
  */
-public class LexicallySuggestLogicallyDefineMetric extends Metric {
+public class LexicallySuggestLogicallyDefineMetric extends OntoenrichMetric {
 	
 	/** The Constant LOGGER. */
 	private final static Logger LOGGER = Logger.getLogger(LexicallySuggestLogicallyDefineMetric.class.getName());
 	
 	/** The max depth taken into account to check if two classes are axiomatically related */
 	private static final int MAX_DEPTH = 5;
-	
-	private static final float ONTOENRICH_LABEL_COVERAGE_THRESHOLD = 0.1f;
 	
 	/** The Constant NAME. */
 	private static final String NAME = "Lexically suggest logically define";
@@ -79,7 +77,7 @@ public class LexicallySuggestLogicallyDefineMetric extends Metric {
 		reasoner = createReasoner(getOntology());
 
 		// STEP 2: Perform lexical analysis with threshold
-		int numberOfClassesThreshold = this.calculateNumberOfClassesThresholdFromCoverage(ONTOENRICH_LABEL_COVERAGE_THRESHOLD);
+		int numberOfClassesThreshold = this.getNumberOfClassesThreshold();
 		List<LexicalRegularity> lexicalRegularities = lexicalEnvironment.searchAllPatterns(numberOfClassesThreshold /* Minimum Coverage (in labels) */);
 		
 		
@@ -136,13 +134,7 @@ public class LexicallySuggestLogicallyDefineMetric extends Metric {
 
 	}
 
-	private int calculateNumberOfClassesThresholdFromCoverage(float ontoenrichLabelCoverageThreshold) {
-		// TODO: Choose if we calculate this with or without obsolete classes.
-		// Now, we are not taken into account obsolete classes for calculating the coverage in order to have the same results than the previous implementation.
-		//long nClasses = this.getOntology().getClassesInSignature().parallelStream().filter(owlClass -> (!OntologyUtils.isObsolete(owlClass, getOntology()))).count();
-		long nClasses = this.getOntology().getClassesInSignature().size(); 
-		return Math.round((float)(nClasses) * ontoenrichLabelCoverageThreshold);
-	}
+	
 
 	/**
 	 * Gets the average distance to depth.

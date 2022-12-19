@@ -3,6 +3,7 @@ package metrics;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
@@ -25,7 +26,7 @@ public class SynonymsPerObjectPropertyMetric extends AnnotationsPerEntityAbstrac
 		super.writeToDetailedOutputFile("Metric\tObject Property\tMetric Value\n");
 		int numberOfSynonyms = 0;
 		int numberOfEntities = 0;
-		for(OWLObjectProperty objectProperty : super.getOntology().getObjectPropertiesInSignature()){
+		for(OWLObjectProperty objectProperty : super.getOntology().objectPropertiesInSignature().collect(Collectors.toList())){
 			if (OntologyUtils.isObsolete(objectProperty, getOntology()) || objectProperty.isOWLTopObjectProperty()) {
 				continue;
 			}
