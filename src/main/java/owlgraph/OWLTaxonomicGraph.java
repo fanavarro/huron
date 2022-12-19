@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLClass;
@@ -83,7 +84,7 @@ public class OWLTaxonomicGraph extends OWLGraph<IRI> {
 	@Override
 	public Map<IRI, Set<OWLClass>> getAdjacentNodesByEdgeMap(OWLClass node) {
 		Map <IRI, Set<OWLClass>> adjacentClasses = new HashMap<IRI, Set<OWLClass>>();
-		adjacentClasses.put(SUB_CLASS_OF_IRI, getReasoner().getSuperClasses(node, true).getFlattened());
+		adjacentClasses.put(SUB_CLASS_OF_IRI, getReasoner().getSuperClasses(node, true).entities().collect(Collectors.toSet()));
 		return adjacentClasses;
 	}
 	

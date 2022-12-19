@@ -11,8 +11,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.ontoenrich.beans.Label;
-import org.ontoenrich.config.TypeOfDelimiterStrategy;
-import org.ontoenrich.config.TypeOfTargetEntity;
 import org.ontoenrich.core.LexicalEnvironment;
 import org.ontoenrich.core.LexicalRegularity;
 import org.ontoenrich.filters.RemoveNoClasses;
@@ -95,7 +93,7 @@ public class LexicallySuggestLogicallyDefineMetric extends OntoenrichMetric {
 				if (OntologyUtils.isObsolete(owlClassA, getOntology())) {
 					continue;
 				}
-				for (Label l : lexicalRegularity.idLabelsWhereItAppears) {
+				for (Label l : lexicalRegularity.getIdLabelsWhereItAppears()) {
 					if (l.getIdLabel().equals(owlClassA.toStringID())) {
 						continue;
 					}
@@ -109,7 +107,7 @@ public class LexicallySuggestLogicallyDefineMetric extends OntoenrichMetric {
 					} else {
 						localNegativeCases.add(owlClassCi);
 						LOGGER.log(Level.INFO, String.format("%s(%s) not related with %s (%s)",
-								owlClassA.toStringID(), lexicalRegularity.strPattern, owlClassCi.toStringID(), l.getStrLabel()));
+								owlClassA.toStringID(), lexicalRegularity.getStrPattern(), owlClassCi.toStringID(), l.getStrLabel()));
 					}
 				}
 				double localMetricResult = (double) localPositiveCases.size() / (localPositiveCases.size() + localNegativeCases.size());
@@ -119,7 +117,7 @@ public class LexicallySuggestLogicallyDefineMetric extends OntoenrichMetric {
 					double averageDepthLocalNegativeCases = this.getAverageDepth(localNegativeCases);
 					double averageDistanceToLRClassLocalPositiveCases = this.getAverageDistanceToDepth(localPositiveCases, owlClassADepth);
 					double averageDistanceToLRClassLocalNegativeCases = this.getAverageDistanceToDepth(localNegativeCases, owlClassADepth);
-					super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%d\t%s\t%d\t%.3f\t%.3f\t%d\t%.3f\t%.3f\t%.3f\n", this.getName(), owlClassA.toStringID(), owlClassADepth, lexicalRegularity.strPattern, localPositiveCases.size(), averageDepthLocalPositiveCases, averageDistanceToLRClassLocalPositiveCases, localNegativeCases.size(), averageDepthLocalNegativeCases, averageDistanceToLRClassLocalNegativeCases, localMetricResult));
+					super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%d\t%s\t%d\t%.3f\t%.3f\t%d\t%.3f\t%.3f\t%.3f\n", this.getName(), owlClassA.toStringID(), owlClassADepth, lexicalRegularity.getStrPattern(), localPositiveCases.size(), averageDepthLocalPositiveCases, averageDistanceToLRClassLocalPositiveCases, localNegativeCases.size(), averageDepthLocalNegativeCases, averageDistanceToLRClassLocalNegativeCases, localMetricResult));
 				}
 				positiveCasesCount += localPositiveCases.size();
 				negativeCasesCount += localNegativeCases.size();
@@ -214,17 +212,6 @@ public class LexicallySuggestLogicallyDefineMetric extends OntoenrichMetric {
 		return reasoner;
 	}
 	
-	private LexicalEnvironment getLexicalEnvironment() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
-		LexicalEnvironment le = new LexicalEnvironment(
-				TypeOfTargetEntity.CLASS_RDF_LABELS, 
-				false /* Case Sensitive */, 
-				TypeOfDelimiterStrategy.CHARACTER_BLANK,
-				this.getOntology(),
-				null /* discardedStopwordsNodes*/);
-		return le;
-	}
-
-
 	/* (non-Javadoc)
 	 * @see metrics.Metric#getName()
 	 */

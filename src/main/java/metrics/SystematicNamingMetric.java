@@ -12,8 +12,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.SetUtils;
 import org.ontoenrich.beans.Label;
-import org.ontoenrich.config.TypeOfDelimiterStrategy;
-import org.ontoenrich.config.TypeOfTargetEntity;
 import org.ontoenrich.core.LexicalEnvironment;
 import org.ontoenrich.core.LexicalRegularity;
 import org.ontoenrich.filters.RemoveNoClasses;
@@ -104,7 +102,7 @@ public class SystematicNamingMetric extends OntoenrichMetric {
 					double averageDepthLocalNegativeCases = this.getAverageDepth(localNegativeCases);
 					double averageDistanceToLRClassLocalPositiveCases = this.getAverageDistanceToDepth(localPositiveCases, owlClassADepth);
 					double averageDistanceToLRClassLocalNegativeCases = this.getAverageDistanceToDepth(localNegativeCases, owlClassADepth);
-					super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%d\t%s\t%d\t%.3f\t%.3f\t%d\t%.3f\t%.3f\t%.3f\n", this.getName(), owlClassA.toStringID(), owlClassADepth, lexicalRegularity.strPattern, localPositiveCasesCount, averageDepthLocalPositiveCases,averageDistanceToLRClassLocalPositiveCases, localNegativeCasesCount, averageDepthLocalNegativeCases, averageDistanceToLRClassLocalNegativeCases, localMetricResult));
+					super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%d\t%s\t%d\t%.3f\t%.3f\t%d\t%.3f\t%.3f\t%.3f\n", this.getName(), owlClassA.toStringID(), owlClassADepth, lexicalRegularity.getStrPattern(), localPositiveCasesCount, averageDepthLocalPositiveCases,averageDistanceToLRClassLocalPositiveCases, localNegativeCasesCount, averageDepthLocalNegativeCases, averageDistanceToLRClassLocalNegativeCases, localMetricResult));
 				}
 				positiveCasesCount += localPositiveCasesCount;
 				negativeCasesCount += localNegativeCasesCount;
@@ -167,7 +165,7 @@ public class SystematicNamingMetric extends OntoenrichMetric {
 	 */
 	private Set<OWLClass> getClassesWithPattern(LexicalRegularity lexicalRegularity) {
 		Set<OWLClass> classesWithPattern = new HashSet<OWLClass>();
-		for (Label l : lexicalRegularity.idLabelsWhereItAppears) {
+		for (Label l : lexicalRegularity.getIdLabelsWhereItAppears()) {
 			OWLClass classWithPattern = getOntology().getOWLOntologyManager().getOWLDataFactory()
 					.getOWLClass(IRI.create(l.getIdLabel()));
 			if (!OntologyUtils.isObsolete(classWithPattern, getOntology())) {
@@ -217,15 +215,7 @@ public class SystematicNamingMetric extends OntoenrichMetric {
 		return reasoner;
 	}
 	
-	private LexicalEnvironment getLexicalEnvironment() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
-		LexicalEnvironment le = new LexicalEnvironment(
-				TypeOfTargetEntity.CLASS_RDF_LABELS, 
-				false /* Case Sensitive */, 
-				TypeOfDelimiterStrategy.CHARACTER_BLANK,
-				this.getOntology(),
-				null /* discardedStopwordsNodes*/);
-		return le;
-	}
+	
 
 
 	/* (non-Javadoc)

@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.semanticweb.owlapi.model.AxiomType;
 import org.semanticweb.owlapi.model.OWLAxiom;
@@ -138,13 +139,13 @@ public class OWLAxiomaticGraph extends OWLGraph<OWLAxiom>{
 	@Override
 	public Map<OWLAxiom, Set<OWLClass>> getAdjacentNodesByEdgeMap(OWLClass node) {
 		Map<OWLAxiom, Set<OWLClass>> adjacentNodesWithEdges = new HashMap<>();
-		Set<OWLAxiom> axioms = getOntology().getReferencingAxioms(node);
+		Set<OWLAxiom> axioms = getOntology().referencingAxioms(node).collect(Collectors.toSet());
 		for(OWLAxiom axiom : axioms){
 			if(ignoreAxiom(axiom, node)){
 				continue;
 			}
 			adjacentNodesWithEdges.putIfAbsent(axiom, new HashSet<OWLClass>());
-			for(OWLClass adjacentClass : axiom.getClassesInSignature()){
+			for(OWLClass adjacentClass : axiom.classesInSignature().collect(Collectors.toSet())){
 				if(!adjacentClass.equals(node)){
 					//System.out.println(node + "\t" + axiom + "\t" + adjacentClass);
 					adjacentNodesWithEdges.get(axiom).add(adjacentClass);
