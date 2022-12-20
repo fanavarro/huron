@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,6 +25,8 @@ public class MetricCalculationTask implements Callable<List<MetricCalculationTas
 	/** The Constant DETAIL_FILES_FOLDER. */
 	private static final String DETAIL_FILES_FOLDER = "detailed_files";
 	
+	private static final Semaphore MUTEX = new Semaphore(1);
+	
 	/** The Constant LOGGER. */
 	private final static Logger LOGGER = Logger.getLogger(MetricCalculationTask.class.getName());
 	
@@ -41,32 +44,9 @@ public class MetricCalculationTask implements Callable<List<MetricCalculationTas
 	private boolean includeDetailFiles;
 	
 	private File detailedFileFolder;
+	
 
-	/**
-	 * Instantiates a new metric calculation task.
-	 *
-	 * @param metric the metric
-	 * @param ontologyFile the ontology file
-	 * @param parameters the parameters
-	 * @param includeDetailFiles the include detail files
-	 */
-	public MetricCalculationTask(List<Metric> metric, File ontologyFile, boolean includeDetailFiles) {
-		super();
-		this.metrics = metric;
-		this.ontologyFile = ontologyFile;
-		this.includeDetailFiles = includeDetailFiles;
-		this.detailedFileFolder = null;
-		if(this.includeDetailFiles){
-			this.detailedFileFolder = new File(DETAIL_FILES_FOLDER);
-			if(!this.detailedFileFolder.exists() || !this.detailedFileFolder.isDirectory()){
-				try {
-					Files.createDirectories(this.detailedFileFolder.toPath());
-				} catch (IOException e) {
-					LOGGER.log(Level.WARNING, "Error creating folder for detailed files. Ignoring detailed files...", e);
-				}
-			}
-		}
-	}
+	
 	
 	/**
 	 * Instantiates a new metric calculation task.
@@ -93,22 +73,40 @@ public class MetricCalculationTask implements Callable<List<MetricCalculationTas
 			}
 		}
 	}
+	
+	/**
+	 * Instantiates a new metric calculation task.
+	 *
+	 * @param metric the metric
+	 * @param ontologyFile the ontology file
+	 * @param parameters the parameters
+	 * @param includeDetailFiles the include detail files
+	 */
+	public MetricCalculationTask(List<Metric> metrics, File ontologyFile, boolean includeDetailFiles) {
+		this(metrics, ontologyFile, includeDetailFiles, new File(DETAIL_FILES_FOLDER));
+	}
 
 	/* (non-Javadoc)
 	 * @see java.util.concurrent.Callable#call()
 	 */
 	@Override
-	public List<MetricCalculationTaskResult> call() throws OWLOntologyCreationException, IOException  {
+	public List<MetricCalculationTaskResult> call() throws OWLOntologyCreationException, IOException, InterruptedException  {
 		List<MetricCalculationTaskResult> results = new ArrayList<MetricCalculationTaskResult>();
+		
+		/* This call causes concurrent issues... */
+		MUTEX.acquire();
 		OWLOntologyManager ontologyManager = OWLManager.createConcurrentOWLOntologyManager();
+		MUTEX.release();
+
+		
 		LOGGER.log(Level.INFO, String.format("Loading %s", ontologyFile.getName()));
-		ontology = ontologyManager.loadOntologyFromOntologyDocument(ontologyFile);
+		this.ontology = ontologyManager.loadOntologyFromOntologyDocument(ontologyFile);
 		LOGGER.log(Level.INFO, String.format(" %s loaded", ontologyFile.getName()));
 		for (Metric metric : metrics) {
 			LOGGER.log(Level.INFO, String.format("%s for %s\t-Calculating", metric.getName(), ontologyFile.getName()));
-			metric.setOntology(ontology);
+			metric.setOntology(this.ontology);
 			if(this.includeDetailFiles){
-				String detailedFileName = ontologyFile.getName() + "_" + metric.getName().replace(' ', '_') + ".tsv";
+				String detailedFileName = this.ontologyFile.getName() + "_" + metric.getName().replace(' ', '_') + ".tsv";
 				metric.openDetailedOutputFile(new File(this.detailedFileFolder, detailedFileName));
 			}
 			double result = Double.NaN;
