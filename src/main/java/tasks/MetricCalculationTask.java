@@ -6,7 +6,6 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,8 +24,6 @@ public class MetricCalculationTask implements Callable<List<MetricCalculationTas
 	/** The Constant DETAIL_FILES_FOLDER. */
 	private static final String DETAIL_FILES_FOLDER = "detailed_files";
 	
-	private static final Semaphore MUTEX = new Semaphore(1);
-	
 	/** The Constant LOGGER. */
 	private final static Logger LOGGER = Logger.getLogger(MetricCalculationTask.class.getName());
 	
@@ -39,6 +36,8 @@ public class MetricCalculationTask implements Callable<List<MetricCalculationTas
 	/** The ontology. */
 	private OWLOntology ontology;
 	
+	/** The ontology manager */
+	private OWLOntologyManager ontologyManager;
 	
 	/** The include detail files. */
 	private boolean includeDetailFiles;
@@ -59,6 +58,7 @@ public class MetricCalculationTask implements Callable<List<MetricCalculationTas
 	 */
 	public MetricCalculationTask(List<Metric> metrics, File ontologyFile, boolean includeDetailFiles, File detailsFileFolder) {
 		super();
+		this.ontologyManager = OWLManager.createConcurrentOWLOntologyManager();
 		this.metrics = metrics;
 		this.ontologyFile = ontologyFile;
 		this.includeDetailFiles = includeDetailFiles;
@@ -93,14 +93,9 @@ public class MetricCalculationTask implements Callable<List<MetricCalculationTas
 	public List<MetricCalculationTaskResult> call() throws OWLOntologyCreationException, IOException, InterruptedException  {
 		List<MetricCalculationTaskResult> results = new ArrayList<MetricCalculationTaskResult>();
 		
-		/* This call causes concurrent issues... */
-		MUTEX.acquire();
-		OWLOntologyManager ontologyManager = OWLManager.createConcurrentOWLOntologyManager();
-		MUTEX.release();
-
-		
 		LOGGER.log(Level.INFO, String.format("Loading %s", ontologyFile.getName()));
-		this.ontology = ontologyManager.loadOntologyFromOntologyDocument(ontologyFile);
+		this.ontology = this.ontologyManager.loadOntologyFromOntologyDocument(ontologyFile);
+		
 		LOGGER.log(Level.INFO, String.format(" %s loaded", ontologyFile.getName()));
 		for (Metric metric : metrics) {
 			LOGGER.log(Level.INFO, String.format("%s for %s\t-Calculating", metric.getName(), ontologyFile.getName()));
