@@ -3,7 +3,8 @@ Command line java application for ontology metrics calculation.
 
 Particularly, this application is able to compute the following metrics, which are classified in structural accuracy and readability metrics:
 
-- Readability metrics:
+### List of readability metrics
+- Metrics:
     - *Classes with no name*. The ratio of number of classes with no names to all classes in the ontology
     - *Classes with no synonym*. The ratio of number of classes with no synonym to all classes in the ontology
     - *Classes with no description*. The ratio of number of classes with no description to all classes in the ontology
@@ -17,6 +18,33 @@ Particularly, this application is able to compute the following metrics, which a
     - *Annotation properties with no synonym*. The ratio of number of annotation properties with no synonym to all annotation properties in the ontology
     - *Annotation properties with no description*. The ratio of number of annotation properties with no description to all annotation properties in the ontology
 
+### Identified annotations properties for describing labels, synonyms, and descriptions
+- *Name*
+    - http://www.w3.org/2004/02/skos/core#prefLabel
+    - http://www.w3.org/2000/01/rdf-schema#label
+    - http://schema.org/name
+    - http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P108
+    - http://purl.obolibrary.org/obo/IAO_0000589
+    - http://purl.obolibrary.org/obo/IAO_0000111
+    - http://xmlns.com/foaf/0.1/name
+- *Synonym*
+    - http://www.w3.org/2004/02/skos/core#altLabel
+    - http://www.geneontology.org/formats/oboInOwl#hasExactSynonym
+    - http://www.geneontology.org/formats/oboInOwl#hasRelatedSynonym
+    - http://www.geneontology.org/formats/oboInOwl#hasBroadSynonym
+    - http://www.geneontology.org/formats/oboInOwl#hasNarrowSynonym
+    - http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90
+    - http://purl.obolibrary.org/obo/IAO_0000118
+    - http://purl.obolibrary.org/obo/OBI_9991119
+    - http://purl.obolibrary.org/obo/OBI_9991118
+    - http://purl.obolibrary.org/obo/OBI_0001847
+    - http://purl.obolibrary.org/obo/OBI_0001886
+- *Description*
+    - http://purl.obolibrary.org/obo/IAO_0000115
+    - http://www.w3.org/2004/02/skos/core#definition
+    - http://www.w3.org/2000/01/rdf-schema#comment
+    - http://purl.org/dc/elements/1.1/description
+    - http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P97
 
 # Usage
 ## Command
