@@ -1,4 +1,4 @@
-# HUman Readability ONtology (HURON)
+# HURON: HUman Readability ONtologies
 *HURON* is a command line java application for ontology metrics calculation.
 
 Particularly, *HURON* is able to compute the following metrics, which are classified in structural accuracy and readability metrics:
@@ -40,3 +40,7 @@ If you want to test, modify or compile the application from the source code, you
 - [https://hal.archives-ouvertes.fr/hal-03155057/](https://hal.archives-ouvertes.fr/hal-03155057/)
 
 You can download this library from [here](https://semantics.inf.um.es/ontology-metrics-libs/ontoenrich-core-2.0.0-SNAPSHOT.jar).
+
+
+# Online tool
+An online version of HURON is available at [http://semantics.inf.um.es/huron](http://semantics.inf.um.es/huron).
