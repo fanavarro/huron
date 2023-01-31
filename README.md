@@ -1,7 +1,7 @@
-# ontology-metrics
-Command line java application for ontology metrics calculation.
+# HUman Readability ONtology (HURON)
+*HURON* is a command line java application for ontology metrics calculation.
 
-Particularly, this application is able to compute the following metrics, which are classified in structural accuracy and readability metrics:
+Particularly, *HURON* is able to compute the following metrics, which are classified in structural accuracy and readability metrics:
 
 - Structural accuracy metrics:
     - *Lexically suggest logically define (LSLD)*. It computes the degree in which classes whose label is detected as a lexical regularity in the ontology are semantically connected to another classes exhibiting the lexical regularity.
@@ -24,7 +24,7 @@ Particularly, this application is able to compute the following metrics, which a
 
 # Usage
 ## Command
-`java -jar metrics.jar -i <input> -o <output> -t <threads> -v`
+`java -jar huron.jar -i <input> -o <output> -t <threads> -v`
 
 Where
 

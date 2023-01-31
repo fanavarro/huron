@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>es.um.dis.tecnomod</groupId>
-	<artifactId>ontology-metrics</artifactId>
+	<artifactId>huron</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
 	<properties>
@@ -13,6 +13,7 @@
 		<elk.version>0.5.0</elk.version>
 		<commons-collections4.version>4.4</commons-collections4.version>
 		<owlapi.version>5.1.10</owlapi.version>
+		<main.class>es.um.dis.tecnomod.huron.main.Huron</main.class>
 	</properties>
 	<build>
 		<plugins>
@@ -22,6 +23,29 @@
 				<configuration>
 					<release>${maven.compiler.release}</release>
 				</configuration>
+			</plugin>
+			
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>${main.class}</mainClass>
+						</manifest>
+					</archive>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id> <!-- this is used for inheritance merges -->
+						<phase>package</phase> <!-- bind to the packaging phase -->
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
