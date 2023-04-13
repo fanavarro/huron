@@ -37,6 +37,8 @@ import es.um.dis.tecnomod.huron.metrics.NamesPerDataPropertyMetric;
 import es.um.dis.tecnomod.huron.metrics.NamesPerObjectPropertyMetric;
 import es.um.dis.tecnomod.huron.metrics.NamesPerPropertyMetric;
 import es.um.dis.tecnomod.huron.metrics.NumberOfClassesMetric;
+import es.um.dis.tecnomod.huron.metrics.NumberOfLexicalRegularitiesMetric;
+import es.um.dis.tecnomod.huron.metrics.NumberOfLexicalRegularityClassesMetric;
 import es.um.dis.tecnomod.huron.metrics.SynonymsPerAnnotationPropertyMetric;
 import es.um.dis.tecnomod.huron.metrics.SynonymsPerClassMetric;
 import es.um.dis.tecnomod.huron.metrics.SynonymsPerDataPropertyMetric;
@@ -209,6 +211,8 @@ public class Huron {
 	private static List<Metric> getMetricsToCalculate(){
 		LOGGER.log(Level.INFO, "Obtaining metrics to calculate");
 		List<Metric> metrics = new ArrayList<Metric>();
+		metrics.add(new NumberOfLexicalRegularitiesMetric());
+		metrics.add(new NumberOfLexicalRegularityClassesMetric());
 		metrics.add(new LexicallySuggestLogicallyDefineMetric());
 		metrics.add(new SystematicNamingMetric());
 		metrics.add(new NumberOfClassesMetric());
@@ -227,7 +231,7 @@ public class Huron {
 		metrics.add(new DescriptionsPerAnnotationPropertyMetric());
 		metrics.add(new DescriptionsPerDataPropertyMetric());
 		metrics.add(new DescriptionsPerObjectPropertyMetric());
-
+		
 		LOGGER.log(Level.INFO, "Metrics obtained");
 		return metrics;
 	}
