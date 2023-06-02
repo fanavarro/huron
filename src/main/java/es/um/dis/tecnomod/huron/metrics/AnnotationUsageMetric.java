@@ -5,11 +5,17 @@ import java.io.IOException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.NotImplementedException;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
 import org.semanticweb.owlapi.model.AxiomType;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+
+import es.um.dis.tecnomod.huron.dto.MetricResult;
 
 
 /**
@@ -42,7 +48,9 @@ public class AnnotationUsageMetric extends Metric {
 	 * @see metrics.Metric#calculate()
 	 */
 	@Override
-	public double calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
+	public MetricResult calculateAll() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
+		Model rdfModel = ModelFactory.createDefaultModel();
+		Property metricProperty = rdfModel.createProperty(this.getIRI());
 		int usage = 0;
 		if (getOntology().containsAnnotationPropertyInSignature(annotationIRI)) {
 			OWLAnnotationProperty annotationProperty = getOntology().getOWLOntologyManager().getOWLDataFactory()
@@ -53,8 +61,12 @@ public class AnnotationUsageMetric extends Metric {
 					usage++;
 				}
 			}
+			rdfModel.createResource(annotationProperty.getIRI().toString()).addLiteral(metricProperty, usage);
 		}
-		return usage;
+		
+		
+		double metricValue = usage;
+		return new MetricResult(metricValue, rdfModel);
 
 	}
 
@@ -65,5 +77,10 @@ public class AnnotationUsageMetric extends Metric {
 	@Override
 	public String getName() {
 		return String.format("Use of %s", annotationIRI.toString());
+	}
+
+	@Override
+	public String getIRI() {
+		throw new NotImplementedException(String.format("The metric %s does not have any IRI assigned yet.", getName()));
 	}
 }

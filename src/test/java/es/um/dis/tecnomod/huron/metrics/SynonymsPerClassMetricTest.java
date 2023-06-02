@@ -28,7 +28,7 @@ public class SynonymsPerClassMetricTest {
 		OWLOntology ontology = m.loadOntologyFromOntologyDocument(this.getClass().getResourceAsStream("/example1.owl"));
 		Metric metric = new SynonymsPerClassMetric();
 		metric.setOntology(ontology);
-		double res = metric.calculate();
+		double res = metric.calculateValue();
 		
 		assertEquals(0.13, res, 0.01);
 	}

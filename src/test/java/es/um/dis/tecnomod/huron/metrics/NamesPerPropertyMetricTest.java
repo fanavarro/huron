@@ -28,7 +28,7 @@ public class NamesPerPropertyMetricTest {
 		OWLOntology ontology = m.loadOntologyFromOntologyDocument(this.getClass().getResourceAsStream("/example1.owl"));
 		Metric metric = new NamesPerPropertyMetric();
 		metric.setOntology(ontology);
-		double res = metric.calculate();
+		double res = metric.calculateValue();
 		
 		assertEquals(7.0/6.0, res, 0.01);
 	}

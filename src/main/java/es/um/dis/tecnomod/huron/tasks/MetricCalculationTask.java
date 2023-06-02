@@ -106,7 +106,7 @@ public class MetricCalculationTask implements Callable<List<MetricCalculationTas
 			}
 			double result = Double.NaN;
 			try {
-				result = metric.calculate();
+				result = metric.calculateValue();
 			} catch (Exception e) {
 				LOGGER.log(Level.SEVERE, String.format("Error calculating the '%s' metric", metric.getName()), e);
 			}

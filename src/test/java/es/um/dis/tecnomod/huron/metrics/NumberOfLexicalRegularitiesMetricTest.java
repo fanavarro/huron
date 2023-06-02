@@ -24,7 +24,7 @@ public class NumberOfLexicalRegularitiesMetricTest {
 		NumberOfLexicalRegularitiesMetric m1 = new NumberOfLexicalRegularitiesMetric();
 		m1.setOntology(ontology);
 		m1.openDetailedOutputFile(Files.createTempFile("NumberOfLexicalRegularitiesMetricTest", ".tsv").toFile());
-		double res = m1.calculate();
+		double res = m1.calculateValue();
 		m1.closeDetailedOutputFile();
 		assertEquals(3.0, res, 0.01);
 		System.out.println(m1.getName()+ ": " + res);

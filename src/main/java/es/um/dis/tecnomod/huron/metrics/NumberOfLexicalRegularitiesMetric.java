@@ -5,18 +5,27 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
 import org.ontoenrich.beans.Label;
 import org.ontoenrich.core.LexicalEnvironment;
 import org.ontoenrich.core.LexicalRegularity;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
+import es.um.dis.tecnomod.huron.dto.MetricResult;
+import es.um.dis.tecnomod.huron.namespaces.Namespaces;
+
 public class NumberOfLexicalRegularitiesMetric extends OntoenrichMetric {
 	private static final String NAME = "Number of lexical regularities";
 
 	@Override
-	public double calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
+	public MetricResult calculateAll() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
 		/* Write header for detailed output file */
 		super.writeToDetailedOutputFile("Metric\tLexical regularity\tIs class\tClass exhibiting the LR\tLabel of class exhibiting the LR\tMetric Value\n");
+		
+		Model rdfModel = ModelFactory.createDefaultModel();
+		Property metricProperty = rdfModel.createProperty(this.getIRI());
 		
 		// STEP 1: create the lexical environment
 		LexicalEnvironment lexicalEnvironment = this.getLexicalEnvironment();
@@ -38,12 +47,21 @@ public class NumberOfLexicalRegularitiesMetric extends OntoenrichMetric {
 				}
 			}
 		}
-		return lexicalRegularities.size();
+		double metricValue = lexicalRegularities.size();
+		this.getOntology().getOntologyID().getOntologyIRI().ifPresent(ontologyIRI -> {
+			rdfModel.createResource(ontologyIRI.toString()).addLiteral(metricProperty, metricValue);
+		});
+		return new MetricResult(metricValue, rdfModel);
 	}
 
 	@Override
 	public String getName() {
 		return NAME;
+	}
+
+	@Override
+	public String getIRI() {
+		return Namespaces.OQUO_NS + "NumberOfLexicalRegularities";
 	}
 
 }

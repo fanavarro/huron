@@ -14,6 +14,7 @@
 		<commons-collections4.version>4.4</commons-collections4.version>
 		<owlapi.version>5.1.10</owlapi.version>
 		<main.class>es.um.dis.tecnomod.huron.main.Huron</main.class>
+		<jena.version>3.17.0</jena.version>
 	</properties>
 	<build>
 		<plugins>
@@ -24,7 +25,7 @@
 					<release>${maven.compiler.release}</release>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
@@ -56,7 +57,7 @@
 			<artifactId>commons-cli</artifactId>
 			<version>${commons-cli.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>net.sourceforge.owlapi</groupId>
 			<artifactId>owlapi-distribution</artifactId>
@@ -89,6 +90,13 @@
 			<artifactId>commons-collections4</artifactId>
 			<version>${commons-collections4.version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.apache.jena</groupId>
+			<artifactId>apache-jena-libs</artifactId>
+			<type>pom</type>
+			<version>${jena.version}</version>
+		</dependency>
 	</dependencies>
 
 	<profiles>
@@ -102,7 +110,7 @@
 				<maven.compiler.release>13</maven.compiler.release>
 			</properties>
 		</profile>
-		
+
 		<profile>
 			<id>java8</id>
 			<activation>

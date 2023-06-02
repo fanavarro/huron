@@ -12,7 +12,7 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 /**
  * The Class Test_AnnotationUsageMetric.
  */
-public class Test_AnnotationUsageMetric {
+public class AnnotationUsageMetricTest {
 
 	
 	/** The Constant ANNOTATION. */
@@ -32,7 +32,7 @@ public class Test_AnnotationUsageMetric {
 		OWLOntologyManager m = OWLManager.createOWLOntologyManager();
 		OWLOntology ontology = m.loadOntologyFromOntologyDocument(this.getClass().getResourceAsStream("/example1.owl"));
 		m1.setOntology(ontology);
-		double res = m1.calculate();
+		double res = m1.calculateValue();
 		System.out.println(String.format("Usage of %s is %d", ANNOTATION, (int)res));
 	}
 }

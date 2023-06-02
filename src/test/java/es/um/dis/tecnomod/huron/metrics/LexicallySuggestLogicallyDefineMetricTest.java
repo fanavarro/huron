@@ -11,6 +11,8 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
+import es.um.dis.tecnomod.huron.dto.MetricResult;
+
 /**
  * The Class LexicallySuggestLogicallyDefineMetricTest.
  */
@@ -34,7 +36,9 @@ public class LexicallySuggestLogicallyDefineMetricTest {
 		m1.setOntology(ontology);
 
 		// STEP 2: calculate the metric
-		System.out.println("Systematic Naming metric: " + m1.calculate());
+		MetricResult metricResult = m1.calculateAll();
+		System.out.println("Systematic Naming metric: " + metricResult.getMetricValue());
+		metricResult.getRdf().write(System.out, "Turtle");
 
 	}
 	
@@ -56,7 +60,7 @@ public class LexicallySuggestLogicallyDefineMetricTest {
 		m1.setOntology(ontology);
 
 		// STEP 2: calculate the metric
-		double res = m1.calculate();
+		double res = m1.calculateValue();
 		assertEquals(3.0/4.0, res, 0.01);
 		System.out.println("Systematic Naming metric: " + res);
 	}

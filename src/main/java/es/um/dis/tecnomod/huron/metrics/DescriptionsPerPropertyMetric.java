@@ -5,11 +5,16 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
+import es.um.dis.tecnomod.huron.dto.MetricResult;
+import es.um.dis.tecnomod.huron.namespaces.Namespaces;
 import es.um.dis.tecnomod.huron.services.OntologyUtils;
 
 /**
@@ -24,8 +29,10 @@ public class DescriptionsPerPropertyMetric extends AnnotationsPerEntityAbstractM
 	 * @see metrics.Metric#calculate()
 	 */
 	@Override
-	public double calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
+	public MetricResult calculateAll() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
 		super.writeToDetailedOutputFile("Metric\tProperty\tMetric Value\n");
+		Model rdfModel = ModelFactory.createDefaultModel();
+		Property metricProperty = rdfModel.createProperty(this.getIRI());
 		int numberOfDescriptions = 0;
 		int totalProperties = 0;
 		
@@ -34,9 +41,10 @@ public class DescriptionsPerPropertyMetric extends AnnotationsPerEntityAbstractM
 				continue;
 			}
 			totalProperties++;
-			int localNumberOfNames = getNumberOfDescriptions(owlObjectProperty);
-			super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%d\n", this.getName(), owlObjectProperty.toStringID(), localNumberOfNames));
-			numberOfDescriptions = numberOfDescriptions + localNumberOfNames;
+			int localNumberOfDescriptions = getNumberOfDescriptions(owlObjectProperty);
+			super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%d\n", this.getName(), owlObjectProperty.toStringID(), localNumberOfDescriptions));
+			rdfModel.createResource(owlObjectProperty.getIRI().toString()).addLiteral(metricProperty, localNumberOfDescriptions);
+			numberOfDescriptions = numberOfDescriptions + localNumberOfDescriptions;
 		}
 		
 		for(OWLDataProperty owlDataProperty : super.getOntology().dataPropertiesInSignature().collect(Collectors.toList())){
@@ -46,6 +54,7 @@ public class DescriptionsPerPropertyMetric extends AnnotationsPerEntityAbstractM
 			totalProperties++;
 			int localNumberOfDescriptions = getNumberOfDescriptions(owlDataProperty);
 			super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%d\n", this.getName(), owlDataProperty.toStringID(), localNumberOfDescriptions));
+			rdfModel.createResource(owlDataProperty.getIRI().toString()).addLiteral(metricProperty, localNumberOfDescriptions);
 			numberOfDescriptions = numberOfDescriptions + localNumberOfDescriptions;
 		}
 		
@@ -54,11 +63,17 @@ public class DescriptionsPerPropertyMetric extends AnnotationsPerEntityAbstractM
 				continue;
 			}
 			totalProperties++;
-			int localNumberOfdescriptions = getNumberOfDescriptions(owlAnnotationProperty);
-			super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%d\n", this.getName(), owlAnnotationProperty.toStringID(), localNumberOfdescriptions));
-			numberOfDescriptions = numberOfDescriptions + localNumberOfdescriptions;
+			int localNumberOfDescriptions = getNumberOfDescriptions(owlAnnotationProperty);
+			super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%d\n", this.getName(), owlAnnotationProperty.toStringID(), localNumberOfDescriptions));
+			rdfModel.createResource(owlAnnotationProperty.getIRI().toString()).addLiteral(metricProperty, localNumberOfDescriptions);
+			numberOfDescriptions = numberOfDescriptions + localNumberOfDescriptions;
 		}
-		return ((double) (numberOfDescriptions)) / totalProperties;
+		
+		double metricValue = ((double) (numberOfDescriptions)) / totalProperties;
+		this.getOntology().getOntologyID().getOntologyIRI().ifPresent(ontologyIRI -> {
+			rdfModel.createResource(ontologyIRI.toString()).addLiteral(metricProperty, metricValue);
+		});
+		return new MetricResult(metricValue, rdfModel);
 	}
 
 
@@ -68,6 +83,12 @@ public class DescriptionsPerPropertyMetric extends AnnotationsPerEntityAbstractM
 	@Override
 	public String getName() {
 		return METRIC_NAME;
+	}
+
+
+	@Override
+	public String getIRI() {
+		return Namespaces.OQUO_NS + "DescriptionsPerPropertyMetric";
 	}
 
 }

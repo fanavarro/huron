@@ -6,10 +6,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import org.apache.jena.rdf.model.Model;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
+
+import es.um.dis.tecnomod.huron.dto.MetricResult;
 
 
 /**
@@ -28,6 +31,17 @@ public abstract class Metric {
 	
 	/** The print writer. */
 	private PrintWriter printWriter;
+	
+	/**
+	 * Calculate the value of the metric and the RDF with information
+	 * @return
+	 * @throws OWLOntologyCreationException
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @throws Exception
+	 */
+	protected abstract MetricResult calculateAll()
+			throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception;
 
 	/**
 	 * Calculate.
@@ -38,8 +52,22 @@ public abstract class Metric {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws Exception the exception
 	 */
-	public abstract double calculate()
-			throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception;
+	public double calculateValue()
+			throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
+		return this.calculateAll().getMetricValue();
+	}
+	
+	/**
+	 * Calculate the metric and return RDF statements with the metric values and issues found.
+	 * @return Model including RDF statements with the metric values and the issues found.
+	 * @throws Exception 
+	 * @throws IOException 
+	 * @throws FileNotFoundException 
+	 * @throws OWLOntologyCreationException 
+	 */
+	public Model calculateRDF() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
+		return this.calculateAll().getRdf();
+	}
 
 
 	/**
@@ -48,6 +76,13 @@ public abstract class Metric {
 	 * @return the name
 	 */
 	public abstract String getName();
+	
+	
+	/**
+	 * Gets the IRI.
+	 * @return the IRI
+	 */
+	public abstract String getIRI();
 
 	/**
 	 * Load ontology.

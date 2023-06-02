@@ -5,9 +5,14 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
+import es.um.dis.tecnomod.huron.dto.MetricResult;
+import es.um.dis.tecnomod.huron.namespaces.Namespaces;
 import es.um.dis.tecnomod.huron.services.OntologyUtils;
 
 /**
@@ -22,8 +27,10 @@ public class NamesPerObjectPropertyMetric extends AnnotationsPerEntityAbstractMe
 	 * @see metrics.Metric#calculate()
 	 */
 	@Override
-	public double calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
+	public MetricResult calculateAll() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
 		super.writeToDetailedOutputFile("Metric\tObject Property\tMetric Value\n");
+		Model rdfModel = ModelFactory.createDefaultModel();
+		Property metricProperty = rdfModel.createProperty(this.getIRI());
 		int numberOfNames = 0;
 		int numberOfEntities = 0;
 		for(OWLObjectProperty owlObjectProperty : super.getOntology().objectPropertiesInSignature().collect(Collectors.toList())){
@@ -32,10 +39,16 @@ public class NamesPerObjectPropertyMetric extends AnnotationsPerEntityAbstractMe
 			}
 			int localNumberOfNames = getNumberOfNames(owlObjectProperty);
 			super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%d\n", this.getName(), owlObjectProperty.toStringID(), localNumberOfNames));
+			rdfModel.createResource(owlObjectProperty.getIRI().toString()).addLiteral(metricProperty, localNumberOfNames);
 			numberOfNames = numberOfNames + localNumberOfNames;
 			numberOfEntities ++;
 		}
-		return ((double) (numberOfNames)) / numberOfEntities;
+		
+		double metricValue = ((double) (numberOfNames)) / numberOfEntities;
+		this.getOntology().getOntologyID().getOntologyIRI().ifPresent(ontologyIRI -> {
+			rdfModel.createResource(ontologyIRI.toString()).addLiteral(metricProperty, metricValue);
+		});
+		return new MetricResult(metricValue, rdfModel);
 	}
 
 
@@ -48,4 +61,8 @@ public class NamesPerObjectPropertyMetric extends AnnotationsPerEntityAbstractMe
 		return NAME;
 	}
 
+	@Override
+	public String getIRI() {
+		return Namespaces.OQUO_NS + "NamesPerObjectPropertyMetric";
+	}
 }

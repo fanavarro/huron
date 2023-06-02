@@ -37,7 +37,7 @@ public class AnnotationTest {
 		
 		for(Metric metric : metrics){
 			metric.setOntology(ontology);
-			double result = metric.calculate();
+			double result = metric.calculateValue();
 			System.out.println(String.format("%s:\t%.3f", metric.getName(),result));
 		}
 	}

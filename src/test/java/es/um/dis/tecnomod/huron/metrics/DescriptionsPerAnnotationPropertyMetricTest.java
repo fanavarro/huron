@@ -10,26 +10,22 @@ import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
-/**
- * The Class NamesPerClassMetricTest.
- */
-public class NamesPerClassMetricTest {
+import es.um.dis.tecnomod.huron.dto.MetricResult;
 
-	/**
-	 * Test calculate.
-	 *
-	 * @throws FileNotFoundException the file not found exception
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws Exception the exception
-	 */
+public class DescriptionsPerAnnotationPropertyMetricTest {
+
 	@Test
-	public void testCalculate() throws FileNotFoundException, IOException, Exception {
+	public void test() throws FileNotFoundException, IOException, Exception {
 		OWLOntologyManager m = OWLManager.createOWLOntologyManager();
 		OWLOntology ontology = m.loadOntologyFromOntologyDocument(this.getClass().getResourceAsStream("/example1.owl"));
-		Metric metric = new NamesPerClassMetric();
+		Metric metric = new DescriptionsPerAnnotationPropertyMetric();
 		metric.setOntology(ontology);
-		double res = metric.calculateValue();
-		assertEquals(2.0, res, 0.01);
+		MetricResult metricResult = metric.calculateAll();
+		
+
+		assertEquals(0.5, metricResult.getMetricValue(), 0.01);
+		metricResult.getRdf().write(System.out, "Turtle");
+		
 	}
 
 }

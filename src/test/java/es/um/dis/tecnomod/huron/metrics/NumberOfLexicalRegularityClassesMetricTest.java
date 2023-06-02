@@ -23,7 +23,7 @@ public class NumberOfLexicalRegularityClassesMetricTest {
 		m1.setOntology(ontology);
 		m1.openDetailedOutputFile(Files.createTempFile("NumberOfLexicalRegularityClassesMetricTest", ".tsv").toFile());
 		// STEP 2: calculate the metric
-		double res = m1.calculate();
+		double res = m1.calculateValue();
 		m1.closeDetailedOutputFile();
 		assertEquals(2.0, res, 0.01);
 		System.out.println(m1.getName()+ ": " + res);
