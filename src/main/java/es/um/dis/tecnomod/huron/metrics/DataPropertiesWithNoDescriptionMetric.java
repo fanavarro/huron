@@ -21,7 +21,7 @@ public class DataPropertiesWithNoDescriptionMetric extends AnnotationsPerEntityA
 	private static final String METRIC_NAME = "DataProperties with no description";
 	
 	@Override
-	public MetricResult calculateAll() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
+	public MetricResult calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
 		super.writeToDetailedOutputFile("Metric\tDataProperty\tWithNoDescription\n");
 		Model rdfModel = ModelFactory.createDefaultModel();
 		Property metricProperty = rdfModel.createProperty(this.getIRI());

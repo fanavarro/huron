@@ -1,7 +1,11 @@
 package es.um.dis.tecnomod.huron.tasks;
 
 import java.io.Serializable;
+import java.util.Objects;
 
+import org.apache.jena.rdf.model.Model;
+
+// TODO: Auto-generated Javadoc
 /**
  * The Class MetricCalculationTaskResult.
  */
@@ -19,20 +23,27 @@ public class MetricCalculationTaskResult implements Serializable{
 	/** The owl file. */
 	private String owlFile;
 	
+	/**  The metric result in RDF statements. */
+	private Model rdf;
+	
+	
 	/**
 	 * Instantiates a new metric calculation task result.
 	 *
 	 * @param metricName the metric name
 	 * @param result the result
 	 * @param owlFile the owl file
+	 * @param rdf the rdf
 	 */
-	public MetricCalculationTaskResult(String metricName, double result, String owlFile) {
+	public MetricCalculationTaskResult(String metricName, double result, String owlFile, Model rdf) {
 		super();
 		this.metricName = metricName;
 		this.result = result;
 		this.owlFile = owlFile;
+		this.rdf = rdf;
 	}
-	
+
+
 	/**
 	 * Gets the metric name.
 	 *
@@ -86,24 +97,40 @@ public class MetricCalculationTaskResult implements Serializable{
 	public void setOwlFile(String owlFile) {
 		this.owlFile = owlFile;
 	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
+
+	/**
+	 * Gets the rdf.
+	 *
+	 * @return the rdf
+	 */
+	public Model getRdf() {
+		return rdf;
+	}
+
+	/**
+	 * Sets the rdf.
+	 *
+	 * @param rdf the new rdf
+	 */
+	public void setRdf(Model rdf) {
+		this.rdf = rdf;
+	}
+
+	/**
+	 * Hash code.
+	 *
+	 * @return the int
 	 */
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((metricName == null) ? 0 : metricName.hashCode());
-		result = prime * result + ((owlFile == null) ? 0 : owlFile.hashCode());
-		long temp;
-		temp = Double.doubleToLongBits(this.result);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		return result;
+		return Objects.hash(metricName, owlFile, rdf, result);
 	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
+
+	/**
+	 * Equals.
+	 *
+	 * @param obj the obj
+	 * @return true, if successful
 	 */
 	@Override
 	public boolean equals(Object obj) {
@@ -114,23 +141,15 @@ public class MetricCalculationTaskResult implements Serializable{
 		if (getClass() != obj.getClass())
 			return false;
 		MetricCalculationTaskResult other = (MetricCalculationTaskResult) obj;
-		if (metricName == null) {
-			if (other.metricName != null)
-				return false;
-		} else if (!metricName.equals(other.metricName))
-			return false;
-		if (owlFile == null) {
-			if (other.owlFile != null)
-				return false;
-		} else if (!owlFile.equals(other.owlFile))
-			return false;
-		if (Double.doubleToLongBits(result) != Double.doubleToLongBits(other.result))
-			return false;
-		return true;
+		return Objects.equals(metricName, other.metricName) && Objects.equals(owlFile, other.owlFile)
+				&& Objects.equals(rdf, other.rdf)
+				&& Double.doubleToLongBits(result) == Double.doubleToLongBits(other.result);
 	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
+
+	/**
+	 * To string.
+	 *
+	 * @return the string
 	 */
 	@Override
 	public String toString() {
@@ -141,9 +160,13 @@ public class MetricCalculationTaskResult implements Serializable{
 		builder.append(result);
 		builder.append(", owlFile=");
 		builder.append(owlFile);
+		builder.append(", rdf=");
+		builder.append(rdf);
 		builder.append("]");
 		return builder.toString();
 	}
+	
+	
 
 	
 }

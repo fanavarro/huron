@@ -62,7 +62,7 @@ public class SystematicNamingMetric extends OntoenrichMetric {
 	 * @see metrics.Metric#calculate()
 	 */
 	@Override
-	public MetricResult calculateAll() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
+	public MetricResult calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
 		/* Write header for detailed output file */
 		super.writeToDetailedOutputFile("Metric\tClass\tClass depth\tLR\tPositive Cases\tPositive cases average depth\tPositive cases average distance to LR class\tNegative Cases\tNegative cases average depth\tNegative cases average distance to LR class\tMetric Value\n" );
 		Model rdfModel = ModelFactory.createDefaultModel();

@@ -40,7 +40,7 @@ public abstract class Metric {
 	 * @throws IOException
 	 * @throws Exception
 	 */
-	protected abstract MetricResult calculateAll()
+	public abstract MetricResult calculate()
 			throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception;
 
 	/**
@@ -54,7 +54,7 @@ public abstract class Metric {
 	 */
 	public double calculateValue()
 			throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
-		return this.calculateAll().getMetricValue();
+		return this.calculate().getMetricValue();
 	}
 	
 	/**
@@ -66,7 +66,7 @@ public abstract class Metric {
 	 * @throws OWLOntologyCreationException 
 	 */
 	public Model calculateRDF() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
-		return this.calculateAll().getRdf();
+		return this.calculate().getRdf();
 	}
 
 

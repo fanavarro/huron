@@ -38,7 +38,7 @@ public class SystematicNamingMetricTest {
 		m1.setOntology(ontology);
 
 		// STEP 2: calculate the metric
-		MetricResult metricResult = m1.calculateAll();
+		MetricResult metricResult = m1.calculate();
 		System.out.println("Systematic Naming metric: " + metricResult.getMetricValue());
 		metricResult.getRdf().write(System.out, "Turtle");
 

@@ -22,7 +22,7 @@ public class ClassesWithNoSynonymMetric extends AnnotationsPerEntityAbstractMetr
 	private static final String METRIC_NAME = "Classes with no synonym";
 	
 	@Override
-	public MetricResult calculateAll() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
+	public MetricResult calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
 		super.writeToDetailedOutputFile("Metric\tClass\tWithNoSynonym\n");
 		Model rdfModel = ModelFactory.createDefaultModel();
 		Property metricProperty = rdfModel.createProperty(this.getIRI());

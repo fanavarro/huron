@@ -21,7 +21,7 @@ public class ObjectPropertiesWithNoSynonymMetric extends AnnotationsPerEntityAbs
 	private static final String METRIC_NAME = "ObjectProperties with no synonym";
 	
 	@Override
-	public MetricResult calculateAll() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
+	public MetricResult calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
 		super.writeToDetailedOutputFile("Metric\tObjectProperty\tWithNoSynonym\n");
 		Model rdfModel = ModelFactory.createDefaultModel();
 		Property metricProperty = rdfModel.createProperty(this.getIRI());

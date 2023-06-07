@@ -33,7 +33,7 @@ public class ClassesWithNoNameMetric extends AnnotationsPerEntityAbstractMetric 
 	 * @return The metric ratio
 	 */
 	@Override
-	public MetricResult calculateAll() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
+	public MetricResult calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
 		super.writeToDetailedOutputFile("Metric\tClass\tWithNoName\n");
 		Model rdfModel = ModelFactory.createDefaultModel();
 		Property metricProperty = rdfModel.createProperty(this.getIRI());

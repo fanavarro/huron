@@ -20,7 +20,7 @@ public class ClassesWithNoDescriptionMetricTest {
 		OWLOntology ontology = m.loadOntologyFromOntologyDocument(this.getClass().getResourceAsStream("/example1.owl"));
 		Metric metric = new ClassesWithNoDescriptionMetric();
 		metric.setOntology(ontology);
-		MetricResult metricResult = metric.calculateAll();
+		MetricResult metricResult = metric.calculate();
 		
 
 		assertEquals(1.0, metricResult.getMetricValue(), 0.01);

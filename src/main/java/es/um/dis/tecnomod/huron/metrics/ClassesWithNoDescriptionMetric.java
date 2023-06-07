@@ -22,7 +22,7 @@ public class ClassesWithNoDescriptionMetric extends AnnotationsPerEntityAbstract
 	private static final String METRIC_NAME = "Classes with no description";
 	
 	@Override
-	public MetricResult calculateAll() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
+	public MetricResult calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
 		super.writeToDetailedOutputFile("Metric\tClass\tWithNoDescription\n");
 		Model rdfModel = ModelFactory.createDefaultModel();
 		Property metricProperty = rdfModel.createProperty(this.getIRI());

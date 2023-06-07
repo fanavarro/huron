@@ -20,7 +20,7 @@ public class AnnotationPropertiesWithNoNameMetricTest {
 		OWLOntology ontology = m.loadOntologyFromOntologyDocument(this.getClass().getResourceAsStream("/example1.owl"));
 		Metric metric = new AnnotationPropertiesWithNoNameMetric();
 		metric.setOntology(ontology);
-		MetricResult metricResult = metric.calculateAll();
+		MetricResult metricResult = metric.calculate();
 		
 
 		assertEquals(0.0, metricResult.getMetricValue(), 0.01);

@@ -21,7 +21,7 @@ public class NumberOfLexicalRegularityClassesMetric extends OntoenrichMetric {
 	private static final String NAME = "Number of lexical regularities classes";
 
 	@Override
-	public MetricResult calculateAll() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
+	public MetricResult calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
 		/* Write header for detailed output file */
 		super.writeToDetailedOutputFile("Metric\tLexical regularity\tLexical regularity class\tIs class\tClass exhibiting the LR\tLabel of class exhibiting the LR\tMetric Value\n");
 		

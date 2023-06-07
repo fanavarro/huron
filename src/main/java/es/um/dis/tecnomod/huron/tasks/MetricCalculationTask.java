@@ -9,11 +9,13 @@ import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.jena.rdf.model.Model;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
+import es.um.dis.tecnomod.huron.dto.MetricResult;
 import es.um.dis.tecnomod.huron.metrics.Metric;
 
 /**
@@ -105,15 +107,18 @@ public class MetricCalculationTask implements Callable<List<MetricCalculationTas
 				metric.openDetailedOutputFile(new File(this.detailedFileFolder, detailedFileName));
 			}
 			double result = Double.NaN;
+			Model rdf = null;
 			try {
-				result = metric.calculateValue();
+				MetricResult metricResult = metric.calculate();
+				result = metricResult.getMetricValue();
+				rdf = metricResult.getRdf();
 			} catch (Exception e) {
 				LOGGER.log(Level.SEVERE, String.format("Error calculating the '%s' metric", metric.getName()), e);
 			}
 			if(this.includeDetailFiles){
 				metric.closeDetailedOutputFile();
 			}
-			results.add(new MetricCalculationTaskResult(metric.getName(), result, ontologyFile.getName()));
+			results.add(new MetricCalculationTaskResult(metric.getName(), result, ontologyFile.getName(), rdf));
 			LOGGER.log(Level.INFO, String.format("%s for %s\t-Done", metric.getName(), ontologyFile.getName()));
 		}
 		

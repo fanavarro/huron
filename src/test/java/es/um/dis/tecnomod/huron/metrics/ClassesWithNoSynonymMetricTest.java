@@ -20,7 +20,7 @@ public class ClassesWithNoSynonymMetricTest {
 		OWLOntology ontology = m.loadOntologyFromOntologyDocument(this.getClass().getResourceAsStream("/example1.owl"));
 		Metric metric = new ClassesWithNoSynonymMetric();
 		metric.setOntology(ontology);
-		MetricResult metricResult = metric.calculateAll();
+		MetricResult metricResult = metric.calculate();
 		
 
 		assertEquals(13.0/15.0, metricResult.getMetricValue(), 0.01);

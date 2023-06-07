@@ -1,12 +1,16 @@
 package es.um.dis.tecnomod.huron.services;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
+import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.search.EntitySearcher;
 import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
 
 import uk.ac.manchester.cs.owl.owlapi.OWLLiteralImplBoolean;
@@ -48,5 +52,22 @@ public class OntologyUtils {
 			}
 		}
 		return annotationAssertionAxioms;
+	}
+	
+	public static List<String> getAnnotationValues(OWLEntity entity, OWLAnnotationProperty annotationProperty, OWLOntology ontology, boolean includeImports) {
+		return getAnnotationValues(entity.getIRI(), annotationProperty.getIRI(), ontology, includeImports);
+	}
+	
+	public static List<String> getAnnotationValues(IRI entityIRI, IRI annotationPropertyIRI, OWLOntology ontology, boolean includeImports) {
+		List<String> annotationValues = new ArrayList<String>();
+		if (ontology.containsAnnotationPropertyInSignature(annotationPropertyIRI)) {
+			OWLAnnotationProperty annotationProperty = ontology.getOWLOntologyManager().getOWLDataFactory().getOWLAnnotationProperty(annotationPropertyIRI);
+			EntitySearcher.getAnnotationObjects(entityIRI, ontology, annotationProperty).forEach(annotation -> {
+				annotation.getValue().asLiteral().ifPresent(literal -> {annotationValues.add(literal.getLiteral());
+				});
+			});
+		}
+		
+		return annotationValues;
 	}
 }

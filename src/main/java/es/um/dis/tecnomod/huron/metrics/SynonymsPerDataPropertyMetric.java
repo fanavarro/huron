@@ -27,7 +27,7 @@ public class SynonymsPerDataPropertyMetric extends AnnotationsPerEntityAbstractM
 	 * @see metrics.Metric#calculate()
 	 */
 	@Override
-	public MetricResult calculateAll() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
+	public MetricResult calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
 		super.writeToDetailedOutputFile("Metric\tData Property\tMetric Value\n");
 		Model rdfModel = ModelFactory.createDefaultModel();
 		Property metricProperty = rdfModel.createProperty(this.getIRI());
