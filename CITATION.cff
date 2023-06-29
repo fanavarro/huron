@@ -1,0 +1,35 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: HURON
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Francisco
+    family-names: Abad-Navarro
+    email: francisco.abad@um.es
+    affiliation: University of Murcia
+    orcid: 'https://orcid.org/0000-0003-0201-3115'
+  - given-names: Jesualdo Tomás
+    family-names: Fernández-Breis
+    email: jfernand@um.es
+    affiliation: University of Murcia
+    orcid: 'https://orcid.org/0000-0002-7558-2880'
+  - given-names: Catalina
+    family-names: Martínez-Costa
+    email: cmartinezcosta@um.es
+    affiliation: University of Murcia
+    orcid: 'https://orcid.org/0000-0003-1857-1744'
+repository-code: 'https://github.com/fanavarro/huron'
+url: 'http://semantics.inf.um.es/huron/'
+abstract: >-
+  HURON is a command line java application for ontology
+  metrics calculation.
+keywords:
+  - ontology
+  - quality assurance
+  - semantic web
+license: GPL-3.0
