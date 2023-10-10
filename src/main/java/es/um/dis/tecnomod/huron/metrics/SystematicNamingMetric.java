@@ -2,6 +2,7 @@ package es.um.dis.tecnomod.huron.metrics;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -13,7 +14,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections4.SetUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
 import org.ontoenrich.beans.Label;
 import org.ontoenrich.core.LexicalEnvironment;
 import org.ontoenrich.core.LexicalRegularity;
@@ -29,6 +29,7 @@ import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
 import es.um.dis.tecnomod.huron.namespaces.Namespaces;
+import es.um.dis.tecnomod.huron.rdf_builder.RDFConstants;
 import es.um.dis.tecnomod.huron.services.OntologyGraphService;
 import es.um.dis.tecnomod.huron.services.OntologyGraphServiceImpl;
 import es.um.dis.tecnomod.huron.services.OntologyUtils;
@@ -65,8 +66,8 @@ public class SystematicNamingMetric extends OntoenrichMetric {
 	public MetricResult calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
 		/* Write header for detailed output file */
 		super.writeToDetailedOutputFile("Metric\tClass\tClass depth\tLR\tPositive Cases\tPositive cases average depth\tPositive cases average distance to LR class\tNegative Cases\tNegative cases average depth\tNegative cases average distance to LR class\tMetric Value\n" );
+		Calendar timestamp = Calendar.getInstance();
 		Model rdfModel = ModelFactory.createDefaultModel();
-		Property metricProperty = rdfModel.createProperty(this.getIRI());
 		
 		// STEP 1: create the lexical environment
 		LexicalEnvironment lexicalEnvironment = this.getLexicalEnvironment();
@@ -104,7 +105,7 @@ public class SystematicNamingMetric extends OntoenrichMetric {
 				int localNegativeCasesCount = localNegativeCases.size();
 				
 				double localMetricResult = (double) localPositiveCasesCount / (localPositiveCasesCount + localNegativeCasesCount);
-				rdfModel.createResource(owlClassA.getIRI().toString()).addLiteral(metricProperty, localMetricResult);
+				RDFUtils.createObservation(rdfModel, owlClassA.getIRI().toString(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Double(localMetricResult), timestamp);
 				if(super.isOpenDetailedOutputFile()){
 					if (owlClassADepth == -1){
 						owlClassADepth = this.ontologyGraphService.getClassDepth(this.reasoner, owlClassA);
@@ -120,7 +121,8 @@ public class SystematicNamingMetric extends OntoenrichMetric {
 				for(OWLClass c : localNegativeCases){
 					String cLabel = lexicalEnvironment.getLabelById(c.getIRI().toString()).getStrLabel();
 					LOGGER.log(Level.INFO, String.format("The class %s is subclass of %s but there are no lexical regularities in common.", c.toStringID(), owlClassA.toStringID()));
-					RDFUtils.createIssue(rdfModel, metricProperty, owlClassA, String.format("Class %s ('%s') is subclass of %s ('%s') but there are no lexical regularities in common.", c.toStringID(), cLabel, owlClassA.toStringID(), classALabel));
+					// TODO: create issue here?
+					// RDFUtils.createIssue(rdfModel, metricProperty, owlClassA, String.format("Class %s ('%s') is subclass of %s ('%s') but there are no lexical regularities in common.", c.toStringID(), cLabel, owlClassA.toStringID(), classALabel));
 				}
 			}
 		}
@@ -129,7 +131,7 @@ public class SystematicNamingMetric extends OntoenrichMetric {
 		// STEP 5: return the calculated value
 		double metricValue = (double) positiveCasesCount / (positiveCasesCount + negativeCasesCount);
 		this.getOntology().getOntologyID().getOntologyIRI().ifPresent(ontologyIRI -> {
-			rdfModel.createResource(ontologyIRI.toString()).addLiteral(metricProperty, metricValue);
+			RDFUtils.createObservation(rdfModel, ontologyIRI.toString(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Double(metricValue), timestamp);
 		});
 		return new MetricResult(metricValue, rdfModel);
 
@@ -246,6 +248,11 @@ public class SystematicNamingMetric extends OntoenrichMetric {
 	@Override
 	public String getIRI() {
 		return Namespaces.OQUO_NS + "SystematicNaming";
+	}
+
+	@Override
+	public String getObservablePropertyIRI() {
+		return RDFConstants.SYSTEMATIC_NAMING_PRINCIPLE;
 	}
 
 }

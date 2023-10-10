@@ -83,4 +83,10 @@ public class AnnotationUsageMetric extends Metric {
 	public String getIRI() {
 		throw new NotImplementedException(String.format("The metric %s does not have any IRI assigned yet.", getName()));
 	}
+
+	@Override
+	public String getObservablePropertyIRI() {
+		throw new NotImplementedException(String.format("The metric %s does not have any IRI assigned yet.", getName()));
+
+	}
 }

@@ -2,12 +2,12 @@ package es.um.dis.tecnomod.huron.metrics;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
 import org.ontoenrich.beans.Label;
 import org.ontoenrich.core.LexicalEnvironment;
 import org.ontoenrich.core.LexicalRegularity;
@@ -16,6 +16,8 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
 import es.um.dis.tecnomod.huron.namespaces.Namespaces;
+import es.um.dis.tecnomod.huron.rdf_builder.RDFConstants;
+import es.um.dis.tecnomod.huron.services.RDFUtils;
 
 public class NumberOfLexicalRegularityClassesMetric extends OntoenrichMetric {
 	private static final String NAME = "Number of lexical regularities classes";
@@ -24,9 +26,9 @@ public class NumberOfLexicalRegularityClassesMetric extends OntoenrichMetric {
 	public MetricResult calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
 		/* Write header for detailed output file */
 		super.writeToDetailedOutputFile("Metric\tLexical regularity\tLexical regularity class\tIs class\tClass exhibiting the LR\tLabel of class exhibiting the LR\tMetric Value\n");
+		Calendar timestamp = Calendar.getInstance();
 		
 		Model rdfModel = ModelFactory.createDefaultModel();
-		Property metricProperty = rdfModel.createProperty(this.getIRI());
 		
 		// STEP 1: create the lexical environment
 		LexicalEnvironment lexicalEnvironment = this.getLexicalEnvironment();
@@ -47,7 +49,7 @@ public class NumberOfLexicalRegularityClassesMetric extends OntoenrichMetric {
 						.filter(x -> (x.getStrLabel().equalsIgnoreCase(lexicalRegularity.getStrPattern())))
 						.findFirst().orElse(new Label("",""))
 						.getIdLabel();
-				rdfModel.createResource(lrClass).addLiteral(metricProperty, true);
+				RDFUtils.createObservation(rdfModel, lrClass, getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Boolean(true), timestamp);
 				boolean isLRClass = lexicalRegularity.getIsAClass();
 				if(super.isOpenDetailedOutputFile()){
 					for (Label label : lexicalRegularity.getIdLabelsWhereItAppears()) {
@@ -62,7 +64,7 @@ public class NumberOfLexicalRegularityClassesMetric extends OntoenrichMetric {
 		
 		double metricValue = lexicalRegularities.size();
 		this.getOntology().getOntologyID().getOntologyIRI().ifPresent(ontologyIRI -> {
-			rdfModel.createResource(ontologyIRI.toString()).addLiteral(metricProperty, metricValue);
+			RDFUtils.createObservation(rdfModel, ontologyIRI.toString(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Double(metricValue), timestamp);
 		});
 		return new MetricResult(metricValue, rdfModel);
 	}
@@ -75,6 +77,11 @@ public class NumberOfLexicalRegularityClassesMetric extends OntoenrichMetric {
 	@Override
 	public String getIRI() {
 		return Namespaces.OQUO_NS + "NumberOfLexicalRegularityClasses";
+	}
+
+	@Override
+	public String getObservablePropertyIRI() {
+		return RDFConstants.NUMBER_OF_LR_CLASSES;
 	}
 
 }

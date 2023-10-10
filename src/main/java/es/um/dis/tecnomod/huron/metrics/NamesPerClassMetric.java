@@ -2,18 +2,20 @@ package es.um.dis.tecnomod.huron.metrics;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
 import es.um.dis.tecnomod.huron.namespaces.Namespaces;
+import es.um.dis.tecnomod.huron.rdf_builder.RDFConstants;
 import es.um.dis.tecnomod.huron.services.OntologyUtils;
+import es.um.dis.tecnomod.huron.services.RDFUtils;
 
 /**
  * The Class NamesPerClassMetric.
@@ -29,8 +31,9 @@ public class NamesPerClassMetric extends AnnotationsPerEntityAbstractMetric {
 	@Override
 	public MetricResult calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
 		super.writeToDetailedOutputFile("Metric\tClass\tMetric Value\n");
+		Calendar timestamp = Calendar.getInstance();
+		
 		Model rdfModel = ModelFactory.createDefaultModel();
-		Property metricProperty = rdfModel.createProperty(this.getIRI());
 		int numberOfNames = 0;
 		int numberOfEntities = 0;
 		for(OWLClass owlClass : super.getOntology().classesInSignature().collect(Collectors.toList())){
@@ -39,14 +42,14 @@ public class NamesPerClassMetric extends AnnotationsPerEntityAbstractMetric {
 			}
 			int localNumberOfNames = getNumberOfNames(owlClass);
 			super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%d\n", this.getName(), owlClass.toStringID(), localNumberOfNames));
-			rdfModel.createResource(owlClass.getIRI().toString()).addLiteral(metricProperty, localNumberOfNames);
+			RDFUtils.createObservation(rdfModel, owlClass.toStringID(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Integer(localNumberOfNames), timestamp);
 			numberOfNames = numberOfNames + localNumberOfNames;
 			numberOfEntities ++;
 		}
 		
 		double metricValue = ((double) (numberOfNames)) / numberOfEntities;
 		this.getOntology().getOntologyID().getOntologyIRI().ifPresent(ontologyIRI -> {
-			rdfModel.createResource(ontologyIRI.toString()).addLiteral(metricProperty, metricValue);
+			RDFUtils.createObservation(rdfModel, ontologyIRI.toString(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Double(metricValue), timestamp);
 		});
 		return new MetricResult(metricValue, rdfModel);
 	}
@@ -63,5 +66,17 @@ public class NamesPerClassMetric extends AnnotationsPerEntityAbstractMetric {
 	@Override
 	public String getIRI() {
 		return Namespaces.OQUO_NS + "NamesPerClassMetric";
+	}
+	
+	public String getObservablePropertyIRI() {
+		return RDFConstants.NAMES;
+	}
+	
+	public String getInstrumentIRI() {
+		return RDFConstants.HURON;
+	}
+	
+	public String getUnitOfMeasureIRI() {
+		return null;
 	}
 }

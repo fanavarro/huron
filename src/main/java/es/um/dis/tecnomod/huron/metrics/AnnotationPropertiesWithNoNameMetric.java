@@ -2,6 +2,7 @@ package es.um.dis.tecnomod.huron.metrics;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
@@ -13,6 +14,7 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
 import es.um.dis.tecnomod.huron.namespaces.Namespaces;
+import es.um.dis.tecnomod.huron.rdf_builder.RDFConstants;
 import es.um.dis.tecnomod.huron.services.RDFUtils;
 
 
@@ -24,6 +26,7 @@ public class AnnotationPropertiesWithNoNameMetric extends AnnotationsPerEntityAb
 	@Override
 	public MetricResult calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
 		super.writeToDetailedOutputFile("Metric\tAnnotationProperty\tWithNoName\n");
+		Calendar timestamp = Calendar.getInstance();
 		Model rdfModel = ModelFactory.createDefaultModel();
 		Property metricProperty = rdfModel.createProperty(this.getIRI());
 		int numberOfAnnotationPropertiesWithNoName = 0;
@@ -32,18 +35,21 @@ public class AnnotationPropertiesWithNoNameMetric extends AnnotationsPerEntityAb
 			int localNumberOfNames = getNumberOfNames(owlAnnotationProperty);
 			if (localNumberOfNames == 0) {
 				super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%b\n", this.getName(), owlAnnotationProperty.toStringID(), true));
-				rdfModel.createResource(owlAnnotationProperty.getIRI().toString()).addLiteral(metricProperty, true);
-				RDFUtils.createIssue(rdfModel, metricProperty, owlAnnotationProperty, String.format("The entity %s does not have any name.", owlAnnotationProperty.getIRI().toQuotedString()));
+				RDFUtils.createObservation(rdfModel, owlAnnotationProperty.getIRI().toString(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Boolean(true), timestamp);
+
 				numberOfAnnotationPropertiesWithNoName++;
 			}else {
 				super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%b\n", this.getName(), owlAnnotationProperty.toStringID(), false));
 				rdfModel.createResource(owlAnnotationProperty.getIRI().toString()).addLiteral(metricProperty, false);
+				RDFUtils.createObservation(rdfModel, owlAnnotationProperty.getIRI().toString(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Boolean(false), timestamp);
+
 			}
 			numberOfEntities ++;
 		}
 		double metricValue = ((double) (numberOfAnnotationPropertiesWithNoName)) / numberOfEntities;
 		this.getOntology().getOntologyID().getOntologyIRI().ifPresent(ontologyIRI -> {
-			rdfModel.createResource(ontologyIRI.toString()).addLiteral(metricProperty, metricValue);
+			RDFUtils.createObservation(rdfModel, ontologyIRI.toString(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Double(metricValue), timestamp);
+
 		});
 		return new MetricResult(metricValue, rdfModel);		
 	}
@@ -58,5 +64,11 @@ public class AnnotationPropertiesWithNoNameMetric extends AnnotationsPerEntityAb
 	@Override
 	public String getIRI() {
 		return Namespaces.OQUO_NS + "AnnotationPropertiesWithNoNameMetric";
+	}
+
+
+	@Override
+	public String getObservablePropertyIRI() {
+		return RDFConstants.NAMES;
 	}
 }

@@ -13,6 +13,7 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
+import es.um.dis.tecnomod.huron.rdf_builder.RDFConstants;
 
 
 /**
@@ -181,6 +182,28 @@ public abstract class Metric {
 	public void closeDetailedOutputFile(){
 		this.printWriter.close();
 		this.printWriter = null;
+	}
+	
+	/**
+	 * Get the IRI of the property observed by the metric
+	 * @return
+	 */
+	public abstract String getObservablePropertyIRI();
+	
+	/**
+	 * Get the IRI of the instrument used to compute the metric
+	 * @return
+	 */
+	public String getInstrumentIRI() {
+		return RDFConstants.HURON;
+	}
+	
+	/**
+	 * Get the unit of measure used by the metric
+	 * @return
+	 */
+	public String getUnitOfMeasureIRI() {
+		return null;
 	}
 
 }

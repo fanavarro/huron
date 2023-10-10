@@ -7,6 +7,8 @@ import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
+import es.um.dis.tecnomod.huron.dto.MetricResult;
+
 public class DOIDTest {
 	private static final String ONTOLOGY_RESOURCE = "/example3.owl";
 
@@ -16,9 +18,9 @@ public class DOIDTest {
 		OWLOntology ontology = m.loadOntologyFromOntologyDocument(this.getClass().getResourceAsStream(ONTOLOGY_RESOURCE));
 		Metric metric = new NamesPerClassMetric();
 		metric.setOntology(ontology);
-		double res = metric.calculate();
+		MetricResult res = metric.calculate();
 		
-		assertEquals(1.0, res, 0.01);
+		assertEquals(1.0, res.getMetricValue(), 0.01);
 	}
 	
 	@Test
@@ -27,9 +29,9 @@ public class DOIDTest {
 		OWLOntology ontology = m.loadOntologyFromOntologyDocument(this.getClass().getResourceAsStream(ONTOLOGY_RESOURCE));
 		Metric metric = new SynonymsPerClassMetric();
 		metric.setOntology(ontology);
-		double res = metric.calculate();
+		MetricResult res = metric.calculate();
 		
-		assertEquals(2.0/3.0, res, 0.01);
+		assertEquals(2.0/3.0, res.getMetricValue(), 0.01);
 	}
 	
 	@Test
@@ -38,9 +40,9 @@ public class DOIDTest {
 		OWLOntology ontology = m.loadOntologyFromOntologyDocument(this.getClass().getResourceAsStream(ONTOLOGY_RESOURCE));
 		Metric metric = new DescriptionsPerClassMetric();
 		metric.setOntology(ontology);
-		double res = metric.calculate();
+		MetricResult res = metric.calculate();
 		
-		assertEquals(1.0, res, 0.01);
+		assertEquals(1.0, res.getMetricValue(), 0.01);
 	}
 	
 	@Test
@@ -49,9 +51,9 @@ public class DOIDTest {
 		OWLOntology ontology = m.loadOntologyFromOntologyDocument(this.getClass().getResourceAsStream(ONTOLOGY_RESOURCE));
 		Metric metric = new LexicallySuggestLogicallyDefineMetric();
 		metric.setOntology(ontology);
-		double res = metric.calculate();
+		MetricResult res = metric.calculate();
 		
-		assertEquals(1.0, res, 0.01);
+		assertEquals(1.0, res.getMetricValue(), 0.01);
 	}
 	
 	@Test
@@ -60,9 +62,9 @@ public class DOIDTest {
 		OWLOntology ontology = m.loadOntologyFromOntologyDocument(this.getClass().getResourceAsStream(ONTOLOGY_RESOURCE));
 		Metric metric = new SystematicNamingMetric();
 		metric.setOntology(ontology);
-		double res = metric.calculate();
+		MetricResult res = metric.calculate();
 		
-		assertEquals(1.0/2.0, res, 0.01);
+		assertEquals(1.0/2.0, res.getMetricValue(), 0.01);
 	}
 
 }

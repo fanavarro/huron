@@ -2,6 +2,7 @@ package es.um.dis.tecnomod.huron.metrics;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
@@ -13,6 +14,7 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
 import es.um.dis.tecnomod.huron.namespaces.Namespaces;
+import es.um.dis.tecnomod.huron.rdf_builder.RDFConstants;
 import es.um.dis.tecnomod.huron.services.RDFUtils;
 
 public class DataPropertiesWithNoSynonymMetric extends AnnotationsPerEntityAbstractMetric {
@@ -23,6 +25,7 @@ public class DataPropertiesWithNoSynonymMetric extends AnnotationsPerEntityAbstr
 	@Override
 	public MetricResult calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
 		super.writeToDetailedOutputFile("Metric\tDataProperty\tWithNoSynonym\n");
+		Calendar timestamp = Calendar.getInstance();
 		Model rdfModel = ModelFactory.createDefaultModel();
 		Property metricProperty = rdfModel.createProperty(this.getIRI());
 		int numberOfDataPropertiesWithNoSynonym = 0;
@@ -34,12 +37,11 @@ public class DataPropertiesWithNoSynonymMetric extends AnnotationsPerEntityAbstr
 			int localNumberOfSynonyms = this.getNumberOfSynonyms(owlDataProperty);
 			if (localNumberOfSynonyms == 0) {
 				super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%b\n", this.getName(), owlDataProperty.toStringID(), true));
-				rdfModel.createResource(owlDataProperty.getIRI().toString()).addLiteral(metricProperty, true);
-				RDFUtils.createIssue(rdfModel, metricProperty, owlDataProperty, String.format("The entity %s does not have any synonym.", owlDataProperty.getIRI().toQuotedString()));
+				RDFUtils.createObservation(rdfModel, owlDataProperty.getIRI().toString(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Boolean(true), timestamp);
 				numberOfDataPropertiesWithNoSynonym++;
 			}else {
 				super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%b\n", this.getName(), owlDataProperty.toStringID(), false));
-				rdfModel.createResource(owlDataProperty.getIRI().toString()).addLiteral(metricProperty, false);
+				RDFUtils.createObservation(rdfModel, owlDataProperty.getIRI().toString(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Boolean(false), timestamp);
 			}
 			numberOfEntities ++;
 		}
@@ -47,6 +49,7 @@ public class DataPropertiesWithNoSynonymMetric extends AnnotationsPerEntityAbstr
 		double metricValue = ((double) (numberOfDataPropertiesWithNoSynonym)) / numberOfEntities;
 		this.getOntology().getOntologyID().getOntologyIRI().ifPresent(ontologyIRI -> {
 			rdfModel.createResource(ontologyIRI.toString()).addLiteral(metricProperty, metricValue);
+			RDFUtils.createObservation(rdfModel, ontologyIRI.toString(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Double(metricValue), timestamp);
 		});
 		return new MetricResult(metricValue, rdfModel);	
 	}
@@ -60,5 +63,11 @@ public class DataPropertiesWithNoSynonymMetric extends AnnotationsPerEntityAbstr
 	@Override
 	public String getIRI() {
 		return Namespaces.OQUO_NS + "DataPropertiesWithNoSynonymMetric";
+	}
+
+
+	@Override
+	public String getObservablePropertyIRI() {
+		return RDFConstants.SYNONYMS;
 	}
 }
