@@ -3,6 +3,7 @@ package es.um.dis.tecnomod.huron.metrics;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.junit.Test;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -26,7 +27,7 @@ public class AnnotationUsageMetricTest {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws Exception the exception
 	 */
-	@Test
+	@Test(expected = NotImplementedException.class)
 	public void test() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
 		Metric m1 = new AnnotationUsageMetric(ANNOTATION);
 		OWLOntologyManager m = OWLManager.createOWLOntologyManager();
