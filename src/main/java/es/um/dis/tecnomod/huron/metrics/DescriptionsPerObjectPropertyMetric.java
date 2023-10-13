@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.vocabulary.OWL;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
@@ -31,6 +32,7 @@ public class DescriptionsPerObjectPropertyMetric extends AnnotationsPerEntityAbs
 	@Override
 	public MetricResult calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
 		super.writeToDetailedOutputFile("Metric\tObject Property\tMetric Value\n");
+		String ontologyIRI = RDFUtils.getOntologyIRI(getOntology());
 		Calendar timestamp = Calendar.getInstance();
 		Model rdfModel = ModelFactory.createDefaultModel();
 		int numberOfDescriptions = 0;
@@ -41,15 +43,14 @@ public class DescriptionsPerObjectPropertyMetric extends AnnotationsPerEntityAbs
 			}
 			int localNumberOfdescriptions = getNumberOfDescriptions(objectProperty);
 			super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%d\n", this.getName(), objectProperty.toStringID(), localNumberOfdescriptions));
-			RDFUtils.createObservation(rdfModel, objectProperty.getIRI().toString(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Integer(localNumberOfdescriptions), timestamp);
+			RDFUtils.createObservation(rdfModel, ontologyIRI, objectProperty.getIRI().toString(), OWL.ObjectProperty.getURI(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Integer(localNumberOfdescriptions), timestamp);
 			numberOfDescriptions = numberOfDescriptions + localNumberOfdescriptions;
 			numberOfEntities ++;
 		}
 		
 		double metricValue = ((double) (numberOfDescriptions)) / numberOfEntities;
-		this.getOntology().getOntologyID().getOntologyIRI().ifPresent(ontologyIRI -> {
-			RDFUtils.createObservation(rdfModel, ontologyIRI.toString(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Double(metricValue), timestamp);
-		});
+		RDFUtils.createObservation(rdfModel, ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Double(metricValue), timestamp);
+
 		return new MetricResult(metricValue, rdfModel);
 	}
 

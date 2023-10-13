@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections4.SetUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.vocabulary.OWL;
 import org.ontoenrich.beans.Label;
 import org.ontoenrich.core.LexicalEnvironment;
 import org.ontoenrich.core.LexicalRegularity;
@@ -66,6 +67,7 @@ public class SystematicNamingMetric extends OntoenrichMetric {
 	public MetricResult calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
 		/* Write header for detailed output file */
 		super.writeToDetailedOutputFile("Metric\tClass\tClass depth\tLR\tPositive Cases\tPositive cases average depth\tPositive cases average distance to LR class\tNegative Cases\tNegative cases average depth\tNegative cases average distance to LR class\tMetric Value\n" );
+		String ontologyIRI = RDFUtils.getOntologyIRI(getOntology());
 		Calendar timestamp = Calendar.getInstance();
 		Model rdfModel = ModelFactory.createDefaultModel();
 		
@@ -105,7 +107,7 @@ public class SystematicNamingMetric extends OntoenrichMetric {
 				int localNegativeCasesCount = localNegativeCases.size();
 				
 				double localMetricResult = (double) localPositiveCasesCount / (localPositiveCasesCount + localNegativeCasesCount);
-				RDFUtils.createObservation(rdfModel, owlClassA.getIRI().toString(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Double(localMetricResult), timestamp);
+				RDFUtils.createObservation(rdfModel, ontologyIRI, owlClassA.getIRI().toString(), OWL.Class.getURI(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Double(localMetricResult), timestamp);
 				if(super.isOpenDetailedOutputFile()){
 					if (owlClassADepth == -1){
 						owlClassADepth = this.ontologyGraphService.getClassDepth(this.reasoner, owlClassA);
@@ -130,9 +132,8 @@ public class SystematicNamingMetric extends OntoenrichMetric {
 		reasoner.dispose();
 		// STEP 5: return the calculated value
 		double metricValue = (double) positiveCasesCount / (positiveCasesCount + negativeCasesCount);
-		this.getOntology().getOntologyID().getOntologyIRI().ifPresent(ontologyIRI -> {
-			RDFUtils.createObservation(rdfModel, ontologyIRI.toString(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Double(metricValue), timestamp);
-		});
+		RDFUtils.createObservation(rdfModel, ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Double(metricValue), timestamp);
+		
 		return new MetricResult(metricValue, rdfModel);
 
 	}

@@ -6,6 +6,7 @@ import java.util.Calendar;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.vocabulary.OWL;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
@@ -28,10 +29,11 @@ public class NumberOfClassesMetric extends Metric {
 	@Override
 	public MetricResult calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
 		Model rdfModel = ModelFactory.createDefaultModel();
+		String ontologyIRI = RDFUtils.getOntologyIRI(getOntology());
 		double metricValue = getOntology().classesInSignature().filter(owlClass -> (!OntologyUtils.isObsolete(owlClass, getOntology()))).count();
-		this.getOntology().getOntologyID().getOntologyIRI().ifPresent(ontologyIRI -> {
-			RDFUtils.createObservation(rdfModel, ontologyIRI.toString(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Double(metricValue), Calendar.getInstance());
-		});
+		
+		RDFUtils.createObservation(rdfModel, ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Double(metricValue), Calendar.getInstance());
+		
 		return new MetricResult(metricValue, rdfModel);
 	}
 

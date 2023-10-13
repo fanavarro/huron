@@ -8,6 +8,7 @@ import java.util.Locale;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.vocabulary.OWL;
 import org.ontoenrich.beans.Label;
 import org.ontoenrich.core.LexicalEnvironment;
 import org.ontoenrich.core.LexicalRegularity;
@@ -29,6 +30,7 @@ public class NumberOfLexicalRegularityClassesMetric extends OntoenrichMetric {
 		Calendar timestamp = Calendar.getInstance();
 		
 		Model rdfModel = ModelFactory.createDefaultModel();
+		String ontologyIRI = RDFUtils.getOntologyIRI(getOntology());
 		
 		// STEP 1: create the lexical environment
 		LexicalEnvironment lexicalEnvironment = this.getLexicalEnvironment();
@@ -49,7 +51,7 @@ public class NumberOfLexicalRegularityClassesMetric extends OntoenrichMetric {
 						.filter(x -> (x.getStrLabel().equalsIgnoreCase(lexicalRegularity.getStrPattern())))
 						.findFirst().orElse(new Label("",""))
 						.getIdLabel();
-				RDFUtils.createObservation(rdfModel, lrClass, getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Boolean(true), timestamp);
+				RDFUtils.createObservation(rdfModel, ontologyIRI, lrClass, OWL.Class.getURI(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Boolean(true), timestamp);
 				boolean isLRClass = lexicalRegularity.getIsAClass();
 				if(super.isOpenDetailedOutputFile()){
 					for (Label label : lexicalRegularity.getIdLabelsWhereItAppears()) {
@@ -63,9 +65,8 @@ public class NumberOfLexicalRegularityClassesMetric extends OntoenrichMetric {
 		}
 		
 		double metricValue = lexicalRegularities.size();
-		this.getOntology().getOntologyID().getOntologyIRI().ifPresent(ontologyIRI -> {
-			RDFUtils.createObservation(rdfModel, ontologyIRI.toString(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Double(metricValue), timestamp);
-		});
+		RDFUtils.createObservation(rdfModel, ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Double(metricValue), timestamp);
+
 		return new MetricResult(metricValue, rdfModel);
 	}
 

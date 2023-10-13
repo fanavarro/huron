@@ -8,6 +8,7 @@ import java.util.Locale;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.vocabulary.OWL;
 import org.ontoenrich.beans.Label;
 import org.ontoenrich.core.LexicalEnvironment;
 import org.ontoenrich.core.LexicalRegularity;
@@ -27,6 +28,7 @@ public class NumberOfLexicalRegularitiesMetric extends OntoenrichMetric {
 		super.writeToDetailedOutputFile("Metric\tLexical regularity\tIs class\tClass exhibiting the LR\tLabel of class exhibiting the LR\tMetric Value\n");
 		
 		Model rdfModel = ModelFactory.createDefaultModel();
+		String ontologyIRI = RDFUtils.getOntologyIRI(getOntology());
 		
 		// STEP 1: create the lexical environment
 		LexicalEnvironment lexicalEnvironment = this.getLexicalEnvironment();
@@ -49,10 +51,8 @@ public class NumberOfLexicalRegularitiesMetric extends OntoenrichMetric {
 			}
 		}
 		double metricValue = lexicalRegularities.size();
-		this.getOntology().getOntologyID().getOntologyIRI().ifPresent(ontologyIRI -> {
-			RDFUtils.createObservation(rdfModel, ontologyIRI.toString(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Double(metricValue), Calendar.getInstance());
+			RDFUtils.createObservation(rdfModel, ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Double(metricValue), Calendar.getInstance());
 
-		});
 		return new MetricResult(metricValue, rdfModel);
 	}
 
