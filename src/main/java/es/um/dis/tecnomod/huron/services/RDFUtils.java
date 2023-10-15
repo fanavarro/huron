@@ -68,7 +68,6 @@ public class RDFUtils {
 	
 	public static void createObservation(Model rdfModel, String sourceDocumentIRI, String featureOfInterestIRI,
 			String featureOfInterestTypeIRI, String observablePropertyIRI, String metricUsedIRI, String instrumentIRI, String unitIRI, Object value, Calendar timestamp) {
-		
 		/* Evaluation and evaluationSubject */
 		String evaluationIRI = Namespaces.OQUO_NS + UUID.randomUUID().toString();
 		Resource evaluationSubject = rdfModel.createResource(featureOfInterestIRI, rdfModel.createResource("http://purl.org/net/EvaluationResult#EvaluationSubject"));
@@ -90,7 +89,7 @@ public class RDFUtils {
 		
 		/* Evaluation and EvaluationData. We used this to store the source ontology IRI */
 		if (sourceDocumentIRI != null) {
-			Resource evaluationData = rdfModel.createResource(sourceDocumentIRI, rdfModel.createResource(OWL.Ontology));
+			Resource evaluationData = rdfModel.createResource(sourceDocumentIRI, OWL.Ontology);
 			Property inputData = rdfModel.createProperty("http://purl.org/net/EvaluationResult#inputData");
 			rdfModel.add(evaluation, inputData, evaluationData);
 		}
@@ -111,6 +110,7 @@ public class RDFUtils {
 		Resource qualityMeasure = rdfModel.createResource(metricUsedIRI, rdfModel.createResource("http://purl.org/net/QualityModel#QualityMeasure"));
 		Property forMeasure = rdfModel.createProperty("http://purl.org/net/EvaluationResult#forMeasure");
 		rdfModel.add(qualityValue, forMeasure, qualityMeasure);
+
 	}
 	
 	/**
