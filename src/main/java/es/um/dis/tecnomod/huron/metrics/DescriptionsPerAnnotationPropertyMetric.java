@@ -50,7 +50,7 @@ public class DescriptionsPerAnnotationPropertyMetric extends AnnotationsPerEntit
 		}
 		
 		double metricValue = ((double) (numberOfDescriptions)) / numberOfEntities;
-		RDFUtils.createObservation(rdfModel, ontologyIRI, ontologyIRI.toString(), OWL.Ontology.getURI(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Double(metricValue), timestamp);
+		RDFUtils.createObservation(rdfModel, ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Double(metricValue), timestamp);
 
 		return new MetricResult(metricValue, rdfModel);	
 

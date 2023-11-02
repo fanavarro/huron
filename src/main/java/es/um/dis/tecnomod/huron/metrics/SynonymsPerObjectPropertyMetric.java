@@ -49,7 +49,7 @@ public class SynonymsPerObjectPropertyMetric extends AnnotationsPerEntityAbstrac
 		}
 		
 		double metricValue = ((double) (numberOfSynonyms)) / numberOfEntities;
-		RDFUtils.createObservation(rdfModel, ontologyIRI, ontologyIRI.toString(), OWL.Ontology.getURI(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Double(metricValue), timestamp);
+		RDFUtils.createObservation(rdfModel, ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Double(metricValue), timestamp);
 		
 		return new MetricResult(metricValue, rdfModel);
 	}
