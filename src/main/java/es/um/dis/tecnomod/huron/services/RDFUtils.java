@@ -90,6 +90,7 @@ public class RDFUtils {
 		/* Evaluation and EvaluationData. We used this to store the source ontology IRI */
 		if (sourceDocumentIRI != null) {
 			Resource evaluationData = rdfModel.createResource(sourceDocumentIRI, OWL.Ontology);
+			rdfModel.add(evaluationData, RDF.type, rdfModel.createResource("http://purl.org/net/EvaluationResult#EvaluationData"));
 			Property inputData = rdfModel.createProperty("http://purl.org/net/EvaluationResult#inputData");
 			rdfModel.add(evaluation, inputData, evaluationData);
 		}
