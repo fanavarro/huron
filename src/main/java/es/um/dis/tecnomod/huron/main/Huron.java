@@ -13,6 +13,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -82,6 +83,7 @@ public class Huron {
 		File outputFile = new File(cmd.getOptionValue('o'));
 		int threads = Integer.parseInt(cmd.getOptionValue('t', "1"));
 		boolean includeDetailedFiles = cmd.hasOption('v');
+		long timeout = Long.parseLong(cmd.getOptionValue('q', "-1"));
 		
 		if (!inputFile.exists()) {
 			LOGGER.log(Level.SEVERE, String.format("'%s' not found.", args[0]));
@@ -108,7 +110,7 @@ public class Huron {
 			})));
 		}
 		List<MetricCalculationTask> tasks = getMetricCalculationTasks(ontologyFiles, includeDetailedFiles);
-		executeWithTaskExecutor(outputFile, tasks, threads);
+		executeWithTaskExecutor(outputFile, tasks, threads, timeout);
 
 	}
 
@@ -121,10 +123,16 @@ public class Huron {
 	 * @throws InterruptedException the interrupted exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	private static void executeWithTaskExecutor(File outputFile, List<MetricCalculationTask> tasks, int threads)
+	private static void executeWithTaskExecutor(File outputFile, List<MetricCalculationTask> tasks, int threads, long timeout)
 			throws InterruptedException, IOException {
 		ExecutorService executor = Executors.newFixedThreadPool(threads);
-		List<Future<List<MetricCalculationTaskResult>>> futureResults = executor.invokeAll(tasks);
+		List<Future<List<MetricCalculationTaskResult>>> futureResults;
+		if (timeout < 0) {
+			futureResults = executor.invokeAll(tasks);
+		} else {
+			LOGGER.log(Level.INFO, String.format("Tasks will have a timeout of %d minutes", timeout));
+			futureResults = executor.invokeAll(tasks, timeout, TimeUnit.MINUTES);
+		}
 		FileWriter fileWriter = new FileWriter(outputFile);
 		PrintWriter printWriter = new PrintWriter(fileWriter);
 		printWriter.print("File\tMetric\tValue\n");
@@ -154,7 +162,6 @@ public class Huron {
 		List<MetricCalculationTask> tasks = new ArrayList<MetricCalculationTask>();
 		for(File ontologyFile : ontologyFiles){
 			tasks.add(new MetricCalculationTask(getMetricsToCalculate(), ontologyFile, includeDetailedFiles));
-			
 		}
 		return tasks;
 	}
@@ -189,6 +196,10 @@ public class Huron {
         Option generateDetailedFiles = new Option("v", "detailed-files", false, "Generate a report for each metric.");
         generateDetailedFiles.setRequired(false);
         options.addOption(generateDetailedFiles);
+        
+        Option timeout = new Option("q", "timeout", true, "Timeout in minutes for each task");
+        timeout.setRequired(false);
+        options.addOption(timeout);
         
         CommandLineParser parser = new DefaultParser();
         HelpFormatter formatter = new HelpFormatter();
