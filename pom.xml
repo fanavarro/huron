@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>es.um.dis.tecnomod</groupId>
 	<artifactId>huron</artifactId>
-	<version>0.0.3</version>
+	<version>0.0.4-SNAPSHOT</version>
 
 	<properties>
 		<commons-cli.version>1.4</commons-cli.version>
@@ -110,11 +110,22 @@
 				<maven.compiler.release>13</maven.compiler.release>
 			</properties>
 		</profile>
+		
+		<profile>
+			<id>java17</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<profile.name>java17</profile.name>
+				<maven.compiler.release>17</maven.compiler.release>
+			</properties>
+		</profile>
 
 		<profile>
 			<id>java8</id>
 			<activation>
-				<activeByDefault>true</activeByDefault>
+				<activeByDefault>false</activeByDefault>
 			</activation>
 			<properties>
 				<profile.name>java8</profile.name>
