@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import org.apache.jena.rdf.model.Model;
 import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.model.MissingImportHandlingStrategy;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
@@ -61,6 +62,8 @@ public class MetricCalculationTask implements Callable<List<MetricCalculationTas
 	public MetricCalculationTask(List<Metric> metrics, File ontologyFile, boolean includeDetailFiles, File detailsFileFolder) {
 		super();
 		this.ontologyManager = OWLManager.createConcurrentOWLOntologyManager();
+		/* Prevent exceptions when an import cannot be loaded*/
+		this.ontologyManager.getOntologyConfigurator().setMissingImportHandlingStrategy(MissingImportHandlingStrategy.SILENT);
 		this.metrics = metrics;
 		this.ontologyFile = ontologyFile;
 		this.includeDetailFiles = includeDetailFiles;

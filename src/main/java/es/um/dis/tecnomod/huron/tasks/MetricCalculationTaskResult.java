@@ -165,8 +165,4 @@ public class MetricCalculationTaskResult implements Serializable{
 		builder.append("]");
 		return builder.toString();
 	}
-	
-	
-
-	
 }

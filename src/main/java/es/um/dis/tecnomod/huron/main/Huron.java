@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -59,6 +60,7 @@ import es.um.dis.tecnomod.huron.metrics.SynonymsPerObjectPropertyMetric;
 import es.um.dis.tecnomod.huron.metrics.SynonymsPerPropertyMetric;
 import es.um.dis.tecnomod.huron.metrics.SystematicNamingMetric;
 import es.um.dis.tecnomod.huron.tasks.MetricCalculationTask;
+import es.um.dis.tecnomod.huron.tasks.MetricCalculationTaskOnlyValue;
 import es.um.dis.tecnomod.huron.tasks.MetricCalculationTaskResult;
 
 /**
@@ -142,7 +144,7 @@ public class Huron {
 				for(MetricCalculationTaskResult result : results){
 					printWriter.printf(Locale.ROOT, "%s\t%s\t%.3f\n", result.getOwlFile(), result.getMetricName(), result.getResult());
 				}
-			} catch (ExecutionException e) {
+			} catch (ExecutionException | CancellationException | InterruptedException e) {
 				LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			}
 		}
@@ -161,7 +163,7 @@ public class Huron {
 	private static List<MetricCalculationTask> getMetricCalculationTasks(List<File> ontologyFiles, boolean includeDetailedFiles){
 		List<MetricCalculationTask> tasks = new ArrayList<MetricCalculationTask>();
 		for(File ontologyFile : ontologyFiles){
-			tasks.add(new MetricCalculationTask(getMetricsToCalculate(), ontologyFile, includeDetailedFiles));
+			tasks.add(new MetricCalculationTaskOnlyValue(getMetricsToCalculate(), ontologyFile, includeDetailedFiles));
 		}
 		return tasks;
 	}
