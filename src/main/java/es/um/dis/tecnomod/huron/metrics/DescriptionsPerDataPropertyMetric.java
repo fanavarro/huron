@@ -13,6 +13,7 @@ import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
+import es.um.dis.tecnomod.huron.main.Config;
 import es.um.dis.tecnomod.huron.namespaces.Namespaces;
 import es.um.dis.tecnomod.huron.rdf_builder.RDFConstants;
 import es.um.dis.tecnomod.huron.services.OntologyUtils;
@@ -23,6 +24,18 @@ import es.um.dis.tecnomod.huron.services.RDFUtils;
  */
 public class DescriptionsPerDataPropertyMetric extends AnnotationsPerEntityAbstractMetric{
 	
+	public DescriptionsPerDataPropertyMetric() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+
+	public DescriptionsPerDataPropertyMetric(Config config) {
+		super(config);
+		// TODO Auto-generated constructor stub
+	}
+
+
 	/** The Constant NAME. */
 	private static final String NAME = "Descriptions per data property";
 
@@ -37,8 +50,8 @@ public class DescriptionsPerDataPropertyMetric extends AnnotationsPerEntityAbstr
 		Model rdfModel = ModelFactory.createDefaultModel();
 		int numberOfDescriptions = 0;
 		int numberOfEntities = 0;
-		for(OWLDataProperty owlDataProperty : super.getOntology().dataPropertiesInSignature().collect(Collectors.toList())){
-			if (OntologyUtils.isObsolete(owlDataProperty, getOntology()) || owlDataProperty.isOWLTopDataProperty()) {
+		for(OWLDataProperty owlDataProperty : super.getOntology().dataPropertiesInSignature(this.getConfig().getImports()).collect(Collectors.toList())){
+			if (OntologyUtils.isObsolete(owlDataProperty, getOntology(), this.getConfig().getImports()) || owlDataProperty.isOWLTopDataProperty()) {
 				continue;
 			}
 			int localNumberOfdescriptions = getNumberOfDescriptions(owlDataProperty);

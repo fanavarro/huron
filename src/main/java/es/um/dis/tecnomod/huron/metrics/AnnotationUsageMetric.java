@@ -16,12 +16,23 @@ import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
+import es.um.dis.tecnomod.huron.main.Config;
 
 
 /**
  * The Class AnnotationUsageMetric.
  */
 public class AnnotationUsageMetric extends Metric {
+
+	public AnnotationUsageMetric() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public AnnotationUsageMetric(Config config) {
+		super(config);
+		// TODO Auto-generated constructor stub
+	}
 
 	/** The annotation IRI. */
 	private IRI annotationIRI;
@@ -52,10 +63,10 @@ public class AnnotationUsageMetric extends Metric {
 		Model rdfModel = ModelFactory.createDefaultModel();
 		Property metricProperty = rdfModel.createProperty(this.getIRI());
 		int usage = 0;
-		if (getOntology().containsAnnotationPropertyInSignature(annotationIRI)) {
+		if (getOntology().containsAnnotationPropertyInSignature(annotationIRI, this.getConfig().getImports())) {
 			OWLAnnotationProperty annotationProperty = getOntology().getOWLOntologyManager().getOWLDataFactory()
 					.getOWLAnnotationProperty(annotationIRI);
-			Set<OWLAxiom> referencingAxioms = getOntology().referencingAxioms(annotationProperty).collect(Collectors.toSet());
+			Set<OWLAxiom> referencingAxioms = getOntology().referencingAxioms(annotationProperty, this.getConfig().getImports()).collect(Collectors.toSet());
 			for(OWLAxiom axiom : referencingAxioms){
 				if(axiom.isOfType(AxiomType.ANNOTATION_ASSERTION)){
 					usage++;

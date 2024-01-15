@@ -25,6 +25,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.semanticweb.owlapi.model.parameters.Imports;
 
 import es.um.dis.tecnomod.huron.metrics.AnnotationPropertiesWithNoDescriptionMetric;
 import es.um.dis.tecnomod.huron.metrics.AnnotationPropertiesWithNoNameMetric;
@@ -86,6 +87,9 @@ public class Huron {
 		int threads = Integer.parseInt(cmd.getOptionValue('t', "1"));
 		boolean includeDetailedFiles = cmd.hasOption('v');
 		long timeout = Long.parseLong(cmd.getOptionValue('q', "-1"));
+		boolean includeImports = cmd.hasOption("imports");
+		Config config = new Config();
+		config.setImports(Imports.fromBoolean(includeImports));
 		
 		if (!inputFile.exists()) {
 			LOGGER.log(Level.SEVERE, String.format("'%s' not found.", args[0]));
@@ -111,7 +115,7 @@ public class Huron {
 
 			})));
 		}
-		List<MetricCalculationTask> tasks = getMetricCalculationTasks(ontologyFiles, includeDetailedFiles);
+		List<MetricCalculationTask> tasks = getMetricCalculationTasks(ontologyFiles, includeDetailedFiles, config);
 		executeWithTaskExecutor(outputFile, tasks, threads, timeout);
 
 	}
@@ -160,10 +164,10 @@ public class Huron {
 	 * @param includeDetailedFiles the include detailed files
 	 * @return the metric calculation tasks
 	 */
-	private static List<MetricCalculationTask> getMetricCalculationTasks(List<File> ontologyFiles, boolean includeDetailedFiles){
+	private static List<MetricCalculationTask> getMetricCalculationTasks(List<File> ontologyFiles, boolean includeDetailedFiles, Config config){
 		List<MetricCalculationTask> tasks = new ArrayList<MetricCalculationTask>();
 		for(File ontologyFile : ontologyFiles){
-			tasks.add(new MetricCalculationTaskOnlyValue(getMetricsToCalculate(), ontologyFile, includeDetailedFiles));
+			tasks.add(new MetricCalculationTaskOnlyValue(getMetricsToCalculate(config), ontologyFile, includeDetailedFiles));
 		}
 		return tasks;
 	}
@@ -203,6 +207,10 @@ public class Huron {
         timeout.setRequired(false);
         options.addOption(timeout);
         
+        Option importOption = new Option(null, "imports", false, "Consider imported entities from external ontologies (import clause) when calculating the metrics.");
+        importOption.setRequired(false);
+        options.addOption(importOption);
+        
         CommandLineParser parser = new DefaultParser();
         HelpFormatter formatter = new HelpFormatter();
         CommandLine cmd = null;;
@@ -233,41 +241,41 @@ public class Huron {
 	 * @param ontologyFiles the ontology files
 	 * @return the metrics to calculate
 	 */
-	private static List<Metric> getMetricsToCalculate(){
+	private static List<Metric> getMetricsToCalculate(Config config){
 		LOGGER.log(Level.INFO, "Obtaining metrics to calculate");
 		List<Metric> metrics = new ArrayList<Metric>();
-		metrics.add(new NumberOfLexicalRegularitiesMetric());
-		metrics.add(new NumberOfLexicalRegularityClassesMetric());
-		metrics.add(new LexicallySuggestLogicallyDefineMetric());
-		metrics.add(new SystematicNamingMetric());
-		metrics.add(new NumberOfClassesMetric());
-		metrics.add(new NamesPerClassMetric());
-		metrics.add(new NamesPerPropertyMetric());
-		metrics.add(new NamesPerAnnotationPropertyMetric());
-		metrics.add(new NamesPerDataPropertyMetric());
-		metrics.add(new NamesPerObjectPropertyMetric());
-		metrics.add(new SynonymsPerClassMetric());
-		metrics.add(new SynonymsPerPropertyMetric());
-		metrics.add(new SynonymsPerAnnotationPropertyMetric());
-		metrics.add(new SynonymsPerDataPropertyMetric());
-		metrics.add(new SynonymsPerObjectPropertyMetric());
-		metrics.add(new DescriptionsPerClassMetric());
-		metrics.add(new DescriptionsPerPropertyMetric());
-		metrics.add(new DescriptionsPerAnnotationPropertyMetric());
-		metrics.add(new DescriptionsPerDataPropertyMetric());
-		metrics.add(new DescriptionsPerObjectPropertyMetric());
-		metrics.add(new ClassesWithNoNameMetric());
-		metrics.add(new ClassesWithNoDescriptionMetric());
-		metrics.add(new ClassesWithNoSynonymMetric());
-		metrics.add(new ObjectPropertiesWithNoNameMetric());
-		metrics.add(new ObjectPropertiesWithNoDescriptionMetric());
-		metrics.add(new ObjectPropertiesWithNoSynonymMetric());
-		metrics.add(new DataPropertiesWithNoNameMetric());
-		metrics.add(new DataPropertiesWithNoDescriptionMetric());
-		metrics.add(new DataPropertiesWithNoSynonymMetric());
-		metrics.add(new AnnotationPropertiesWithNoNameMetric());
-		metrics.add(new AnnotationPropertiesWithNoDescriptionMetric());
-		metrics.add(new AnnotationPropertiesWithNoSynonymMetric());
+		metrics.add(new NumberOfLexicalRegularitiesMetric(config));
+		metrics.add(new NumberOfLexicalRegularityClassesMetric(config));
+		metrics.add(new LexicallySuggestLogicallyDefineMetric(config));
+		metrics.add(new SystematicNamingMetric(config));
+		metrics.add(new NumberOfClassesMetric(config));
+		metrics.add(new NamesPerClassMetric(config));
+		metrics.add(new NamesPerPropertyMetric(config));
+		metrics.add(new NamesPerAnnotationPropertyMetric(config));
+		metrics.add(new NamesPerDataPropertyMetric(config));
+		metrics.add(new NamesPerObjectPropertyMetric(config));
+		metrics.add(new SynonymsPerClassMetric(config));
+		metrics.add(new SynonymsPerPropertyMetric(config));
+		metrics.add(new SynonymsPerAnnotationPropertyMetric(config));
+		metrics.add(new SynonymsPerDataPropertyMetric(config));
+		metrics.add(new SynonymsPerObjectPropertyMetric(config));
+		metrics.add(new DescriptionsPerClassMetric(config));
+		metrics.add(new DescriptionsPerPropertyMetric(config));
+		metrics.add(new DescriptionsPerAnnotationPropertyMetric(config));
+		metrics.add(new DescriptionsPerDataPropertyMetric(config));
+		metrics.add(new DescriptionsPerObjectPropertyMetric(config));
+		metrics.add(new ClassesWithNoNameMetric(config));
+		metrics.add(new ClassesWithNoDescriptionMetric(config));
+		metrics.add(new ClassesWithNoSynonymMetric(config));
+		metrics.add(new ObjectPropertiesWithNoNameMetric(config));
+		metrics.add(new ObjectPropertiesWithNoDescriptionMetric(config));
+		metrics.add(new ObjectPropertiesWithNoSynonymMetric(config));
+		metrics.add(new DataPropertiesWithNoNameMetric(config));
+		metrics.add(new DataPropertiesWithNoDescriptionMetric(config));
+		metrics.add(new DataPropertiesWithNoSynonymMetric(config));
+		metrics.add(new AnnotationPropertiesWithNoNameMetric(config));
+		metrics.add(new AnnotationPropertiesWithNoDescriptionMetric(config));
+		metrics.add(new AnnotationPropertiesWithNoSynonymMetric(config));
 		
 		LOGGER.log(Level.INFO, "Metrics obtained");
 		return metrics;

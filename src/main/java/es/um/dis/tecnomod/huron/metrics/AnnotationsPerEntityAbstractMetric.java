@@ -13,6 +13,7 @@ import org.semanticweb.owlapi.model.OWLAnnotationSubject;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLEntity;
 
+import es.um.dis.tecnomod.huron.main.Config;
 import es.um.dis.tecnomod.huron.main.Prefixes;
 import es.um.dis.tecnomod.huron.services.OntologyUtils;
 
@@ -20,6 +21,16 @@ import es.um.dis.tecnomod.huron.services.OntologyUtils;
  * The Class AnnotationsPerEntityAbstractMetric.
  */
 public abstract class AnnotationsPerEntityAbstractMetric extends Metric {
+	public AnnotationsPerEntityAbstractMetric() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public AnnotationsPerEntityAbstractMetric(Config config) {
+		super(config);
+		// TODO Auto-generated constructor stub
+	}
+
 	private static final boolean INCLUDE_IMPORTED_ANNOTATIONS = true;
 	
 	/** The Constant SKOS_PREFERRED_LABEL. */
@@ -113,14 +124,14 @@ public abstract class AnnotationsPerEntityAbstractMetric extends Metric {
 	 */
 	protected int getUsageInClasses(IRI annotationIRI) {
 		int usage = 0;
-		if (getOntology().containsAnnotationPropertyInSignature(annotationIRI)) {
+		if (getOntology().containsAnnotationPropertyInSignature(annotationIRI, this.getConfig().getImports())) {
 			OWLAnnotationProperty annotationProperty = getOntology().getOWLOntologyManager().getOWLDataFactory()
 					.getOWLAnnotationProperty(annotationIRI);
 			
-			for (OWLAxiom axiom : getOntology().referencingAxioms(annotationProperty).collect(Collectors.toList())) {
+			for (OWLAxiom axiom : getOntology().referencingAxioms(annotationProperty, this.getConfig().getImports()).collect(Collectors.toList())) {
 				if (axiom.isOfType(AxiomType.ANNOTATION_ASSERTION)) {
 					OWLAnnotationSubject subject = ((OWLAnnotationAssertionAxiom) axiom).getSubject();
-					if (subject instanceof IRI && getOntology().containsClassInSignature((IRI) subject)) {
+					if (subject instanceof IRI && getOntology().containsClassInSignature((IRI) subject, this.getConfig().getImports())) {
 						usage = usage + 1;
 					}
 				}
@@ -137,13 +148,13 @@ public abstract class AnnotationsPerEntityAbstractMetric extends Metric {
 	 */
 	protected int getUsageInDataProperties(IRI annotationIRI) {
 		int usage = 0;
-		if (getOntology().containsAnnotationPropertyInSignature(annotationIRI)) {
+		if (getOntology().containsAnnotationPropertyInSignature(annotationIRI, this.getConfig().getImports())) {
 			OWLAnnotationProperty annotationProperty = getOntology().getOWLOntologyManager().getOWLDataFactory()
 					.getOWLAnnotationProperty(annotationIRI);
-			for (OWLAxiom axiom : getOntology().referencingAxioms(annotationProperty).collect(Collectors.toList())) {
+			for (OWLAxiom axiom : getOntology().referencingAxioms(annotationProperty, this.getConfig().getImports()).collect(Collectors.toList())) {
 				if (axiom.isOfType(AxiomType.ANNOTATION_ASSERTION)) {
 					OWLAnnotationSubject subject = ((OWLAnnotationAssertionAxiom) axiom).getSubject();
-					if (subject instanceof IRI && getOntology().containsDataPropertyInSignature((IRI) subject)) {
+					if (subject instanceof IRI && getOntology().containsDataPropertyInSignature((IRI) subject, this.getConfig().getImports())) {
 						usage = usage + 1;
 					}
 				}
@@ -183,13 +194,13 @@ public abstract class AnnotationsPerEntityAbstractMetric extends Metric {
 	 */
 	protected int getUsageInAnnotationProperties(IRI annotationIRI) {
 		int usage = 0;
-		if (getOntology().containsAnnotationPropertyInSignature(annotationIRI)) {
+		if (getOntology().containsAnnotationPropertyInSignature(annotationIRI, this.getConfig().getImports())) {
 			OWLAnnotationProperty annotationProperty = getOntology().getOWLOntologyManager().getOWLDataFactory()
 					.getOWLAnnotationProperty(annotationIRI);
-			for (OWLAxiom axiom : getOntology().referencingAxioms(annotationProperty).collect(Collectors.toList())) {
+			for (OWLAxiom axiom : getOntology().referencingAxioms(annotationProperty, this.getConfig().getImports()).collect(Collectors.toList())) {
 				if (axiom.isOfType(AxiomType.ANNOTATION_ASSERTION)) {
 					OWLAnnotationSubject subject = ((OWLAnnotationAssertionAxiom) axiom).getSubject();
-					if (subject instanceof IRI && getOntology().containsAnnotationPropertyInSignature((IRI) subject)) {
+					if (subject instanceof IRI && getOntology().containsAnnotationPropertyInSignature((IRI) subject, this.getConfig().getImports())) {
 						usage = usage + 1;
 					}
 				}

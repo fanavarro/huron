@@ -13,6 +13,7 @@ import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
+import es.um.dis.tecnomod.huron.main.Config;
 import es.um.dis.tecnomod.huron.namespaces.Namespaces;
 import es.um.dis.tecnomod.huron.rdf_builder.RDFConstants;
 import es.um.dis.tecnomod.huron.services.OntologyUtils;
@@ -23,6 +24,20 @@ import es.um.dis.tecnomod.huron.services.RDFUtils;
  */
 public class SynonymsPerDataPropertyMetric extends AnnotationsPerEntityAbstractMetric{
 	
+	public SynonymsPerDataPropertyMetric() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+
+
+	public SynonymsPerDataPropertyMetric(Config config) {
+		super(config);
+		// TODO Auto-generated constructor stub
+	}
+
+
+
 	/** The Constant NAME. */
 	private static final String NAME = "Synonyms per data property";
 
@@ -37,8 +52,8 @@ public class SynonymsPerDataPropertyMetric extends AnnotationsPerEntityAbstractM
 		Model rdfModel = ModelFactory.createDefaultModel();
 		int numberOfSynonyms = 0;
 		int numberOfEntities = 0;
-		for(OWLDataProperty dataProperty : super.getOntology().dataPropertiesInSignature().collect(Collectors.toList())){
-			if (OntologyUtils.isObsolete(dataProperty, getOntology()) || dataProperty.isOWLTopDataProperty()) {
+		for(OWLDataProperty dataProperty : super.getOntology().dataPropertiesInSignature(this.getConfig().getImports()).collect(Collectors.toList())){
+			if (OntologyUtils.isObsolete(dataProperty, getOntology(), this.getConfig().getImports()) || dataProperty.isOWLTopDataProperty()) {
 				continue;
 			}
 			int localNumberOfSynonyms = getNumberOfSynonyms(dataProperty);

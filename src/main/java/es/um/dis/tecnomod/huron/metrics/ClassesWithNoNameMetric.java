@@ -13,6 +13,7 @@ import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
+import es.um.dis.tecnomod.huron.main.Config;
 import es.um.dis.tecnomod.huron.namespaces.Namespaces;
 import es.um.dis.tecnomod.huron.rdf_builder.RDFConstants;
 import es.um.dis.tecnomod.huron.services.OntologyUtils;
@@ -25,6 +26,17 @@ import es.um.dis.tecnomod.huron.services.RDFUtils;
  */
 public class ClassesWithNoNameMetric extends AnnotationsPerEntityAbstractMetric {
 	
+	public ClassesWithNoNameMetric() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+
+	public ClassesWithNoNameMetric(Config config) {
+		super(config);
+		// TODO Auto-generated constructor stub
+	}
+
 	/** The Constant METRIC_NAME. */
 	private static final String METRIC_NAME = "Classes with no name";
 	
@@ -42,8 +54,8 @@ public class ClassesWithNoNameMetric extends AnnotationsPerEntityAbstractMetric 
 		Model rdfModel = ModelFactory.createDefaultModel();
 		int numberOfClassesWithNoName = 0;
 		int numberOfEntities = 0;
-		for(OWLClass owlClass : super.getOntology().classesInSignature().collect(Collectors.toList())){
-			if (owlClass.isOWLNothing() || owlClass.isOWLThing() || OntologyUtils.isObsolete(owlClass, getOntology())) {
+		for(OWLClass owlClass : super.getOntology().classesInSignature(this.getConfig().getImports()).collect(Collectors.toList())){
+			if (owlClass.isOWLNothing() || owlClass.isOWLThing() || OntologyUtils.isObsolete(owlClass, getOntology(), this.getConfig().getImports())) {
 				continue;
 			}			
 			int localNumberOfNames = getNumberOfNames(owlClass);

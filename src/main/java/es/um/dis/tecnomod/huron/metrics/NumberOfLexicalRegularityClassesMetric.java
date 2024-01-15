@@ -16,11 +16,22 @@ import org.ontoenrich.filters.RemoveNoClasses;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
+import es.um.dis.tecnomod.huron.main.Config;
 import es.um.dis.tecnomod.huron.namespaces.Namespaces;
 import es.um.dis.tecnomod.huron.rdf_builder.RDFConstants;
 import es.um.dis.tecnomod.huron.services.RDFUtils;
 
 public class NumberOfLexicalRegularityClassesMetric extends OntoenrichMetric {
+	public NumberOfLexicalRegularityClassesMetric() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public NumberOfLexicalRegularityClassesMetric(Config config) {
+		super(config);
+		// TODO Auto-generated constructor stub
+	}
+
 	private static final String NAME = "Number of lexical regularities classes";
 
 	@Override

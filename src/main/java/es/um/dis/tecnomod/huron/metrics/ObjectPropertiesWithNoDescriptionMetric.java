@@ -13,11 +13,24 @@ import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
+import es.um.dis.tecnomod.huron.main.Config;
 import es.um.dis.tecnomod.huron.namespaces.Namespaces;
 import es.um.dis.tecnomod.huron.rdf_builder.RDFConstants;
 import es.um.dis.tecnomod.huron.services.RDFUtils;
 
 public class ObjectPropertiesWithNoDescriptionMetric extends AnnotationsPerEntityAbstractMetric {
+
+	public ObjectPropertiesWithNoDescriptionMetric() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+
+	public ObjectPropertiesWithNoDescriptionMetric(Config config) {
+		super(config);
+		// TODO Auto-generated constructor stub
+	}
+
 
 	/** The Constant NAME. */
 	private static final String METRIC_NAME = "ObjectProperties with no description";
@@ -30,7 +43,7 @@ public class ObjectPropertiesWithNoDescriptionMetric extends AnnotationsPerEntit
 		Model rdfModel = ModelFactory.createDefaultModel();
 		int numberOfObjectPropertiesWithNoDescription = 0;
 		int numberOfEntities = 0;
-		for(OWLObjectProperty owlObjectProperty : super.getOntology().objectPropertiesInSignature().collect(Collectors.toList())){
+		for(OWLObjectProperty owlObjectProperty : super.getOntology().objectPropertiesInSignature(this.getConfig().getImports()).collect(Collectors.toList())){
 			if(owlObjectProperty.isOWLTopObjectProperty()){
 				continue;
 			}			

@@ -8,9 +8,20 @@ import org.ontoenrich.config.TypeOfTargetEntity;
 import org.ontoenrich.core.LexicalEnvironment;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
+import es.um.dis.tecnomod.huron.main.Config;
 import es.um.dis.tecnomod.huron.services.OntologyUtils;
 
 public abstract class OntoenrichMetric extends Metric{
+	public OntoenrichMetric() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public OntoenrichMetric(Config config) {
+		super(config);
+		// TODO Auto-generated constructor stub
+	}
+
 	private static final float ONTOENRICH_LABEL_COVERAGE_THRESHOLD = 0.1f;
 	
 	protected LexicalEnvironment getLexicalEnvironment() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
@@ -24,7 +35,7 @@ public abstract class OntoenrichMetric extends Metric{
 	}
 	
 	protected int calculateNumberOfClassesThresholdFromCoverage(float ontoenrichLabelCoverageThreshold) {
-		long nClasses = this.getOntology().classesInSignature().filter(owlClass -> (!OntologyUtils.isObsolete(owlClass, getOntology()))).count();
+		long nClasses = this.getOntology().classesInSignature().filter(owlClass -> (!OntologyUtils.isObsolete(owlClass, getOntology(), this.getConfig().getImports()))).count();
 		return Math.max(2, Math.round((float)(nClasses) * ontoenrichLabelCoverageThreshold));
 	}
 	

@@ -13,6 +13,7 @@ import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
+import es.um.dis.tecnomod.huron.main.Config;
 import es.um.dis.tecnomod.huron.namespaces.Namespaces;
 import es.um.dis.tecnomod.huron.rdf_builder.RDFConstants;
 import es.um.dis.tecnomod.huron.services.OntologyUtils;
@@ -23,6 +24,17 @@ import es.um.dis.tecnomod.huron.services.RDFUtils;
  */
 public class NamesPerClassMetric extends AnnotationsPerEntityAbstractMetric {
 	
+	public NamesPerClassMetric() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+
+	public NamesPerClassMetric(Config config) {
+		super(config);
+		// TODO Auto-generated constructor stub
+	}
+
 	/** The Constant METRIC_NAME. */
 	private static final String METRIC_NAME = "Names per class";
 
@@ -38,8 +50,8 @@ public class NamesPerClassMetric extends AnnotationsPerEntityAbstractMetric {
 		Model rdfModel = ModelFactory.createDefaultModel();
 		int numberOfNames = 0;
 		int numberOfEntities = 0;
-		for(OWLClass owlClass : super.getOntology().classesInSignature().collect(Collectors.toList())){
-			if (OntologyUtils.isObsolete(owlClass, getOntology()) || owlClass.isOWLThing()) {
+		for(OWLClass owlClass : super.getOntology().classesInSignature(this.getConfig().getImports()).collect(Collectors.toList())){
+			if (OntologyUtils.isObsolete(owlClass, getOntology(), this.getConfig().getImports()) || owlClass.isOWLThing()) {
 				continue;
 			}
 			int localNumberOfNames = getNumberOfNames(owlClass);

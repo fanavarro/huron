@@ -13,6 +13,7 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
+import es.um.dis.tecnomod.huron.main.Config;
 import es.um.dis.tecnomod.huron.rdf_builder.RDFConstants;
 
 
@@ -20,6 +21,9 @@ import es.um.dis.tecnomod.huron.rdf_builder.RDFConstants;
  * The Class Metric.
  */
 public abstract class Metric {
+	
+	/** The config */
+	private Config config;
 	
 	/** The ontology. */
 	private OWLOntology ontology;
@@ -32,6 +36,23 @@ public abstract class Metric {
 	
 	/** The print writer. */
 	private PrintWriter printWriter;
+	
+	/**
+	 * Instantiates a new metric.
+	 */
+	public Metric() {
+		super();
+	}
+	
+	/**
+	 * Instantiates a new metric.
+	 *
+	 * @param config the config
+	 */
+	public Metric(Config config) {
+		this();
+		this.config = config;
+	}
 	
 	/**
 	 * Calculate the value of the metric and the RDF with information
@@ -204,6 +225,14 @@ public abstract class Metric {
 	 */
 	public String getUnitOfMeasureIRI() {
 		return null;
+	}
+
+	public Config getConfig() {
+		return config;
+	}
+
+	public void setConfig(Config config) {
+		this.config = config;
 	}
 
 }

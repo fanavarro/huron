@@ -10,6 +10,7 @@ import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.parameters.Imports;
 import org.semanticweb.owlapi.search.EntitySearcher;
 import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
 
@@ -27,8 +28,8 @@ public class OntologyUtils {
 	 * @param ontology the ontology
 	 * @return true, if is obsolete
 	 */
-	public static boolean isObsolete(OWLEntity owlEntity, OWLOntology ontology) {
-		Set<OWLAnnotationAssertionAxiom> axioms = ontology.annotationAssertionAxioms(owlEntity.getIRI()).collect(Collectors.toSet());
+	public static boolean isObsolete(OWLEntity owlEntity, OWLOntology ontology, Imports imports) {
+		Set<OWLAnnotationAssertionAxiom> axioms = ontology.annotationAssertionAxioms(owlEntity.getIRI(), imports).collect(Collectors.toSet());
 		for (OWLAnnotationAssertionAxiom axiom : axioms) {
 			IRI propertyIRI = axiom.getProperty().asOWLAnnotationProperty().getIRI();
 			if (propertyIRI.equals(OWLRDFVocabulary.OWL_DEPRECATED.getIRI())

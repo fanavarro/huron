@@ -10,6 +10,7 @@ import org.apache.jena.vocabulary.OWL;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
+import es.um.dis.tecnomod.huron.main.Config;
 import es.um.dis.tecnomod.huron.namespaces.Namespaces;
 import es.um.dis.tecnomod.huron.rdf_builder.RDFConstants;
 import es.um.dis.tecnomod.huron.services.OntologyUtils;
@@ -20,8 +21,23 @@ import es.um.dis.tecnomod.huron.services.RDFUtils;
  */
 public class NumberOfClassesMetric extends Metric {
 	
+	public NumberOfClassesMetric() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+
+
+	public NumberOfClassesMetric(Config config) {
+		super(config);
+		// TODO Auto-generated constructor stub
+	}
+
+
+
 	/** The Constant NAME. */
 	private static final String NAME = "Number of classes";
+
 
 	/* (non-Javadoc)
 	 * @see metrics.Metric#calculate()
@@ -30,7 +46,7 @@ public class NumberOfClassesMetric extends Metric {
 	public MetricResult calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
 		Model rdfModel = ModelFactory.createDefaultModel();
 		String ontologyIRI = RDFUtils.getOntologyIRI(getOntology());
-		double metricValue = getOntology().classesInSignature().filter(owlClass -> (!OntologyUtils.isObsolete(owlClass, getOntology()))).count();
+		double metricValue = getOntology().classesInSignature(this.getConfig().getImports()).filter(owlClass -> (!OntologyUtils.isObsolete(owlClass, getOntology(), this.getConfig().getImports()))).count();
 		
 		RDFUtils.createObservation(rdfModel, ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Double(metricValue), Calendar.getInstance());
 		

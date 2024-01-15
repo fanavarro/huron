@@ -13,11 +13,24 @@ import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
+import es.um.dis.tecnomod.huron.main.Config;
 import es.um.dis.tecnomod.huron.namespaces.Namespaces;
 import es.um.dis.tecnomod.huron.rdf_builder.RDFConstants;
 import es.um.dis.tecnomod.huron.services.RDFUtils;
 
 public class DataPropertiesWithNoNameMetric extends AnnotationsPerEntityAbstractMetric {
+
+	public DataPropertiesWithNoNameMetric() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+
+	public DataPropertiesWithNoNameMetric(Config config) {
+		super(config);
+		// TODO Auto-generated constructor stub
+	}
+
 
 	/** The Constant NAME. */
 	private static final String METRIC_NAME = "DataProperties with no name";
@@ -30,7 +43,7 @@ public class DataPropertiesWithNoNameMetric extends AnnotationsPerEntityAbstract
 		Model rdfModel = ModelFactory.createDefaultModel();
 		int numberOfDataPropertiesWithNoName = 0;
 		int numberOfEntities = 0;
-		for(OWLDataProperty owlDataProperty : super.getOntology().dataPropertiesInSignature().collect(Collectors.toList())){
+		for(OWLDataProperty owlDataProperty : super.getOntology().dataPropertiesInSignature(this.getConfig().getImports()).collect(Collectors.toList())){
 			if(owlDataProperty.isOWLTopDataProperty()){
 				continue;
 			}			

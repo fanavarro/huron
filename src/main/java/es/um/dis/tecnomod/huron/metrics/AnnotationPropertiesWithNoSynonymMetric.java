@@ -13,12 +13,27 @@ import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
+import es.um.dis.tecnomod.huron.main.Config;
 import es.um.dis.tecnomod.huron.namespaces.Namespaces;
 import es.um.dis.tecnomod.huron.rdf_builder.RDFConstants;
 import es.um.dis.tecnomod.huron.services.RDFUtils;
 
 
 public class AnnotationPropertiesWithNoSynonymMetric extends AnnotationsPerEntityAbstractMetric {
+
+	public AnnotationPropertiesWithNoSynonymMetric() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+
+
+	public AnnotationPropertiesWithNoSynonymMetric(Config config) {
+		super(config);
+		// TODO Auto-generated constructor stub
+	}
+
+
 
 	/** The Constant NAME. */
 	private static final String METRIC_NAME = "AnnotationProperties with no synonym";
@@ -31,7 +46,7 @@ public class AnnotationPropertiesWithNoSynonymMetric extends AnnotationsPerEntit
 		Model rdfModel = ModelFactory.createDefaultModel();
 		int numberOfAnnotationPropertiesWithNoSynonym = 0;
 		int numberOfEntities = 0;
-		for(OWLAnnotationProperty owlAnnotationProperty : super.getOntology().annotationPropertiesInSignature().collect(Collectors.toList())){	
+		for(OWLAnnotationProperty owlAnnotationProperty : super.getOntology().annotationPropertiesInSignature(this.getConfig().getImports()).collect(Collectors.toList())){	
 			int localNumberOfSynonyms = this.getNumberOfSynonyms(owlAnnotationProperty);
 			if (localNumberOfSynonyms == 0) {
 				super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%b\n", this.getName(), owlAnnotationProperty.toStringID(), true));

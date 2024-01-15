@@ -15,6 +15,7 @@ import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
+import es.um.dis.tecnomod.huron.main.Config;
 import es.um.dis.tecnomod.huron.namespaces.Namespaces;
 import es.um.dis.tecnomod.huron.rdf_builder.RDFConstants;
 import es.um.dis.tecnomod.huron.services.OntologyUtils;
@@ -25,6 +26,18 @@ import es.um.dis.tecnomod.huron.services.RDFUtils;
  */
 public class SynonymsPerPropertyMetric extends AnnotationsPerEntityAbstractMetric{
 	
+	public SynonymsPerPropertyMetric() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+
+	public SynonymsPerPropertyMetric(Config config) {
+		super(config);
+		// TODO Auto-generated constructor stub
+	}
+
+
 	/** The Constant METRIC_NAME. */
 	private static final String METRIC_NAME = "Synonyms per property";
 	
@@ -40,8 +53,8 @@ public class SynonymsPerPropertyMetric extends AnnotationsPerEntityAbstractMetri
 		int numberOfSynonyms = 0;
 		int totalProperties = 0;
 		
-		for(OWLObjectProperty owlObjectProperty : super.getOntology().objectPropertiesInSignature().collect(Collectors.toList())){
-			if(OntologyUtils.isObsolete(owlObjectProperty, getOntology()) || owlObjectProperty.isOWLTopObjectProperty()){
+		for(OWLObjectProperty owlObjectProperty : super.getOntology().objectPropertiesInSignature(this.getConfig().getImports()).collect(Collectors.toList())){
+			if(OntologyUtils.isObsolete(owlObjectProperty, getOntology(), this.getConfig().getImports()) || owlObjectProperty.isOWLTopObjectProperty()){
 				continue;
 			}
 			totalProperties++;
@@ -51,8 +64,8 @@ public class SynonymsPerPropertyMetric extends AnnotationsPerEntityAbstractMetri
 			numberOfSynonyms = numberOfSynonyms + localNumberOfSynonyms;
 		}
 		
-		for(OWLDataProperty owlDataProperty : super.getOntology().dataPropertiesInSignature().collect(Collectors.toList())){
-			if(OntologyUtils.isObsolete(owlDataProperty, getOntology()) || owlDataProperty.isOWLTopDataProperty()){
+		for(OWLDataProperty owlDataProperty : super.getOntology().dataPropertiesInSignature(this.getConfig().getImports()).collect(Collectors.toList())){
+			if(OntologyUtils.isObsolete(owlDataProperty, getOntology(), this.getConfig().getImports()) || owlDataProperty.isOWLTopDataProperty()){
 				continue;
 			}
 			totalProperties++;
@@ -62,8 +75,8 @@ public class SynonymsPerPropertyMetric extends AnnotationsPerEntityAbstractMetri
 			numberOfSynonyms = numberOfSynonyms + localNumberOfSynonyms;
 		}
 		
-		for(OWLAnnotationProperty owlAnnotationProperty : super.getOntology().annotationPropertiesInSignature().collect(Collectors.toList())){
-			if(OntologyUtils.isObsolete(owlAnnotationProperty, getOntology())){
+		for(OWLAnnotationProperty owlAnnotationProperty : super.getOntology().annotationPropertiesInSignature(this.getConfig().getImports()).collect(Collectors.toList())){
+			if(OntologyUtils.isObsolete(owlAnnotationProperty, getOntology(), this.getConfig().getImports())){
 				continue;
 			}
 			totalProperties++;

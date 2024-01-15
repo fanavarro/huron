@@ -29,6 +29,7 @@ import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
+import es.um.dis.tecnomod.huron.main.Config;
 import es.um.dis.tecnomod.huron.namespaces.Namespaces;
 import es.um.dis.tecnomod.huron.rdf_builder.RDFConstants;
 import es.um.dis.tecnomod.huron.services.OntologyGraphService;
@@ -41,6 +42,12 @@ import es.um.dis.tecnomod.huron.services.RDFUtils;
  */
 public class LexicallySuggestLogicallyDefineMetric extends OntoenrichMetric {
 	
+	public LexicallySuggestLogicallyDefineMetric(Config config) {
+		super(config);
+		ontologyGraphService = new OntologyGraphServiceImpl();
+		// TODO Auto-generated constructor stub
+	}
+
 	/** The Constant LOGGER. */
 	private final static Logger LOGGER = Logger.getLogger(LexicallySuggestLogicallyDefineMetric.class.getName());
 	
@@ -101,7 +108,7 @@ public class LexicallySuggestLogicallyDefineMetric extends OntoenrichMetric {
 			for (OWLClass owlClassA : this.getRepresentingClasses(lexicalEnvironment, lexicalRegularity)) {
 				Set<OWLClass> localPositiveCases = new HashSet<OWLClass>();
 				Set<OWLClass> localNegativeCases = new HashSet<OWLClass>();
-				if (OntologyUtils.isObsolete(owlClassA, getOntology())) {
+				if (OntologyUtils.isObsolete(owlClassA, getOntology(), this.getConfig().getImports())) {
 					continue;
 				}
 				for (Label l : lexicalRegularity.getIdLabelsWhereItAppears()) {
@@ -110,10 +117,10 @@ public class LexicallySuggestLogicallyDefineMetric extends OntoenrichMetric {
 					}
 					OWLClass owlClassCi = getOntology().getOWLOntologyManager().getOWLDataFactory()
 							.getOWLClass(IRI.create(l.getIdLabel()));
-					if (OntologyUtils.isObsolete(owlClassCi, getOntology())) {
+					if (OntologyUtils.isObsolete(owlClassCi, getOntology(), this.getConfig().getImports())) {
 						continue;
 					}
-					if (ontologyGraphService.isRelated(reasoner, owlClassA, owlClassCi, IGNORED_AXIOMS, MAX_DEPTH)) {
+					if (ontologyGraphService.isRelated(reasoner, owlClassA, owlClassCi, IGNORED_AXIOMS, this.getConfig().getImports(), MAX_DEPTH)) {
 						localPositiveCases.add(owlClassCi);
 					} else {
 						localNegativeCases.add(owlClassCi);
@@ -128,7 +135,7 @@ public class LexicallySuggestLogicallyDefineMetric extends OntoenrichMetric {
 				RDFUtils.createObservation(rdfModel, ontologyIRI, owlClassA.getIRI().toString(), OWL.Class.getURI(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Double(localMetricResult), timestamp);
 
 				if(super.isOpenDetailedOutputFile()){
-					int owlClassADepth = this.ontologyGraphService.getClassDepth(this.reasoner, owlClassA);
+					int owlClassADepth = this.ontologyGraphService.getClassDepth(this.reasoner, owlClassA, this.getConfig().getImports());
 					double averageDepthLocalPositiveCases = this.getAverageDepth(localPositiveCases);
 					double averageDepthLocalNegativeCases = this.getAverageDepth(localNegativeCases);
 					double averageDistanceToLRClassLocalPositiveCases = this.getAverageDistanceToDepth(localPositiveCases, owlClassADepth);
@@ -164,7 +171,7 @@ public class LexicallySuggestLogicallyDefineMetric extends OntoenrichMetric {
 		int distanceToParentSum = 0;
 		int totalClasses = 0;
 		for(OWLClass owlClass : owlClasses){
-			int depth = this.ontologyGraphService.getClassDepth(this.reasoner, owlClass);
+			int depth = this.ontologyGraphService.getClassDepth(this.reasoner, owlClass, this.getConfig().getImports());
 			if(depth != -1){
 				distanceToParentSum += Math.abs(depth - parentDepth);
 				totalClasses++;
@@ -183,7 +190,7 @@ public class LexicallySuggestLogicallyDefineMetric extends OntoenrichMetric {
 		int depthSum = 0;
 		int totalClasses = 0;
 		for(OWLClass owlClass : owlClasses){
-			int depth = this.ontologyGraphService.getClassDepth(this.reasoner, owlClass);
+			int depth = this.ontologyGraphService.getClassDepth(this.reasoner, owlClass, this.getConfig().getImports());
 			if(depth != -1){
 				depthSum += depth;
 				totalClasses++;

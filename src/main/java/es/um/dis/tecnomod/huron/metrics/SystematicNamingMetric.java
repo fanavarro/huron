@@ -29,6 +29,7 @@ import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
+import es.um.dis.tecnomod.huron.main.Config;
 import es.um.dis.tecnomod.huron.namespaces.Namespaces;
 import es.um.dis.tecnomod.huron.rdf_builder.RDFConstants;
 import es.um.dis.tecnomod.huron.services.OntologyGraphService;
@@ -41,6 +42,11 @@ import es.um.dis.tecnomod.huron.services.RDFUtils;
  */
 public class SystematicNamingMetric extends OntoenrichMetric {
 	
+	public SystematicNamingMetric(Config config) {
+		super(config);
+		this.ontologyGraphService = new OntologyGraphServiceImpl();	
+	}
+
 	/** The Constant LOGGER. */
 	private final static Logger LOGGER = Logger.getLogger(SystematicNamingMetric.class.getName());
 	
@@ -91,7 +97,7 @@ public class SystematicNamingMetric extends OntoenrichMetric {
 		for (LexicalRegularity lexicalRegularity : lexicalRegularities) {
 			for (OWLClass owlClassA : this.getRepresentingClasses(lexicalEnvironment, lexicalRegularity)) {
 				int owlClassADepth = -1;
-				if (OntologyUtils.isObsolete(owlClassA, getOntology())) {
+				if (OntologyUtils.isObsolete(owlClassA, getOntology(), this.getConfig().getImports())) {
 					continue;
 				}
 				String classALabel = lexicalEnvironment.getLabelById(owlClassA.getIRI().toString()).getStrLabel();
@@ -110,7 +116,7 @@ public class SystematicNamingMetric extends OntoenrichMetric {
 				RDFUtils.createObservation(rdfModel, ontologyIRI, owlClassA.getIRI().toString(), OWL.Class.getURI(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Double(localMetricResult), timestamp);
 				if(super.isOpenDetailedOutputFile()){
 					if (owlClassADepth == -1){
-						owlClassADepth = this.ontologyGraphService.getClassDepth(this.reasoner, owlClassA);
+						owlClassADepth = this.ontologyGraphService.getClassDepth(this.reasoner, owlClassA, this.getConfig().getImports());
 					}
 					double averageDepthLocalPositiveCases = this.getAverageDepth(localPositiveCases);
 					double averageDepthLocalNegativeCases = this.getAverageDepth(localNegativeCases);
@@ -149,7 +155,7 @@ public class SystematicNamingMetric extends OntoenrichMetric {
 		int distanceToParentSum = 0;
 		int totalClasses = 0;
 		for(OWLClass owlClass : owlClasses){
-			int depth = this.ontologyGraphService.getClassDepth(this.reasoner, owlClass);
+			int depth = this.ontologyGraphService.getClassDepth(this.reasoner, owlClass, this.getConfig().getImports());
 			if(depth != -1){
 				distanceToParentSum += Math.abs(depth - parentDepth);
 				totalClasses++;
@@ -168,7 +174,7 @@ public class SystematicNamingMetric extends OntoenrichMetric {
 		int depthSum = 0;
 		int totalClasses = 0;
 		for(OWLClass owlClass : owlClasses){
-			int depth = this.ontologyGraphService.getClassDepth(this.reasoner, owlClass);
+			int depth = this.ontologyGraphService.getClassDepth(this.reasoner, owlClass, this.getConfig().getImports());
 			if(depth != -1){
 				depthSum += depth;
 				totalClasses++;
@@ -188,7 +194,7 @@ public class SystematicNamingMetric extends OntoenrichMetric {
 		for (Label l : lexicalRegularity.getIdLabelsWhereItAppears()) {
 			OWLClass classWithPattern = getOntology().getOWLOntologyManager().getOWLDataFactory()
 					.getOWLClass(IRI.create(l.getIdLabel()));
-			if (!OntologyUtils.isObsolete(classWithPattern, getOntology())) {
+			if (!OntologyUtils.isObsolete(classWithPattern, getOntology(), this.getConfig().getImports())) {
 				classesWithPattern.add(classWithPattern);
 			}
 			

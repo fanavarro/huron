@@ -13,6 +13,7 @@ import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
+import es.um.dis.tecnomod.huron.main.Config;
 import es.um.dis.tecnomod.huron.namespaces.Namespaces;
 import es.um.dis.tecnomod.huron.rdf_builder.RDFConstants;
 import es.um.dis.tecnomod.huron.services.RDFUtils;
@@ -22,6 +23,18 @@ import es.um.dis.tecnomod.huron.services.RDFUtils;
  */
 public class NamesPerAnnotationPropertyMetric extends AnnotationsPerEntityAbstractMetric{
 	
+	public NamesPerAnnotationPropertyMetric() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+
+	public NamesPerAnnotationPropertyMetric(Config config) {
+		super(config);
+		// TODO Auto-generated constructor stub
+	}
+
+
 	/** The Constant NAME. */
 	private static final String NAME = "Names per annotation property";
 
@@ -36,7 +49,7 @@ public class NamesPerAnnotationPropertyMetric extends AnnotationsPerEntityAbstra
 		Model rdfModel = ModelFactory.createDefaultModel();
 		int numberOfNames = 0;
 		int numberOfEntities = 0;
-		for(OWLAnnotationProperty owlAnnotationProperty : super.getOntology().annotationPropertiesInSignature().collect(Collectors.toList())){
+		for(OWLAnnotationProperty owlAnnotationProperty : super.getOntology().annotationPropertiesInSignature(this.getConfig().getImports()).collect(Collectors.toList())){
 			int localNumberOfNames = getNumberOfNames(owlAnnotationProperty);
 			super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%d\n", this.getName(), owlAnnotationProperty.toStringID(), localNumberOfNames));
 			RDFUtils.createObservation(rdfModel, ontologyIRI, owlAnnotationProperty.getIRI().toString(), OWL.AnnotationProperty.getURI(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Integer(localNumberOfNames), timestamp);

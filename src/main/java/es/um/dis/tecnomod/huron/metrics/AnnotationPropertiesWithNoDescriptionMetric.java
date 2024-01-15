@@ -13,12 +13,25 @@ import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
+import es.um.dis.tecnomod.huron.main.Config;
 import es.um.dis.tecnomod.huron.namespaces.Namespaces;
 import es.um.dis.tecnomod.huron.rdf_builder.RDFConstants;
 import es.um.dis.tecnomod.huron.services.RDFUtils;
 
 
 public class AnnotationPropertiesWithNoDescriptionMetric extends AnnotationsPerEntityAbstractMetric {
+
+	public AnnotationPropertiesWithNoDescriptionMetric() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+
+	public AnnotationPropertiesWithNoDescriptionMetric(Config config) {
+		super(config);
+		// TODO Auto-generated constructor stub
+	}
+
 
 	/** The Constant NAME. */
 	private static final String METRIC_NAME = "AnnotationProperties with no description";
@@ -32,7 +45,7 @@ public class AnnotationPropertiesWithNoDescriptionMetric extends AnnotationsPerE
 		Model rdfModel = ModelFactory.createDefaultModel();
 		int numberOfAnnotationPropertiesWithNoDescription = 0;
 		int numberOfEntities = 0;
-		for(OWLAnnotationProperty owlAnnotationProperty : super.getOntology().annotationPropertiesInSignature().collect(Collectors.toList())){		
+		for(OWLAnnotationProperty owlAnnotationProperty : super.getOntology().annotationPropertiesInSignature(this.getConfig().getImports()).collect(Collectors.toList())){		
 			int localNumberOfDescriptions = this.getNumberOfDescriptions(owlAnnotationProperty);
 			if (localNumberOfDescriptions == 0) {
 				super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%b\n", this.getName(), owlAnnotationProperty.toStringID(), true));
