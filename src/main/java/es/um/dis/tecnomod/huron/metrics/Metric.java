@@ -11,6 +11,7 @@ import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
+import org.semanticweb.owlapi.model.parameters.Imports;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
 import es.um.dis.tecnomod.huron.main.Config;
@@ -42,6 +43,8 @@ public abstract class Metric {
 	 */
 	public Metric() {
 		super();
+		this.config = new Config();
+		this.config.setImports(Imports.EXCLUDED);
 	}
 	
 	/**
