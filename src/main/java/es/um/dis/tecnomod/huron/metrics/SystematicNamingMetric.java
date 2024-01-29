@@ -248,7 +248,7 @@ public class SystematicNamingMetric extends OntoenrichMetric {
 	
 	@Override
 	public String getIRI() {
-		return Namespaces.OQUO_NS + "SystematicNaming";
+		return Namespaces.OQUO_NS + "SystematicNamingMetric";
 	}
 
 	@Override
