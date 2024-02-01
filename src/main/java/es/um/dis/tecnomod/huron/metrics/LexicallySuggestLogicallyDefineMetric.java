@@ -248,7 +248,7 @@ public class LexicallySuggestLogicallyDefineMetric extends OntoenrichMetric {
 
 	@Override
 	public String getIRI() {
-		return Namespaces.OQUO_NS + "LexicallySuggestLogicallyDefine";
+		return Namespaces.OQUO_NS + "LexicallySuggestLogicallyDefineMetric";
 	}
 
 	@Override

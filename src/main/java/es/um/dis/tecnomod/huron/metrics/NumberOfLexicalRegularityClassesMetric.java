@@ -88,7 +88,7 @@ public class NumberOfLexicalRegularityClassesMetric extends OntoenrichMetric {
 	
 	@Override
 	public String getIRI() {
-		return Namespaces.OQUO_NS + "NumberOfLexicalRegularityClasses";
+		return Namespaces.OQUO_NS + "NumberOfLexicalRegularityClassesMetric";
 	}
 
 	@Override
