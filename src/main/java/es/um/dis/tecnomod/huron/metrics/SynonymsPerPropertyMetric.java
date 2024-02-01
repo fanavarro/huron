@@ -60,7 +60,7 @@ public class SynonymsPerPropertyMetric extends AnnotationsPerEntityAbstractMetri
 			totalProperties++;
 			int localNumberOfSynonyms = getNumberOfSynonyms(owlObjectProperty);
 			super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%d\n", this.getName(), owlObjectProperty.toStringID(), localNumberOfSynonyms));
-			RDFUtils.createObservation(rdfModel, ontologyIRI, owlObjectProperty.getIRI().toString(), OWL.ObjectProperty.getURI(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Integer(localNumberOfSynonyms), timestamp);
+			this.notifyExporterListeners(ontologyIRI, owlObjectProperty.getIRI().toString(), OWL.ObjectProperty.getURI(), Integer.valueOf(localNumberOfSynonyms), timestamp);
 			numberOfSynonyms = numberOfSynonyms + localNumberOfSynonyms;
 		}
 		
@@ -71,7 +71,7 @@ public class SynonymsPerPropertyMetric extends AnnotationsPerEntityAbstractMetri
 			totalProperties++;
 			int localNumberOfSynonyms = getNumberOfSynonyms(owlDataProperty);
 			super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%d\n", this.getName(), owlDataProperty.toStringID(), localNumberOfSynonyms));
-			RDFUtils.createObservation(rdfModel, ontologyIRI, owlDataProperty.getIRI().toString(), OWL.DatatypeProperty.getURI(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Integer(localNumberOfSynonyms), timestamp);
+			this.notifyExporterListeners(ontologyIRI, owlDataProperty.getIRI().toString(), OWL.DatatypeProperty.getURI(), Integer.valueOf(localNumberOfSynonyms), timestamp);
 			numberOfSynonyms = numberOfSynonyms + localNumberOfSynonyms;
 		}
 		
@@ -82,13 +82,12 @@ public class SynonymsPerPropertyMetric extends AnnotationsPerEntityAbstractMetri
 			totalProperties++;
 			int localNumberOfSynonyms = getNumberOfSynonyms(owlAnnotationProperty);
 			super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%d\n", this.getName(), owlAnnotationProperty.toStringID(), localNumberOfSynonyms));
-			RDFUtils.createObservation(rdfModel, ontologyIRI, owlAnnotationProperty.getIRI().toString(), OWL.AnnotationProperty.getURI(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Integer(localNumberOfSynonyms), timestamp);
+			this.notifyExporterListeners(ontologyIRI, owlAnnotationProperty.getIRI().toString(), OWL.AnnotationProperty.getURI(), Integer.valueOf(localNumberOfSynonyms), timestamp);
 			numberOfSynonyms = numberOfSynonyms + localNumberOfSynonyms;
 		}
 		
 		double metricValue = ((double) (numberOfSynonyms)) / totalProperties;
-		RDFUtils.createObservation(rdfModel, ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Double(metricValue), timestamp);
-		
+		this.notifyExporterListeners(ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), Double.valueOf(metricValue), timestamp);
 		return new MetricResult(metricValue, rdfModel);
 	
 	}

@@ -56,14 +56,13 @@ public class SynonymsPerObjectPropertyMetric extends AnnotationsPerEntityAbstrac
 			}
 			int localNumberOfSynonyms = getNumberOfSynonyms(objectProperty);
 			super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%d\n", this.getName(), objectProperty.toStringID(), localNumberOfSynonyms));
-			RDFUtils.createObservation(rdfModel, ontologyIRI, objectProperty.getIRI().toString(), OWL.ObjectProperty.getURI(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Integer(localNumberOfSynonyms), timestamp);
+			this.notifyExporterListeners(ontologyIRI, objectProperty.getIRI().toString(), OWL.ObjectProperty.getURI(), Integer.valueOf(localNumberOfSynonyms), timestamp);
 			numberOfSynonyms = numberOfSynonyms + localNumberOfSynonyms;
 			numberOfEntities ++;
 		}
 		
 		double metricValue = ((double) (numberOfSynonyms)) / numberOfEntities;
-		RDFUtils.createObservation(rdfModel, ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Double(metricValue), timestamp);
-		
+		this.notifyExporterListeners(ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), Double.valueOf(metricValue), timestamp);
 		return new MetricResult(metricValue, rdfModel);
 	}
 

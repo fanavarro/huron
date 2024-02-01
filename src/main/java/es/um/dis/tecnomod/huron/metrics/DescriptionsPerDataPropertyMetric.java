@@ -56,13 +56,13 @@ public class DescriptionsPerDataPropertyMetric extends AnnotationsPerEntityAbstr
 			}
 			int localNumberOfdescriptions = getNumberOfDescriptions(owlDataProperty);
 			super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%d\n", this.getName(), owlDataProperty.toStringID(), localNumberOfdescriptions));
-			RDFUtils.createObservation(rdfModel, ontologyIRI, owlDataProperty.getIRI().toString(), OWL.DatatypeProperty.getURI(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Integer(localNumberOfdescriptions), timestamp);
+			this.notifyExporterListeners(ontologyIRI, owlDataProperty.getIRI().toString(), OWL.DatatypeProperty.getURI(), Integer.valueOf(localNumberOfdescriptions), timestamp);
 			numberOfDescriptions = numberOfDescriptions + localNumberOfdescriptions;
 			numberOfEntities ++;
 		}
 		
 		double metricValue = ((double) (numberOfDescriptions)) / numberOfEntities;
-		RDFUtils.createObservation(rdfModel, ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Double(metricValue), timestamp);
+		this.notifyExporterListeners(ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), Double.valueOf(metricValue), timestamp);
 		
 		return new MetricResult(metricValue, rdfModel);
 	}

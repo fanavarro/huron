@@ -60,7 +60,7 @@ public class NamesPerPropertyMetric extends AnnotationsPerEntityAbstractMetric{
 			totalProperties++;
 			int localNumberOfNames = getNumberOfNames(owlObjectProperty);
 			super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%d\n", this.getName(), owlObjectProperty.toStringID(), localNumberOfNames));
-			RDFUtils.createObservation(rdfModel, ontologyIRI, owlObjectProperty.getIRI().toString(), OWL.ObjectProperty.getURI(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Integer(localNumberOfNames), timestamp);
+			this.notifyExporterListeners(ontologyIRI, owlObjectProperty.getIRI().toString(), OWL.ObjectProperty.getURI(), Integer.valueOf(localNumberOfNames), timestamp);
 			numberOfNames = numberOfNames + localNumberOfNames;
 		}
 		
@@ -71,7 +71,7 @@ public class NamesPerPropertyMetric extends AnnotationsPerEntityAbstractMetric{
 			totalProperties++;
 			int localNumberOfNames = getNumberOfNames(owlDataProperty);
 			super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%d\n", this.getName(), owlDataProperty.toStringID(), localNumberOfNames));
-			RDFUtils.createObservation(rdfModel, ontologyIRI, owlDataProperty.getIRI().toString(), OWL.DatatypeProperty.getURI(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Integer(localNumberOfNames), timestamp);
+			this.notifyExporterListeners(ontologyIRI, owlDataProperty.getIRI().toString(), OWL.DatatypeProperty.getURI(), Integer.valueOf(localNumberOfNames), timestamp);
 			numberOfNames = numberOfNames + localNumberOfNames;
 		}
 		
@@ -82,13 +82,12 @@ public class NamesPerPropertyMetric extends AnnotationsPerEntityAbstractMetric{
 			}
 			int localNumberOfNames = getNumberOfNames(owlAnnotationProperty);
 			super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%d\n", this.getName(), owlAnnotationProperty.toStringID(), localNumberOfNames));
-			RDFUtils.createObservation(rdfModel, ontologyIRI, owlAnnotationProperty.getIRI().toString(), OWL.AnnotationProperty.getURI(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Integer(localNumberOfNames), timestamp);
+			this.notifyExporterListeners(ontologyIRI, owlAnnotationProperty.getIRI().toString(), OWL.AnnotationProperty.getURI(), Integer.valueOf(localNumberOfNames), timestamp);
 			numberOfNames = numberOfNames + localNumberOfNames;
 		}
 		
 		double metricValue = ((double) (numberOfNames)) / totalProperties;
-		RDFUtils.createObservation(rdfModel, ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Double(metricValue), timestamp);
-		
+		this.notifyExporterListeners(ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), Double.valueOf(metricValue), timestamp);
 		return new MetricResult(metricValue, rdfModel);
 	}
 

@@ -62,7 +62,7 @@ public class NumberOfLexicalRegularitiesMetric extends OntoenrichMetric {
 			}
 		}
 		double metricValue = lexicalRegularities.size();
-			RDFUtils.createObservation(rdfModel, ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Double(metricValue), Calendar.getInstance());
+		this.notifyExporterListeners(ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), Double.valueOf(metricValue), Calendar.getInstance());
 
 		return new MetricResult(metricValue, rdfModel);
 	}

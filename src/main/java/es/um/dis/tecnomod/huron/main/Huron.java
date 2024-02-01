@@ -27,6 +27,8 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.semanticweb.owlapi.model.parameters.Imports;
 
+import es.um.dis.tecnomod.huron.exporters.ExporterInterface;
+import es.um.dis.tecnomod.huron.exporters.RDFExporter;
 import es.um.dis.tecnomod.huron.metrics.AnnotationPropertiesWithNoDescriptionMetric;
 import es.um.dis.tecnomod.huron.metrics.AnnotationPropertiesWithNoNameMetric;
 import es.um.dis.tecnomod.huron.metrics.AnnotationPropertiesWithNoSynonymMetric;
@@ -88,8 +90,12 @@ public class Huron {
 		boolean includeDetailedFiles = cmd.hasOption('v');
 		long timeout = Long.parseLong(cmd.getOptionValue('q', "-1"));
 		boolean includeImports = cmd.hasOption("imports");
+		File rdfOutput = cmd.getOptionValue("rdf", null) != null ? new File(cmd.getOptionValue("rdf")) : null;
 		Config config = new Config();
 		config.setImports(Imports.fromBoolean(includeImports));
+		if (rdfOutput != null) {
+			config.addExporter(new RDFExporter(rdfOutput));
+		}
 		
 		if (!inputFile.exists()) {
 			LOGGER.log(Level.SEVERE, String.format("'%s' not found.", args[0]));
@@ -116,7 +122,7 @@ public class Huron {
 			})));
 		}
 		List<MetricCalculationTask> tasks = getMetricCalculationTasks(ontologyFiles, includeDetailedFiles, config);
-		executeWithTaskExecutor(outputFile, tasks, threads, timeout);
+		executeWithTaskExecutor(outputFile, tasks, threads, timeout, config);
 
 	}
 
@@ -129,7 +135,7 @@ public class Huron {
 	 * @throws InterruptedException the interrupted exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	private static void executeWithTaskExecutor(File outputFile, List<MetricCalculationTask> tasks, int threads, long timeout)
+	private static void executeWithTaskExecutor(File outputFile, List<MetricCalculationTask> tasks, int threads, long timeout, Config config)
 			throws InterruptedException, IOException {
 		ExecutorService executor = Executors.newFixedThreadPool(threads);
 		List<Future<List<MetricCalculationTaskResult>>> futureResults;
@@ -154,6 +160,10 @@ public class Huron {
 		}
 		printWriter.close();
 		executor.shutdown();
+		
+		for (ExporterInterface exporter : config.getExporters()) {
+			exporter.export();
+		}
 	}
 	
 	/**
@@ -210,6 +220,10 @@ public class Huron {
         Option importOption = new Option(null, "imports", false, "Consider imported entities from external ontologies (import clause) when calculating the metrics.");
         importOption.setRequired(false);
         options.addOption(importOption);
+        
+        Option rdfOutput = new Option(null, "rdf", true, "Output results in RDF in the specified file");
+        rdfOutput.setRequired(false);
+        options.addOption(rdfOutput);
         
         CommandLineParser parser = new DefaultParser();
         HelpFormatter formatter = new HelpFormatter();

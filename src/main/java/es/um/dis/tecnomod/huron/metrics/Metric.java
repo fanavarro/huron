@@ -5,15 +5,16 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Calendar;
 
 import org.apache.jena.rdf.model.Model;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
-import org.semanticweb.owlapi.model.parameters.Imports;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
+import es.um.dis.tecnomod.huron.exporters.ExporterInterface;
 import es.um.dis.tecnomod.huron.main.Config;
 import es.um.dis.tecnomod.huron.rdf_builder.RDFConstants;
 
@@ -38,13 +39,13 @@ public abstract class Metric {
 	/** The print writer. */
 	private PrintWriter printWriter;
 	
+	
 	/**
 	 * Instantiates a new metric.
 	 */
 	public Metric() {
 		super();
 		this.config = new Config();
-		this.config.setImports(Imports.EXCLUDED);
 	}
 	
 	/**
@@ -53,7 +54,6 @@ public abstract class Metric {
 	 * @param config the config
 	 */
 	public Metric(Config config) {
-		this();
 		this.config = config;
 	}
 	
@@ -230,12 +230,23 @@ public abstract class Metric {
 		return null;
 	}
 
+	/**
+	 * Gets the config.
+	 *
+	 * @return the config
+	 */
 	public Config getConfig() {
 		return config;
 	}
 
 	public void setConfig(Config config) {
 		this.config = config;
+	}
+	
+	public void notifyExporterListeners(String sourceDocumentIRI, String featureOfInterestIRI, String featureOfInterestTypeIRI, Object value, Calendar timestamp) {
+		for (ExporterInterface exporterListener : this.getConfig().getExporters()) {
+			exporterListener.addObservation(sourceDocumentIRI, featureOfInterestIRI, featureOfInterestTypeIRI, this.getObservablePropertyIRI(), this.getIRI(), this.getInstrumentIRI(), this.getUnitOfMeasureIRI(), value, timestamp);
+		}
 	}
 
 }

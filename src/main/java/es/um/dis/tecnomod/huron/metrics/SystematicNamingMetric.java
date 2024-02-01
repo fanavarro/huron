@@ -113,7 +113,7 @@ public class SystematicNamingMetric extends OntoenrichMetric {
 				int localNegativeCasesCount = localNegativeCases.size();
 				
 				double localMetricResult = (double) localPositiveCasesCount / (localPositiveCasesCount + localNegativeCasesCount);
-				RDFUtils.createObservation(rdfModel, ontologyIRI, owlClassA.getIRI().toString(), OWL.Class.getURI(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Double(localMetricResult), timestamp);
+				this.notifyExporterListeners(ontologyIRI, owlClassA.getIRI().toString(), OWL.Class.getURI(), Double.valueOf(localMetricResult), timestamp);
 				if(super.isOpenDetailedOutputFile()){
 					if (owlClassADepth == -1){
 						owlClassADepth = this.ontologyGraphService.getClassDepth(this.reasoner, owlClassA, this.getConfig().getImports());
@@ -138,7 +138,7 @@ public class SystematicNamingMetric extends OntoenrichMetric {
 		reasoner.dispose();
 		// STEP 5: return the calculated value
 		double metricValue = (double) positiveCasesCount / (positiveCasesCount + negativeCasesCount);
-		RDFUtils.createObservation(rdfModel, ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Double(metricValue), timestamp);
+		this.notifyExporterListeners(ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), Double.valueOf(metricValue), timestamp);
 		
 		return new MetricResult(metricValue, rdfModel);
 

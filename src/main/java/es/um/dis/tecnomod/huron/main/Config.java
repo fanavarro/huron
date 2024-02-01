@@ -1,8 +1,12 @@
 package es.um.dis.tecnomod.huron.main;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.semanticweb.owlapi.model.parameters.Imports;
+
+import es.um.dis.tecnomod.huron.exporters.ExporterInterface;
 
 /**
  * The Class Config.
@@ -15,6 +19,14 @@ public class Config implements Serializable {
 	/** The imports. */
 	private  Imports imports;
 	
+	/** The exporters. */
+	private List<ExporterInterface> exporters;
+	
+	public Config() {
+		this.exporters = new ArrayList<>();
+		this.imports = Imports.EXCLUDED;
+		this.exporters = new ArrayList<ExporterInterface> ();
+	}
 	/**
 	 * Gets the imports.
 	 *
@@ -31,5 +43,33 @@ public class Config implements Serializable {
 	 */
 	public void setImports(Imports imports) {
 		this.imports = imports;
+	}
+
+	/**
+	 * Gets the exporters.
+	 *
+	 * @return the exporters
+	 */
+	public List<ExporterInterface> getExporters() {
+		return exporters;
+	}
+
+	/**
+	 * Sets the exporters.
+	 *
+	 * @param exporters the new exporters
+	 */
+	public void setExporters(List<ExporterInterface> exporters) {
+		this.exporters = exporters;
+	}
+	
+	
+	/**
+	 * Adds the exporter.
+	 *
+	 * @param exporter the exporter
+	 */
+	public void addExporter(ExporterInterface exporter) {
+		this.exporters.add(exporter);
 	}
 }

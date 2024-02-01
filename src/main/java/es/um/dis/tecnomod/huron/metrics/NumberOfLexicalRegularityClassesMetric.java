@@ -62,7 +62,7 @@ public class NumberOfLexicalRegularityClassesMetric extends OntoenrichMetric {
 						.filter(x -> (x.getStrLabel().equalsIgnoreCase(lexicalRegularity.getStrPattern())))
 						.findFirst().orElse(new Label("",""))
 						.getIdLabel();
-				RDFUtils.createObservation(rdfModel, ontologyIRI, lrClass, OWL.Class.getURI(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Boolean(true), timestamp);
+				this.notifyExporterListeners(ontologyIRI, lrClass, OWL.Class.getURI(), Boolean.valueOf(true), timestamp);
 				boolean isLRClass = lexicalRegularity.getIsAClass();
 				if(super.isOpenDetailedOutputFile()){
 					for (Label label : lexicalRegularity.getIdLabelsWhereItAppears()) {
@@ -76,7 +76,7 @@ public class NumberOfLexicalRegularityClassesMetric extends OntoenrichMetric {
 		}
 		
 		double metricValue = lexicalRegularities.size();
-		RDFUtils.createObservation(rdfModel, ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), getObservablePropertyIRI(), getIRI(), getInstrumentIRI(), getUnitOfMeasureIRI(), new Double(metricValue), timestamp);
+		this.notifyExporterListeners(ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), Double.valueOf(metricValue), timestamp);
 
 		return new MetricResult(metricValue, rdfModel);
 	}
