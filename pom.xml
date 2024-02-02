@@ -15,6 +15,8 @@
 		<owlapi.version>5.1.10</owlapi.version>
 		<main.class>es.um.dis.tecnomod.huron.main.Huron</main.class>
 		<jena.version>3.17.0</jena.version>
+		<joinery-dataframe.version>1.10</joinery-dataframe.version>
+		<tablesaw.version>0.43.1</tablesaw.version>
 	</properties>
 	<build>
 		<plugins>
@@ -40,7 +42,8 @@
 				</configuration>
 				<executions>
 					<execution>
-						<id>make-assembly</id> <!-- this is used for inheritance merges -->
+						<id>make-assembly</id> <!-- this is used for inheritance
+						merges -->
 						<phase>package</phase> <!-- bind to the packaging phase -->
 						<goals>
 							<goal>single</goal>
@@ -83,8 +86,8 @@
 		</dependency>
 
 
-
-		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-collections4 -->
+		<!--
+		https://mvnrepository.com/artifact/org.apache.commons/commons-collections4 -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-collections4</artifactId>
@@ -110,7 +113,7 @@
 				<maven.compiler.release>13</maven.compiler.release>
 			</properties>
 		</profile>
-		
+
 		<profile>
 			<id>java17</id>
 			<activation>

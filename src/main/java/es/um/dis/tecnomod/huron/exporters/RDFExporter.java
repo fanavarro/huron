@@ -22,11 +22,10 @@ public class RDFExporter implements ExporterInterface {
 	}
 
 	@Override
-	public void addObservation(String sourceDocumentIRI, String featureOfInterestIRI, String featureOfInterestTypeIRI,
+	public synchronized void addObservation(String sourceDocumentIRI, String featureOfInterestIRI, String featureOfInterestTypeIRI,
 			String observablePropertyIRI, String metricUsedIRI, String instrumentIRI, String unitIRI, Object value,
 			Calendar timestamp) {
 		RDFUtils.createObservation(rdfModel, sourceDocumentIRI, featureOfInterestIRI, featureOfInterestTypeIRI, observablePropertyIRI, metricUsedIRI, instrumentIRI, unitIRI, value, timestamp);
-		
 	}
 
 	@Override

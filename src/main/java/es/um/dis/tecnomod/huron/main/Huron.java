@@ -1,14 +1,11 @@
 package es.um.dis.tecnomod.huron.main;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -29,6 +26,7 @@ import org.semanticweb.owlapi.model.parameters.Imports;
 
 import es.um.dis.tecnomod.huron.exporters.ExporterInterface;
 import es.um.dis.tecnomod.huron.exporters.RDFExporter;
+import es.um.dis.tecnomod.huron.exporters.WideTSVExporter;
 import es.um.dis.tecnomod.huron.metrics.AnnotationPropertiesWithNoDescriptionMetric;
 import es.um.dis.tecnomod.huron.metrics.AnnotationPropertiesWithNoNameMetric;
 import es.um.dis.tecnomod.huron.metrics.AnnotationPropertiesWithNoSynonymMetric;
@@ -86,16 +84,13 @@ public class Huron {
 		setLogLevel(cmd.getOptionValue('l', Level.INFO.getName()));
 		File inputFile = new File(cmd.getOptionValue('i'));
 		File outputFile = new File(cmd.getOptionValue('o'));
+		File rdfOutput = cmd.getOptionValue("rdf", null) != null ? new File(cmd.getOptionValue("rdf")) : null;
 		int threads = Integer.parseInt(cmd.getOptionValue('t', "1"));
 		boolean includeDetailedFiles = cmd.hasOption('v');
 		long timeout = Long.parseLong(cmd.getOptionValue('q', "-1"));
 		boolean includeImports = cmd.hasOption("imports");
-		File rdfOutput = cmd.getOptionValue("rdf", null) != null ? new File(cmd.getOptionValue("rdf")) : null;
-		Config config = new Config();
-		config.setImports(Imports.fromBoolean(includeImports));
-		if (rdfOutput != null) {
-			config.addExporter(new RDFExporter(rdfOutput));
-		}
+		
+		
 		
 		if (!inputFile.exists()) {
 			LOGGER.log(Level.SEVERE, String.format("'%s' not found.", args[0]));
@@ -106,7 +101,15 @@ public class Huron {
 			LOGGER.log(Level.SEVERE, String.format("'%s' exists but it is not a file.", args[1]));
 			return;
 		}
-
+		
+		Config config = new Config();
+		config.setImports(Imports.fromBoolean(includeImports));
+		config.addExporter(new WideTSVExporter(outputFile));
+		if (rdfOutput != null) {
+			config.addExporter(new RDFExporter(rdfOutput));
+		}
+		
+		
 		List<File> ontologyFiles = new ArrayList<File>();
 		if (inputFile.isFile()) {
 			ontologyFiles.add(inputFile);
@@ -116,13 +119,13 @@ public class Huron {
 				@Override
 				public boolean accept(File dir, String name) {
 					String lowerCaseName = name.toLowerCase();
-					return lowerCaseName.endsWith(".owl") || lowerCaseName.endsWith(".obo") || lowerCaseName.endsWith(".rdf");
+					return lowerCaseName.endsWith(".owl") || lowerCaseName.endsWith(".obo") || lowerCaseName.endsWith(".rdf") || lowerCaseName.endsWith(".ttl");
 				}
 
 			})));
 		}
 		List<MetricCalculationTask> tasks = getMetricCalculationTasks(ontologyFiles, includeDetailedFiles, config);
-		executeWithTaskExecutor(outputFile, tasks, threads, timeout, config);
+		executeWithTaskExecutor(tasks, threads, timeout, config);
 
 	}
 
@@ -135,7 +138,7 @@ public class Huron {
 	 * @throws InterruptedException the interrupted exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	private static void executeWithTaskExecutor(File outputFile, List<MetricCalculationTask> tasks, int threads, long timeout, Config config)
+	private static void executeWithTaskExecutor(List<MetricCalculationTask> tasks, int threads, long timeout, Config config)
 			throws InterruptedException, IOException {
 		ExecutorService executor = Executors.newFixedThreadPool(threads);
 		List<Future<List<MetricCalculationTaskResult>>> futureResults;
@@ -145,20 +148,15 @@ public class Huron {
 			LOGGER.log(Level.INFO, String.format("Tasks will have a timeout of %d minutes", timeout));
 			futureResults = executor.invokeAll(tasks, timeout, TimeUnit.MINUTES);
 		}
-		FileWriter fileWriter = new FileWriter(outputFile);
-		PrintWriter printWriter = new PrintWriter(fileWriter);
-		printWriter.print("File\tMetric\tValue\n");
+
 		for(Future<List<MetricCalculationTaskResult>> futureResult : futureResults){
 			try {
-				List<MetricCalculationTaskResult> results = futureResult.get();
-				for(MetricCalculationTaskResult result : results){
-					printWriter.printf(Locale.ROOT, "%s\t%s\t%.3f\n", result.getOwlFile(), result.getMetricName(), result.getResult());
-				}
+				//List<MetricCalculationTaskResult> results = futureResult.get();
+				futureResult.get();
 			} catch (ExecutionException | CancellationException | InterruptedException e) {
 				LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			}
 		}
-		printWriter.close();
 		executor.shutdown();
 		
 		for (ExporterInterface exporter : config.getExporters()) {
