@@ -3,9 +3,6 @@ package es.um.dis.tecnomod.huron.tasks;
 import java.io.Serializable;
 import java.util.Objects;
 
-import org.apache.jena.rdf.model.Model;
-
-// TODO: Auto-generated Javadoc
 /**
  * The Class MetricCalculationTaskResult.
  */
@@ -23,9 +20,6 @@ public class MetricCalculationTaskResult implements Serializable{
 	/** The owl file. */
 	private String owlFile;
 	
-	/**  The metric result in RDF statements. */
-	private Model rdf;
-	
 	
 	/**
 	 * Instantiates a new metric calculation task result.
@@ -35,12 +29,11 @@ public class MetricCalculationTaskResult implements Serializable{
 	 * @param owlFile the owl file
 	 * @param rdf the rdf
 	 */
-	public MetricCalculationTaskResult(String metricName, double result, String owlFile, Model rdf) {
+	public MetricCalculationTaskResult(String metricName, double result, String owlFile) {
 		super();
 		this.metricName = metricName;
 		this.result = result;
 		this.owlFile = owlFile;
-		this.rdf = rdf;
 	}
 
 
@@ -98,40 +91,13 @@ public class MetricCalculationTaskResult implements Serializable{
 		this.owlFile = owlFile;
 	}
 
-	/**
-	 * Gets the rdf.
-	 *
-	 * @return the rdf
-	 */
-	public Model getRdf() {
-		return rdf;
-	}
 
-	/**
-	 * Sets the rdf.
-	 *
-	 * @param rdf the new rdf
-	 */
-	public void setRdf(Model rdf) {
-		this.rdf = rdf;
-	}
-
-	/**
-	 * Hash code.
-	 *
-	 * @return the int
-	 */
 	@Override
 	public int hashCode() {
-		return Objects.hash(metricName, owlFile, rdf, result);
+		return Objects.hash(metricName, owlFile, result);
 	}
 
-	/**
-	 * Equals.
-	 *
-	 * @param obj the obj
-	 * @return true, if successful
-	 */
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -142,15 +108,10 @@ public class MetricCalculationTaskResult implements Serializable{
 			return false;
 		MetricCalculationTaskResult other = (MetricCalculationTaskResult) obj;
 		return Objects.equals(metricName, other.metricName) && Objects.equals(owlFile, other.owlFile)
-				&& Objects.equals(rdf, other.rdf)
 				&& Double.doubleToLongBits(result) == Double.doubleToLongBits(other.result);
 	}
 
-	/**
-	 * To string.
-	 *
-	 * @return the string
-	 */
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -160,9 +121,10 @@ public class MetricCalculationTaskResult implements Serializable{
 		builder.append(result);
 		builder.append(", owlFile=");
 		builder.append(owlFile);
-		builder.append(", rdf=");
-		builder.append(rdf);
 		builder.append("]");
 		return builder.toString();
 	}
+
+
+
 }

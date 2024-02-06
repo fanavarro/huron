@@ -1,11 +1,11 @@
-package es.um.dis.tecnomod.huron.exporters;
+package es.um.dis.tecnomod.huron.result_model;
 
 import java.io.File;
 
-public class LongTSVExporter extends TableExporter {
+public class LongTSVResultModel extends SummaryTSVResultModel {
 
 
-	public LongTSVExporter(File outputFile) {
+	public LongTSVResultModel(File outputFile) {
 		super(outputFile);
 	}
 

@@ -3,11 +3,8 @@ package es.um.dis.tecnomod.huron.metrics;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Calendar;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.vocabulary.OWL;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
@@ -46,10 +43,9 @@ public class NamesPerObjectPropertyMetric extends AnnotationsPerEntityAbstractMe
 	 */
 	@Override
 	public MetricResult calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
-		super.writeToDetailedOutputFile("Metric\tObject Property\tMetric Value\n");
+		
 		String ontologyIRI = RDFUtils.getOntologyIRI(getOntology());
 		Calendar timestamp = Calendar.getInstance();
-		Model rdfModel = ModelFactory.createDefaultModel();
 		int numberOfNames = 0;
 		int numberOfEntities = 0;
 		for(OWLObjectProperty owlObjectProperty : super.getOntology().objectPropertiesInSignature(this.getConfig().getImports()).collect(Collectors.toList())){
@@ -57,7 +53,7 @@ public class NamesPerObjectPropertyMetric extends AnnotationsPerEntityAbstractMe
 				continue;
 			}
 			int localNumberOfNames = getNumberOfNames(owlObjectProperty);
-			super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%d\n", this.getName(), owlObjectProperty.toStringID(), localNumberOfNames));
+			
 			this.notifyExporterListeners(ontologyIRI, owlObjectProperty.getIRI().toString(), OWL.ObjectProperty.getURI(), Integer.valueOf(localNumberOfNames), timestamp);
 			numberOfNames = numberOfNames + localNumberOfNames;
 			numberOfEntities ++;
@@ -65,7 +61,7 @@ public class NamesPerObjectPropertyMetric extends AnnotationsPerEntityAbstractMe
 		
 		double metricValue = ((double) (numberOfNames)) / numberOfEntities;
 		this.notifyExporterListeners(ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), Double.valueOf(metricValue), timestamp);
-		return new MetricResult(metricValue, rdfModel);
+		return new MetricResult(metricValue);
 	}
 
 

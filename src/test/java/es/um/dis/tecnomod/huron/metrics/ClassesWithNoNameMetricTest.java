@@ -24,7 +24,6 @@ public class ClassesWithNoNameMetricTest {
 		
 
 		assertEquals(0.0, metricResult.getMetricValue(), 0.01);
-		metricResult.getRdf().write(System.out, "Turtle");
 		
 	}
 

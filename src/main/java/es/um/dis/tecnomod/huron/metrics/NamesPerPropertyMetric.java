@@ -3,11 +3,8 @@ package es.um.dis.tecnomod.huron.metrics;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Calendar;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.vocabulary.OWL;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLDataProperty;
@@ -46,10 +43,9 @@ public class NamesPerPropertyMetric extends AnnotationsPerEntityAbstractMetric{
 	 */
 	@Override
 	public MetricResult calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
-		super.writeToDetailedOutputFile("Metric\tProperty\tMetric Value\n");
+		
 		String ontologyIRI = RDFUtils.getOntologyIRI(getOntology());
 		Calendar timestamp = Calendar.getInstance();
-		Model rdfModel = ModelFactory.createDefaultModel();
 		int numberOfNames = 0;
 		int totalProperties = 0;
 		
@@ -59,7 +55,7 @@ public class NamesPerPropertyMetric extends AnnotationsPerEntityAbstractMetric{
 			}
 			totalProperties++;
 			int localNumberOfNames = getNumberOfNames(owlObjectProperty);
-			super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%d\n", this.getName(), owlObjectProperty.toStringID(), localNumberOfNames));
+			
 			this.notifyExporterListeners(ontologyIRI, owlObjectProperty.getIRI().toString(), OWL.ObjectProperty.getURI(), Integer.valueOf(localNumberOfNames), timestamp);
 			numberOfNames = numberOfNames + localNumberOfNames;
 		}
@@ -70,7 +66,7 @@ public class NamesPerPropertyMetric extends AnnotationsPerEntityAbstractMetric{
 			}
 			totalProperties++;
 			int localNumberOfNames = getNumberOfNames(owlDataProperty);
-			super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%d\n", this.getName(), owlDataProperty.toStringID(), localNumberOfNames));
+			
 			this.notifyExporterListeners(ontologyIRI, owlDataProperty.getIRI().toString(), OWL.DatatypeProperty.getURI(), Integer.valueOf(localNumberOfNames), timestamp);
 			numberOfNames = numberOfNames + localNumberOfNames;
 		}
@@ -81,14 +77,14 @@ public class NamesPerPropertyMetric extends AnnotationsPerEntityAbstractMetric{
 				continue;
 			}
 			int localNumberOfNames = getNumberOfNames(owlAnnotationProperty);
-			super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%d\n", this.getName(), owlAnnotationProperty.toStringID(), localNumberOfNames));
+			
 			this.notifyExporterListeners(ontologyIRI, owlAnnotationProperty.getIRI().toString(), OWL.AnnotationProperty.getURI(), Integer.valueOf(localNumberOfNames), timestamp);
 			numberOfNames = numberOfNames + localNumberOfNames;
 		}
 		
 		double metricValue = ((double) (numberOfNames)) / totalProperties;
 		this.notifyExporterListeners(ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), Double.valueOf(metricValue), timestamp);
-		return new MetricResult(metricValue, rdfModel);
+		return new MetricResult(metricValue);
 	}
 
 

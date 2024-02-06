@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import org.apache.jena.rdf.model.Model;
 import org.junit.Test;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -31,9 +30,6 @@ public class NamesPerClassMetricTest {
 		metric.setOntology(ontology);
 		double res = metric.calculateValue();
 		assertEquals(2.0, res, 0.01);
-		
-		Model model = metric.calculateRDF();
-		model.write(System.out, "n-triples");
 	}
 
 }

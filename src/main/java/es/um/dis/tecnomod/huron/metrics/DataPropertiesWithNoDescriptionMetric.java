@@ -3,11 +3,8 @@ package es.um.dis.tecnomod.huron.metrics;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Calendar;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.vocabulary.OWL;
 import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
@@ -35,10 +32,9 @@ public class DataPropertiesWithNoDescriptionMetric extends AnnotationsPerEntityA
 	
 	@Override
 	public MetricResult calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
-		super.writeToDetailedOutputFile("Metric\tDataProperty\tWithNoDescription\n");
+		
 		String ontologyIRI = RDFUtils.getOntologyIRI(getOntology());
 		Calendar timestamp = Calendar.getInstance();
-		Model rdfModel = ModelFactory.createDefaultModel();
 		int numberOfDataPropertiesWithNoDescription = 0;
 		int numberOfEntities = 0;
 		for(OWLDataProperty owlDataProperty : super.getOntology().dataPropertiesInSignature(this.getConfig().getImports()).collect(Collectors.toList())){
@@ -47,12 +43,12 @@ public class DataPropertiesWithNoDescriptionMetric extends AnnotationsPerEntityA
 			}			
 			int localNumberOfDescriptions = this.getNumberOfDescriptions(owlDataProperty);
 			if (localNumberOfDescriptions == 0) {
-				super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%b\n", this.getName(), owlDataProperty.toStringID(), true));
+				
 				this.notifyExporterListeners(ontologyIRI, owlDataProperty.getIRI().toString(), OWL.DatatypeProperty.getURI(), Boolean.valueOf(true), timestamp);
 				
 				numberOfDataPropertiesWithNoDescription++;
 			}else {
-				super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%b\n", this.getName(), owlDataProperty.toStringID(), false));
+				
 				this.notifyExporterListeners(ontologyIRI, owlDataProperty.getIRI().toString(), OWL.DatatypeProperty.getURI(), Boolean.valueOf(false), timestamp);
 			}
 			numberOfEntities ++;
@@ -61,7 +57,7 @@ public class DataPropertiesWithNoDescriptionMetric extends AnnotationsPerEntityA
 		double metricValue = ((double) (numberOfDataPropertiesWithNoDescription)) / numberOfEntities;
 		this.notifyExporterListeners(ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), Double.valueOf(metricValue), timestamp);
 
-		return new MetricResult(metricValue, rdfModel);		
+		return new MetricResult(metricValue);		
 	}
 
 	@Override

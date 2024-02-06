@@ -2,21 +2,18 @@ package es.um.dis.tecnomod.huron.metrics;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Calendar;
 
-import org.apache.jena.rdf.model.Model;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
-import es.um.dis.tecnomod.huron.exporters.ExporterInterface;
 import es.um.dis.tecnomod.huron.main.Config;
 import es.um.dis.tecnomod.huron.rdf_builder.RDFConstants;
+import es.um.dis.tecnomod.huron.result_model.ResultModelInterface;
 
 
 /**
@@ -32,12 +29,6 @@ public abstract class Metric {
 	
 	/** The ontology path. */
 	private String ontologyPath;
-	
-	/** The detailed output file. */
-	private File detailedOutputFile;
-	
-	/** The print writer. */
-	private PrintWriter printWriter;
 	
 	
 	/**
@@ -82,17 +73,6 @@ public abstract class Metric {
 		return this.calculate().getMetricValue();
 	}
 	
-	/**
-	 * Calculate the metric and return RDF statements with the metric values and issues found.
-	 * @return Model including RDF statements with the metric values and the issues found.
-	 * @throws Exception 
-	 * @throws IOException 
-	 * @throws FileNotFoundException 
-	 * @throws OWLOntologyCreationException 
-	 */
-	public Model calculateRDF() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
-		return this.calculate().getRdf();
-	}
 
 
 	/**
@@ -159,54 +139,6 @@ public abstract class Metric {
 	public String getOntologyPath() {
 		return ontologyPath;
 	}
-
-	/**
-	 * Gets the detailed output file.
-	 *
-	 * @return the detailed output file
-	 */
-	public File getDetailedOutputFile() {
-		return detailedOutputFile;
-	}
-
-	/**
-	 * Open detailed output file.
-	 *
-	 * @param detailedOutputFile the detailed output file
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public void openDetailedOutputFile(File detailedOutputFile) throws IOException {
-		this.detailedOutputFile = detailedOutputFile;
-		printWriter = new PrintWriter(new FileWriter(detailedOutputFile));
-	}
-	
-	/**
-	 * Write to detailed output file.
-	 *
-	 * @param text the text
-	 */
-	public void writeToDetailedOutputFile(String text){
-		if(printWriter != null){
-			printWriter.write(text);
-		}
-	}
-	
-	/**
-	 * Checks if is open detailed output file.
-	 *
-	 * @return true, if is open detailed output file
-	 */
-	public boolean isOpenDetailedOutputFile(){
-		return printWriter != null;
-	}
-	
-	/**
-	 * Close detailed output file.
-	 */
-	public void closeDetailedOutputFile(){
-		this.printWriter.close();
-		this.printWriter = null;
-	}
 	
 	/**
 	 * Get the IRI of the property observed by the metric
@@ -244,7 +176,7 @@ public abstract class Metric {
 	}
 	
 	public void notifyExporterListeners(String sourceDocumentIRI, String featureOfInterestIRI, String featureOfInterestTypeIRI, Object value, Calendar timestamp) {
-		for (ExporterInterface exporterListener : this.getConfig().getExporters()) {
+		for (ResultModelInterface exporterListener : this.getConfig().getExporters()) {
 			exporterListener.addObservation(sourceDocumentIRI, featureOfInterestIRI, featureOfInterestTypeIRI, this.getObservablePropertyIRI(), this.getIRI(), this.getInstrumentIRI(), this.getUnitOfMeasureIRI(), value, timestamp);
 		}
 	}

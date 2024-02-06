@@ -24,7 +24,6 @@ public class AnnotationPropertiesWithNoDescriptionMetricTest {
 		
 
 		assertEquals(0.5, metricResult.getMetricValue(), 0.01);
-		metricResult.getRdf().write(System.out, "Turtle");
 		
 	}
 

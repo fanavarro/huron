@@ -3,11 +3,8 @@ package es.um.dis.tecnomod.huron.metrics;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Calendar;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.vocabulary.OWL;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
@@ -43,10 +40,9 @@ public class DescriptionsPerObjectPropertyMetric extends AnnotationsPerEntityAbs
 	 */
 	@Override
 	public MetricResult calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
-		super.writeToDetailedOutputFile("Metric\tObject Property\tMetric Value\n");
+		
 		String ontologyIRI = RDFUtils.getOntologyIRI(getOntology());
 		Calendar timestamp = Calendar.getInstance();
-		Model rdfModel = ModelFactory.createDefaultModel();
 		int numberOfDescriptions = 0;
 		int numberOfEntities = 0;
 		for(OWLObjectProperty objectProperty : super.getOntology().objectPropertiesInSignature(this.getConfig().getImports()).collect(Collectors.toList())){
@@ -54,7 +50,7 @@ public class DescriptionsPerObjectPropertyMetric extends AnnotationsPerEntityAbs
 				continue;
 			}
 			int localNumberOfdescriptions = getNumberOfDescriptions(objectProperty);
-			super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%d\n", this.getName(), objectProperty.toStringID(), localNumberOfdescriptions));
+			
 			this.notifyExporterListeners(ontologyIRI, objectProperty.getIRI().toString(), OWL.ObjectProperty.getURI(), Integer.valueOf(localNumberOfdescriptions), timestamp);
 			numberOfDescriptions = numberOfDescriptions + localNumberOfdescriptions;
 			numberOfEntities ++;
@@ -62,7 +58,7 @@ public class DescriptionsPerObjectPropertyMetric extends AnnotationsPerEntityAbs
 		
 		double metricValue = ((double) (numberOfDescriptions)) / numberOfEntities;
 		this.notifyExporterListeners(ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), Double.valueOf(metricValue), timestamp);
-		return new MetricResult(metricValue, rdfModel);
+		return new MetricResult(metricValue);
 	}
 
 

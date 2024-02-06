@@ -6,9 +6,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.NotImplementedException;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
 import org.semanticweb.owlapi.model.AxiomType;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
@@ -60,8 +57,6 @@ public class AnnotationUsageMetric extends Metric {
 	 */
 	@Override
 	public MetricResult calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
-		Model rdfModel = ModelFactory.createDefaultModel();
-		Property metricProperty = rdfModel.createProperty(this.getIRI());
 		int usage = 0;
 		if (getOntology().containsAnnotationPropertyInSignature(annotationIRI, this.getConfig().getImports())) {
 			OWLAnnotationProperty annotationProperty = getOntology().getOWLOntologyManager().getOWLDataFactory()
@@ -72,12 +67,11 @@ public class AnnotationUsageMetric extends Metric {
 					usage++;
 				}
 			}
-			rdfModel.createResource(annotationProperty.getIRI().toString()).addLiteral(metricProperty, usage);
 		}
 		
 		
 		double metricValue = usage;
-		return new MetricResult(metricValue, rdfModel);
+		return new MetricResult(metricValue);
 
 	}
 

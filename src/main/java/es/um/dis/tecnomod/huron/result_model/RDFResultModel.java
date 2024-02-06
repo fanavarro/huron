@@ -1,4 +1,4 @@
-package es.um.dis.tecnomod.huron.exporters;
+package es.um.dis.tecnomod.huron.result_model;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -10,12 +10,12 @@ import org.apache.jena.rdf.model.ModelFactory;
 
 import es.um.dis.tecnomod.huron.services.RDFUtils;
 
-public class RDFExporter implements ExporterInterface {
+public class RDFResultModel implements ResultModelInterface {
 	
 	private File outputFile;
 	private Model rdfModel;
 	
-	public RDFExporter(File outputFile) {
+	public RDFResultModel(File outputFile) {
 		super();
 		this.outputFile = outputFile;
 		this.rdfModel = ModelFactory.createDefaultModel();

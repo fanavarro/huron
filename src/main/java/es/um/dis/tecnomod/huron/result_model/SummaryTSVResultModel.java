@@ -1,22 +1,21 @@
-package es.um.dis.tecnomod.huron.exporters;
+package es.um.dis.tecnomod.huron.result_model;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 
+import es.um.dis.tecnomod.huron.services.URIUtils;
 
-public abstract class TableExporter implements ExporterInterface {
-	private static final String QUOTE_STRING = "\"";
+
+public abstract class SummaryTSVResultModel extends TSVResultModel implements ResultModelInterface {
+	
 	protected static final String ONTOLOGY_COLUMN = "ontology";
 	protected static final String METRIC_COLUMN = "metric";
 	protected static final String VALUE_COLUMN = "value";
@@ -26,7 +25,7 @@ public abstract class TableExporter implements ExporterInterface {
 	private int rowCount;
 	private List<String> header;
 	
-	public TableExporter(File outputFile) {
+	public SummaryTSVResultModel(File outputFile) {
 		this.outputFile = outputFile;
 		this.table = HashBasedTable.create();
 		this.rowCount = 0;
@@ -38,10 +37,11 @@ public abstract class TableExporter implements ExporterInterface {
 			String observablePropertyIRI, String metricUsedIRI, String instrumentIRI, String unitIRI, Object value,
 			Calendar timestamp) {
 		
+		
 		/* Here we only register ontology values */
 		if (featureOfInterestIRI.equals(sourceDocumentIRI)) {
 			this.table.put(rowCount, ONTOLOGY_COLUMN, featureOfInterestIRI);
-			this.table.put(rowCount, METRIC_COLUMN, metricUsedIRI);
+			this.table.put(rowCount, METRIC_COLUMN, URIUtils.getNameFromURI(metricUsedIRI));
 			this.table.put(rowCount, VALUE_COLUMN, value);
 			rowCount++;
 		}		
@@ -64,16 +64,7 @@ public abstract class TableExporter implements ExporterInterface {
 		printer.close();
 	}
 
-	protected String getStringValue(Object object) {
-		if (object instanceof String) {
-			return QUOTE_STRING + object.toString() + QUOTE_STRING;
-		}
-		if (object instanceof Number) {
-			return new DecimalFormat("###.###", new DecimalFormatSymbols(Locale.ROOT)).format(object);
-					
-		}
-		return object.toString();
-	}
+	
 	
 	protected void setHeader(List<String> header) {
 		this.header = header;

@@ -3,11 +3,8 @@ package es.um.dis.tecnomod.huron.metrics;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Calendar;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.vocabulary.OWL;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
@@ -46,10 +43,9 @@ public class SynonymsPerClassMetric extends AnnotationsPerEntityAbstractMetric {
 	 */
 	@Override
 	public MetricResult calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
-		super.writeToDetailedOutputFile("Metric\tClass\tMetric Value\n");
+		
 		String ontologyIRI = RDFUtils.getOntologyIRI(getOntology());
 		Calendar timestamp = Calendar.getInstance();
-		Model rdfModel = ModelFactory.createDefaultModel();
 		int numberOfSynonyms = 0;
 		int numberOfEntities = 0;
 		for(OWLClass owlClass : super.getOntology().classesInSignature(this.getConfig().getImports()).collect(Collectors.toList())){
@@ -57,7 +53,7 @@ public class SynonymsPerClassMetric extends AnnotationsPerEntityAbstractMetric {
 				continue;
 			}
 			int localNumberOfSynonyms = getNumberOfSynonyms(owlClass);
-			super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%d\n", this.getName(), owlClass.toStringID(), localNumberOfSynonyms));
+			
 			this.notifyExporterListeners(ontologyIRI, owlClass.getIRI().toString(), OWL.Class.getURI(), Integer.valueOf(localNumberOfSynonyms), timestamp);
 			numberOfSynonyms = numberOfSynonyms + localNumberOfSynonyms;
 			numberOfEntities ++;
@@ -65,7 +61,7 @@ public class SynonymsPerClassMetric extends AnnotationsPerEntityAbstractMetric {
 		
 		double metricValue = ((double) (numberOfSynonyms)) / numberOfEntities;
 		this.notifyExporterListeners(ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), Double.valueOf(metricValue), timestamp);
-		return new MetricResult(metricValue, rdfModel);
+		return new MetricResult(metricValue);
 	}
 
 

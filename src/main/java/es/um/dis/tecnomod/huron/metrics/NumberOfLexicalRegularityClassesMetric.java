@@ -4,10 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.vocabulary.OWL;
 import org.ontoenrich.beans.Label;
 import org.ontoenrich.core.LexicalEnvironment;
@@ -37,10 +34,9 @@ public class NumberOfLexicalRegularityClassesMetric extends OntoenrichMetric {
 	@Override
 	public MetricResult calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
 		/* Write header for detailed output file */
-		super.writeToDetailedOutputFile("Metric\tLexical regularity\tLexical regularity class\tIs class\tClass exhibiting the LR\tLabel of class exhibiting the LR\tMetric Value\n");
+		
 		Calendar timestamp = Calendar.getInstance();
 		
-		Model rdfModel = ModelFactory.createDefaultModel();
 		String ontologyIRI = RDFUtils.getOntologyIRI(getOntology());
 		
 		// STEP 1: create the lexical environment
@@ -55,30 +51,30 @@ public class NumberOfLexicalRegularityClassesMetric extends OntoenrichMetric {
 		
 		// Create detailed file with the lexical regularities if needed
 		
-			for (LexicalRegularity lexicalRegularity: lexicalRegularities) {
-				String pattern = lexicalRegularity.getStrPattern();
-				String metricValue = "1";
-				String lrClass = lexicalRegularity.getIdLabelsWhereItAppears().parallelStream()
-						.filter(x -> (x.getStrLabel().equalsIgnoreCase(lexicalRegularity.getStrPattern())))
-						.findFirst().orElse(new Label("",""))
-						.getIdLabel();
-				this.notifyExporterListeners(ontologyIRI, lrClass, OWL.Class.getURI(), Boolean.valueOf(true), timestamp);
-				boolean isLRClass = lexicalRegularity.getIsAClass();
-				if(super.isOpenDetailedOutputFile()){
-					for (Label label : lexicalRegularity.getIdLabelsWhereItAppears()) {
-						String classExhibitingLR = label.getIdLabel();
-						String labelExhibitingLR = label.getStrLabel();
-						this.writeToDetailedOutputFile(
-								String.format(Locale.ROOT, "%s\t%s\t%s\t%s\t%s\t%s\t%s\n", this.getName(), pattern,
-										lrClass, isLRClass, classExhibitingLR, labelExhibitingLR, metricValue));
-					}
-			}
+		for (LexicalRegularity lexicalRegularity: lexicalRegularities) {
+			String pattern = lexicalRegularity.getStrPattern();
+			String metricValue = "1";
+			String lrClass = lexicalRegularity.getIdLabelsWhereItAppears().parallelStream()
+					.filter(x -> (x.getStrLabel().equalsIgnoreCase(lexicalRegularity.getStrPattern())))
+					.findFirst().orElse(new Label("",""))
+					.getIdLabel();
+			this.notifyExporterListeners(ontologyIRI, lrClass, OWL.Class.getURI(), Boolean.valueOf(true), timestamp);
+			boolean isLRClass = lexicalRegularity.getIsAClass();
+//			if(super.isOpenDetailedOutputFile()){
+//				for (Label label : lexicalRegularity.getIdLabelsWhereItAppears()) {
+//					String classExhibitingLR = label.getIdLabel();
+//					String labelExhibitingLR = label.getStrLabel();
+//					this.writeToDetailedOutputFile(
+//							String.format(Locale.ROOT, "%s\t%s\t%s\t%s\t%s\t%s\t%s\n", this.getName(), pattern,
+//									lrClass, isLRClass, classExhibitingLR, labelExhibitingLR, metricValue));
+//				}
+//			}
 		}
 		
 		double metricValue = lexicalRegularities.size();
 		this.notifyExporterListeners(ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), Double.valueOf(metricValue), timestamp);
 
-		return new MetricResult(metricValue, rdfModel);
+		return new MetricResult(metricValue);
 	}
 
 	@Override

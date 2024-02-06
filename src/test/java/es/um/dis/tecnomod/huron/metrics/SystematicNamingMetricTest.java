@@ -4,8 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 import org.junit.Test;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -40,7 +38,6 @@ public class SystematicNamingMetricTest {
 		// STEP 2: calculate the metric
 		MetricResult metricResult = m1.calculate();
 		System.out.println("Systematic Naming metric: " + metricResult.getMetricValue());
-		metricResult.getRdf().write(System.out, "Turtle");
 
 	}
 	
@@ -55,18 +52,14 @@ public class SystematicNamingMetricTest {
 	@Test
 	public void testExample2() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
 
-		// CREATE TEMP FILE
-		Path tempFile = Files.createTempFile("outputFileComplementary", ".tsv");
 		// STEP 1: create the object
 		Metric m1 = new SystematicNamingMetric();
 		OWLOntologyManager m = OWLManager.createOWLOntologyManager();
 		OWLOntology ontology = m.loadOntologyFromOntologyDocument(this.getClass().getResourceAsStream("/example2.owl"));
 		m1.setOntology(ontology);
-		m1.openDetailedOutputFile(tempFile.toFile());
 
 		// STEP 2: calculate the metric
 		double res = m1.calculateValue();
-		m1.closeDetailedOutputFile();
 		assertEquals(3.0/5.0, res, 0.01);
 
 	}

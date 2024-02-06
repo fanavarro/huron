@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
 
 import org.junit.Test;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -21,10 +20,8 @@ public class NumberOfLexicalRegularityClassesMetricTest {
 
 		NumberOfLexicalRegularityClassesMetric m1 = new NumberOfLexicalRegularityClassesMetric();
 		m1.setOntology(ontology);
-		m1.openDetailedOutputFile(Files.createTempFile("NumberOfLexicalRegularityClassesMetricTest", ".tsv").toFile());
 		// STEP 2: calculate the metric
 		double res = m1.calculateValue();
-		m1.closeDetailedOutputFile();
 		assertEquals(2.0, res, 0.01);
 		System.out.println(m1.getName()+ ": " + res);
 	}

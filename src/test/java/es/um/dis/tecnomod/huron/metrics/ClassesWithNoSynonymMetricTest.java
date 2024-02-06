@@ -24,7 +24,6 @@ public class ClassesWithNoSynonymMetricTest {
 		
 
 		assertEquals(13.0/15.0, metricResult.getMetricValue(), 0.01);
-		metricResult.getRdf().write(System.out, "Turtle");
 		
 	}
 

@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.semanticweb.owlapi.model.parameters.Imports;
 
-import es.um.dis.tecnomod.huron.exporters.ExporterInterface;
+import es.um.dis.tecnomod.huron.result_model.ResultModelInterface;
 
 /**
  * The Class Config.
@@ -20,12 +20,12 @@ public class Config implements Serializable {
 	private  Imports imports;
 	
 	/** The exporters. */
-	private List<ExporterInterface> exporters;
+	private List<ResultModelInterface> exporters;
 	
 	public Config() {
 		this.exporters = new ArrayList<>();
 		this.imports = Imports.EXCLUDED;
-		this.exporters = new ArrayList<ExporterInterface> ();
+		this.exporters = new ArrayList<ResultModelInterface> ();
 	}
 	/**
 	 * Gets the imports.
@@ -50,7 +50,7 @@ public class Config implements Serializable {
 	 *
 	 * @return the exporters
 	 */
-	public List<ExporterInterface> getExporters() {
+	public List<ResultModelInterface> getExporters() {
 		return exporters;
 	}
 
@@ -59,7 +59,7 @@ public class Config implements Serializable {
 	 *
 	 * @param exporters the new exporters
 	 */
-	public void setExporters(List<ExporterInterface> exporters) {
+	public void setExporters(List<ResultModelInterface> exporters) {
 		this.exporters = exporters;
 	}
 	
@@ -69,7 +69,7 @@ public class Config implements Serializable {
 	 *
 	 * @param exporter the exporter
 	 */
-	public void addExporter(ExporterInterface exporter) {
+	public void addExporter(ResultModelInterface exporter) {
 		this.exporters.add(exporter);
 	}
 }

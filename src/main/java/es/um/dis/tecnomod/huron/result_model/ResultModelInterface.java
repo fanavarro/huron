@@ -1,4 +1,4 @@
-package es.um.dis.tecnomod.huron.exporters;
+package es.um.dis.tecnomod.huron.result_model;
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -6,7 +6,7 @@ import java.util.Calendar;
 /**
  * The Interface ExporterInterface.
  */
-public interface ExporterInterface {
+public interface ResultModelInterface {
 
 	/**
 	 * Adds the observation.

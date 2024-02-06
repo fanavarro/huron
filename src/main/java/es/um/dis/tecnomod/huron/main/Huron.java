@@ -24,9 +24,6 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.semanticweb.owlapi.model.parameters.Imports;
 
-import es.um.dis.tecnomod.huron.exporters.ExporterInterface;
-import es.um.dis.tecnomod.huron.exporters.RDFExporter;
-import es.um.dis.tecnomod.huron.exporters.WideTSVExporter;
 import es.um.dis.tecnomod.huron.metrics.AnnotationPropertiesWithNoDescriptionMetric;
 import es.um.dis.tecnomod.huron.metrics.AnnotationPropertiesWithNoNameMetric;
 import es.um.dis.tecnomod.huron.metrics.AnnotationPropertiesWithNoSynonymMetric;
@@ -60,8 +57,12 @@ import es.um.dis.tecnomod.huron.metrics.SynonymsPerDataPropertyMetric;
 import es.um.dis.tecnomod.huron.metrics.SynonymsPerObjectPropertyMetric;
 import es.um.dis.tecnomod.huron.metrics.SynonymsPerPropertyMetric;
 import es.um.dis.tecnomod.huron.metrics.SystematicNamingMetric;
+import es.um.dis.tecnomod.huron.result_model.DetailedTSVResultModel;
+import es.um.dis.tecnomod.huron.result_model.LongTSVResultModel;
+import es.um.dis.tecnomod.huron.result_model.RDFResultModel;
+import es.um.dis.tecnomod.huron.result_model.ResultModelInterface;
+import es.um.dis.tecnomod.huron.result_model.WideTSVResultModel;
 import es.um.dis.tecnomod.huron.tasks.MetricCalculationTask;
-import es.um.dis.tecnomod.huron.tasks.MetricCalculationTaskOnlyValue;
 import es.um.dis.tecnomod.huron.tasks.MetricCalculationTaskResult;
 
 /**
@@ -83,10 +84,12 @@ public class Huron {
 		CommandLine cmd = generateOptions(args);
 		setLogLevel(cmd.getOptionValue('l', Level.INFO.getName()));
 		File inputFile = new File(cmd.getOptionValue('i'));
-		File outputFile = new File(cmd.getOptionValue('o'));
-		File rdfOutput = cmd.getOptionValue("rdf", null) != null ? new File(cmd.getOptionValue("rdf")) : null;
+		File outputFileLong = cmd.getOptionValue("output-long", null) != null ? new File(cmd.getOptionValue("output-long")) : null;
+		File outputFileWide = cmd.getOptionValue("output-wide", null) != null ? new File(cmd.getOptionValue("output-wide")) : null;
+		File rdfOutput = cmd.getOptionValue("output-rdf", null) != null ? new File(cmd.getOptionValue("output-rdf")) : null;
+		File detailedFilesFolder = cmd.getOptionValue("detailed-files", null) != null ? new File(cmd.getOptionValue("detailed-files")) : null;
 		int threads = Integer.parseInt(cmd.getOptionValue('t', "1"));
-		boolean includeDetailedFiles = cmd.hasOption('v');
+		//boolean includeDetailedFiles = cmd.hasOption('v');
 		long timeout = Long.parseLong(cmd.getOptionValue('q', "-1"));
 		boolean includeImports = cmd.hasOption("imports");
 		
@@ -97,16 +100,22 @@ public class Huron {
 			return;
 		}
 		
-		if(outputFile.exists() && !outputFile.isFile()){
-			LOGGER.log(Level.SEVERE, String.format("'%s' exists but it is not a file.", args[1]));
-			return;
-		}
+		
 		
 		Config config = new Config();
 		config.setImports(Imports.fromBoolean(includeImports));
-		config.addExporter(new WideTSVExporter(outputFile));
+		if (outputFileLong != null) {
+			config.addExporter(new LongTSVResultModel(outputFileLong));
+		}
+		if (outputFileWide != null) {
+			config.addExporter(new WideTSVResultModel(outputFileWide));
+		}
 		if (rdfOutput != null) {
-			config.addExporter(new RDFExporter(rdfOutput));
+			config.addExporter(new RDFResultModel(rdfOutput));
+		}
+		
+		if (detailedFilesFolder != null) {
+			config.addExporter(new DetailedTSVResultModel(detailedFilesFolder));
 		}
 		
 		
@@ -124,7 +133,7 @@ public class Huron {
 
 			})));
 		}
-		List<MetricCalculationTask> tasks = getMetricCalculationTasks(ontologyFiles, includeDetailedFiles, config);
+		List<MetricCalculationTask> tasks = getMetricCalculationTasks(ontologyFiles, config);
 		executeWithTaskExecutor(tasks, threads, timeout, config);
 
 	}
@@ -159,7 +168,7 @@ public class Huron {
 		}
 		executor.shutdown();
 		
-		for (ExporterInterface exporter : config.getExporters()) {
+		for (ResultModelInterface exporter : config.getExporters()) {
 			exporter.export();
 		}
 	}
@@ -172,10 +181,10 @@ public class Huron {
 	 * @param includeDetailedFiles the include detailed files
 	 * @return the metric calculation tasks
 	 */
-	private static List<MetricCalculationTask> getMetricCalculationTasks(List<File> ontologyFiles, boolean includeDetailedFiles, Config config){
+	private static List<MetricCalculationTask> getMetricCalculationTasks(List<File> ontologyFiles, Config config){
 		List<MetricCalculationTask> tasks = new ArrayList<MetricCalculationTask>();
 		for(File ontologyFile : ontologyFiles){
-			tasks.add(new MetricCalculationTaskOnlyValue(getMetricsToCalculate(config), ontologyFile, includeDetailedFiles));
+			tasks.add(new MetricCalculationTask(getMetricsToCalculate(config), ontologyFile));
 		}
 		return tasks;
 	}
@@ -195,23 +204,27 @@ public class Huron {
         input.setRequired(true);
         options.addOption(input);
 
-        Option output = new Option("o", "output", true, "output tsv file with the metrics");
-        output.setRequired(true);
-        options.addOption(output);
+        Option outputLong = new Option(null, "output-long", true, "output tsv file with the metrics in long format with the columns 'ontology', 'metric' and 'value'");
+        outputLong.setRequired(false);
+        options.addOption(outputLong);
+        
+        Option outputWide = new Option(null, "output-wide", true, "output tsv file with the metrics in wide format, where the metrics are in different columns");
+        outputWide.setRequired(false);
+        options.addOption(outputWide);
         
         Option threads = new Option("t", "threads", true, "number of threads");
         threads.setRequired(false);
         options.addOption(threads);
         
-        Option logLevel = new Option("l", "log-level", true, "log level (SEVERE|WARNING|INFO|CONFIG|FINE|FINER|FINEST|ALL )");
+        Option logLevel = new Option(null, "log-level", true, "log level (SEVERE|WARNING|INFO|CONFIG|FINE|FINER|FINEST|ALL )");
         logLevel.setRequired(false);
         options.addOption(logLevel);
         
-        Option generateDetailedFiles = new Option("v", "detailed-files", false, "Generate a report for each metric.");
+        Option generateDetailedFiles = new Option(null, "detailed-files", true, "Generate a report for each metric in the folder passed as argument.");
         generateDetailedFiles.setRequired(false);
         options.addOption(generateDetailedFiles);
         
-        Option timeout = new Option("q", "timeout", true, "Timeout in minutes for each task");
+        Option timeout = new Option(null, "timeout", true, "Timeout in minutes for each task");
         timeout.setRequired(false);
         options.addOption(timeout);
         
@@ -219,7 +232,7 @@ public class Huron {
         importOption.setRequired(false);
         options.addOption(importOption);
         
-        Option rdfOutput = new Option(null, "rdf", true, "Output results in RDF in the specified file");
+        Option rdfOutput = new Option(null, "output-rdf", true, "Output results in RDF in the specified file");
         rdfOutput.setRequired(false);
         options.addOption(rdfOutput);
         

@@ -5,15 +5,12 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.SetUtils;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.vocabulary.OWL;
 import org.ontoenrich.beans.Label;
 import org.ontoenrich.core.LexicalEnvironment;
@@ -72,10 +69,9 @@ public class SystematicNamingMetric extends OntoenrichMetric {
 	@Override
 	public MetricResult calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
 		/* Write header for detailed output file */
-		super.writeToDetailedOutputFile("Metric\tClass\tClass depth\tLR\tPositive Cases\tPositive cases average depth\tPositive cases average distance to LR class\tNegative Cases\tNegative cases average depth\tNegative cases average distance to LR class\tMetric Value\n" );
+		
 		String ontologyIRI = RDFUtils.getOntologyIRI(getOntology());
 		Calendar timestamp = Calendar.getInstance();
-		Model rdfModel = ModelFactory.createDefaultModel();
 		
 		// STEP 1: create the lexical environment
 		LexicalEnvironment lexicalEnvironment = this.getLexicalEnvironment();
@@ -114,16 +110,16 @@ public class SystematicNamingMetric extends OntoenrichMetric {
 				
 				double localMetricResult = (double) localPositiveCasesCount / (localPositiveCasesCount + localNegativeCasesCount);
 				this.notifyExporterListeners(ontologyIRI, owlClassA.getIRI().toString(), OWL.Class.getURI(), Double.valueOf(localMetricResult), timestamp);
-				if(super.isOpenDetailedOutputFile()){
-					if (owlClassADepth == -1){
-						owlClassADepth = this.ontologyGraphService.getClassDepth(this.reasoner, owlClassA, this.getConfig().getImports());
-					}
-					double averageDepthLocalPositiveCases = this.getAverageDepth(localPositiveCases);
-					double averageDepthLocalNegativeCases = this.getAverageDepth(localNegativeCases);
-					double averageDistanceToLRClassLocalPositiveCases = this.getAverageDistanceToDepth(localPositiveCases, owlClassADepth);
-					double averageDistanceToLRClassLocalNegativeCases = this.getAverageDistanceToDepth(localNegativeCases, owlClassADepth);
-					super.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%d\t%s\t%d\t%.3f\t%.3f\t%d\t%.3f\t%.3f\t%.3f\n", this.getName(), owlClassA.toStringID(), owlClassADepth, lexicalRegularity.getStrPattern(), localPositiveCasesCount, averageDepthLocalPositiveCases,averageDistanceToLRClassLocalPositiveCases, localNegativeCasesCount, averageDepthLocalNegativeCases, averageDistanceToLRClassLocalNegativeCases, localMetricResult));
-				}
+//				if(super.isOpenDetailedOutputFile()){
+//					if (owlClassADepth == -1){
+//						owlClassADepth = this.ontologyGraphService.getClassDepth(this.reasoner, owlClassA, this.getConfig().getImports());
+//					}
+//					double averageDepthLocalPositiveCases = this.getAverageDepth(localPositiveCases);
+//					double averageDepthLocalNegativeCases = this.getAverageDepth(localNegativeCases);
+//					double averageDistanceToLRClassLocalPositiveCases = this.getAverageDistanceToDepth(localPositiveCases, owlClassADepth);
+//					double averageDistanceToLRClassLocalNegativeCases = this.getAverageDistanceToDepth(localNegativeCases, owlClassADepth);
+//					
+//				}
 				positiveCasesCount += localPositiveCasesCount;
 				negativeCasesCount += localNegativeCasesCount;
 				for(OWLClass c : localNegativeCases){
@@ -140,7 +136,7 @@ public class SystematicNamingMetric extends OntoenrichMetric {
 		double metricValue = (double) positiveCasesCount / (positiveCasesCount + negativeCasesCount);
 		this.notifyExporterListeners(ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), Double.valueOf(metricValue), timestamp);
 		
-		return new MetricResult(metricValue, rdfModel);
+		return new MetricResult(metricValue);
 
 	}
 	

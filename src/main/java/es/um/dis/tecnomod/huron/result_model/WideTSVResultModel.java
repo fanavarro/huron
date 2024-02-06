@@ -1,4 +1,4 @@
-package es.um.dis.tecnomod.huron.exporters;
+package es.um.dis.tecnomod.huron.result_model;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,12 +10,12 @@ import java.util.Map;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 
-public class WideTSVExporter extends LongTSVExporter{
+public class WideTSVResultModel extends LongTSVResultModel{
 	private Table<Integer, String, Object> longTable;
 	private Table<Integer, String, Object> wideTable;
 	private List<String> longHeader;
 
-	public WideTSVExporter(File outputFile) {
+	public WideTSVResultModel(File outputFile) {
 		super(outputFile);
 		this.longTable = this.getTable();
 		this.longHeader = this.getHeader();
@@ -71,7 +71,7 @@ public class WideTSVExporter extends LongTSVExporter{
 				wideHeader.add(column);
 			}
 		}
-		wideHeader.addAll(this.wideTable.columnKeySet());
+		//wideHeader.addAll(this.wideTable.columnKeySet());
 		return wideHeader;
 	}
 
