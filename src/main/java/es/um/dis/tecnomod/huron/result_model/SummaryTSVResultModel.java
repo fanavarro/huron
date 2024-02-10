@@ -16,9 +16,9 @@ import es.um.dis.tecnomod.huron.services.URIUtils;
 
 public abstract class SummaryTSVResultModel extends TSVResultModel implements ResultModelInterface {
 	
-	protected static final String ONTOLOGY_COLUMN = "ontology";
-	protected static final String METRIC_COLUMN = "metric";
-	protected static final String VALUE_COLUMN = "value";
+	protected static final String ONTOLOGY_COLUMN = "Ontology";
+	protected static final String METRIC_COLUMN = "Metric";
+	protected static final String VALUE_COLUMN = "Value";
 	
 	private File outputFile;
 	private Table<Integer, String, Object> table;

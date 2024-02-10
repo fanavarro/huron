@@ -1,37 +1,21 @@
 # HURON: HUman Readability ONtologies
-*HURON* is a command line java application for ontology metrics calculation.
-
-Particularly, *HURON* is able to compute the following metrics, which are classified in structural accuracy and readability metrics:
-
-- Structural accuracy metrics:
-    - *Lexically suggest logically define (LSLD)*. It computes the degree in which classes whose label is detected as a lexical regularity in the ontology are semantically connected to another classes exhibiting the lexical regularity.
-    - *Systematic naming*. It computes the degree in which the subclasses of the classes whose label is a lexical regularity exhibit the lexical regularity.
-- Readability metrics:
-    - *Names per class*. The average names per class in the ontology.
-    - *Names per object property*. The average names per object property in the ontology.
-    - *Names per data property*. The average names per data property in the ontology.
-    - *Names per annotation property*. The average names per annotation property in the ontology.
-    - *Synonyms per class*. The average synonyms per class in the ontology.
-    - *Synonyms per object property*. The average synonyms per object property in the ontology.
-    - *Synonyms per data property*. The average synonyms per data property in the ontology.
-    - *Synonyms per annotation property*. The average synonyms per annotation property in the ontology.
-    - *Descriptions per class*. The average descriptions per class in the ontology.
-    - *Descriptions per object property*. The average descriptions per object property in the ontology.
-    - *Descriptions per data property*. The average descriptions per data property in the ontology.
-    - *Descriptions per annotation property*. The average descriptions per annotation property in the ontology.
+*HURON* is a command line java application for ontology metrics calculation. Further details about the metrics are available at  [http://semantics.inf.um.es/huron/docs_metrics.html](http://semantics.inf.um.es/huron/docs_metrics.html).
 
 
 
 # Usage
 ## Command
-`java -jar huron.jar -i <input> -o <output> -t <threads> -v`
+`java -jar huron.jar --input <arg> [--output-long <arg>] [--output-wide <arg>] [--output-rdf <arg>] [--detailed-files <arg>] [--imports] [--threads <arg>]`
 
 Where
 
-- **input** can be an owl ontology, or a folder containing owl ontologies.
-- **output** is the TSV file resulting of calculating the metrics on the input ontologies.
-- **t** is the number of threads to be used.
-- **v** is the verbose option, which generates a TSV file per (ontology, metric) pair with extra information at entity level.
+- **--input** Input file, which be an owl ontology, or a folder containing owl ontologies.
+- **--output-long** Output tsv file with the metrics in long format with the columns 'ontology', 'metric' and 'value'.
+- **--output-wide** Output tsv file with the metrics in wide format, where the metrics are in different columns.
+- **--output-rdf** Output RDF file according to [oquo](https://purl.archive.org/oquo) ontology.
+- **--detailed-files** Generate a report for each metric in the folder passed as argument.
+- **--threads** Number of threads to use in parallel.
+- **--imports** Consider imported entities from external ontologies (import clause) when calculating the metrics.
 
 ## Dependencies
 If you want to test, modify or compile the application from the source code, you will need access to the **ontoenrich-core** library, used by the application to perform the analysis of lexical regularities. The source code of this library is not available yet, but it is supported by several publications:
