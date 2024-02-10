@@ -28,7 +28,6 @@ import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory;
 import es.um.dis.tecnomod.huron.dto.MetricResult;
 import es.um.dis.tecnomod.huron.main.Config;
 import es.um.dis.tecnomod.huron.namespaces.Namespaces;
-import es.um.dis.tecnomod.huron.rdf_builder.RDFConstants;
 import es.um.dis.tecnomod.huron.services.OntologyGraphService;
 import es.um.dis.tecnomod.huron.services.OntologyGraphServiceImpl;
 import es.um.dis.tecnomod.huron.services.OntologyUtils;
@@ -250,7 +249,11 @@ public class LexicallySuggestLogicallyDefineMetric extends OntoenrichMetric {
 
 	@Override
 	public String getObservablePropertyIRI() {
-		return RDFConstants.LSLD_PRINCIPLE;
+		return RDFUtils.LSLD_PRINCIPLE;
 	}
 
+	@Override
+	public String getRankingFunctionIRI() {
+		return RDFUtils.RANKING_FUNCTION_HIGHER_BEST;
+	}
 }

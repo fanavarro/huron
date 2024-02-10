@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.jena.vocabulary.OWL;
 import org.ontoenrich.core.LexicalEnvironment;
 import org.ontoenrich.core.LexicalRegularity;
+import org.ontoenrich.filters.RemoveNoClasses;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
@@ -15,23 +16,25 @@ import es.um.dis.tecnomod.huron.main.Config;
 import es.um.dis.tecnomod.huron.namespaces.Namespaces;
 import es.um.dis.tecnomod.huron.services.RDFUtils;
 
-public class NumberOfLexicalRegularitiesMetric extends OntoenrichMetric {
-	public NumberOfLexicalRegularitiesMetric() {
+public class LexicalRegularityClassPercentageMetric extends OntoenrichMetric {
+
+	/** The Constant METRIC_NAME. */
+	private static final String  METRIC_NAME = "Lexical regularity class percentage";
+	
+	public LexicalRegularityClassPercentageMetric() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
-	public NumberOfLexicalRegularitiesMetric(Config config) {
+
+	public LexicalRegularityClassPercentageMetric(Config config) {
 		super(config);
-		// TODO Auto-generated constructor stub
 	}
-
-	private static final String NAME = "Number of lexical regularities";
-
+	
 	@Override
 	public MetricResult calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
 		/* Write header for detailed output file */
 		
+		Calendar timestamp = Calendar.getInstance();
 		
 		String ontologyIRI = RDFUtils.getOntologyIRI(getOntology());
 		
@@ -42,38 +45,29 @@ public class NumberOfLexicalRegularitiesMetric extends OntoenrichMetric {
 		int numberOfClassesThreshold = this.getNumberOfClassesThreshold();
 		List<LexicalRegularity> lexicalRegularities = lexicalEnvironment.searchAllPatterns(numberOfClassesThreshold);
 		
-		// Create detailed file with the lexical regularities if needed
-//		if(super.isOpenDetailedOutputFile()){
-//			for (LexicalRegularity lexicalRegularity: lexicalRegularities) {
-//				String pattern = lexicalRegularity.getStrPattern();
-//				String metricValue = "1";
-//				boolean isLRClass = lexicalRegularity.getIsAClass();
-//				for (Label label : lexicalRegularity.getIdLabelsWhereItAppears()) {
-//					String classExhibitingLR = label.getIdLabel();
-//					String labelExhibitingLR = label.getStrLabel();
-//					this.writeToDetailedOutputFile(String.format(Locale.ROOT, "%s\t%s\t%s\t%s\t%s\t%s\n", this.getName(), pattern, isLRClass, classExhibitingLR, labelExhibitingLR, metricValue));
-//				}
-//			}
-//		}
-		double metricValue = lexicalRegularities.size();
-		this.notifyExporterListeners(ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), Double.valueOf(metricValue), Calendar.getInstance());
+		// STEP 3: apply a filter to get just LRs that are classes
+		RemoveNoClasses.execute(lexicalRegularities);
+		
+		long nclasses = this.getNumberOfClasses();
+		double metricValue = Double.valueOf(lexicalRegularities.size()) / Double.valueOf(nclasses);
+		this.notifyExporterListeners(ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), Double.valueOf(metricValue), timestamp);
 
 		return new MetricResult(metricValue);
 	}
 
 	@Override
 	public String getName() {
-		return NAME;
+		return METRIC_NAME;
 	}
 
 	@Override
 	public String getIRI() {
-		return Namespaces.OQUO_NS + "NumberOfLexicalRegularitiesMetric";
+		return Namespaces.OQUO_NS + "LexicalRegularityClassPercentageMetric";
 	}
 
 	@Override
 	public String getObservablePropertyIRI() {
-		return RDFUtils.NUMBER_OF_LR;
+		return RDFUtils.PERCENTAGE_OF_LR_CLASSES;
 	}
 	
 	@Override

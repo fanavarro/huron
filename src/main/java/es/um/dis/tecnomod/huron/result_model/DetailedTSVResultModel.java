@@ -7,7 +7,6 @@ import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +16,7 @@ import java.util.logging.Logger;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 
+import es.um.dis.tecnomod.huron.dto.ObservationInfoDTO;
 import es.um.dis.tecnomod.huron.services.URIUtils;
 
 public class DetailedTSVResultModel extends TSVResultModel implements ResultModelInterface {
@@ -39,9 +39,12 @@ public class DetailedTSVResultModel extends TSVResultModel implements ResultMode
 	}
 
 	@Override
-	public synchronized void addObservation(String sourceDocumentIRI, String featureOfInterestIRI, String featureOfInterestTypeIRI,
-			String observablePropertyIRI, String metricUsedIRI, String instrumentIRI, String unitIRI, Object value,
-			Calendar timestamp) {
+	public synchronized void addObservation(ObservationInfoDTO observationInfo) {
+		String featureOfInterestIRI = observationInfo.getFeatureOfInterestIRI();
+		String sourceDocumentIRI = observationInfo.getSourceDocumentIRI();
+		String metricUsedIRI = observationInfo.getMetricUsedIRI();
+		Object value = observationInfo.getValue();
+		
 		/* Here we only record information about ontology entities, not the ontology itself*/
 		if (!featureOfInterestIRI.equals(sourceDocumentIRI)) {
 			this.rowCountPerMetricOntologyPair.putIfAbsent(sourceDocumentIRI, new HashMap<>());

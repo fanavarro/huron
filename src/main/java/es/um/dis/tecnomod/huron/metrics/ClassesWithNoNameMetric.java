@@ -12,7 +12,6 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import es.um.dis.tecnomod.huron.dto.MetricResult;
 import es.um.dis.tecnomod.huron.main.Config;
 import es.um.dis.tecnomod.huron.namespaces.Namespaces;
-import es.um.dis.tecnomod.huron.rdf_builder.RDFConstants;
 import es.um.dis.tecnomod.huron.services.OntologyUtils;
 import es.um.dis.tecnomod.huron.services.RDFUtils;
 
@@ -90,6 +89,11 @@ public class ClassesWithNoNameMetric extends AnnotationsPerEntityAbstractMetric 
 	
 	@Override
 	public String getObservablePropertyIRI() {
-		return RDFConstants.NAMES;
+		return RDFUtils.NAMES;
+	}
+	
+	@Override
+	public String getRankingFunctionIRI() {
+		return RDFUtils.RANKING_FUNCTION_LOWER_BEST;
 	}
 }

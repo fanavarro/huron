@@ -14,12 +14,10 @@ import es.um.dis.tecnomod.huron.services.OntologyUtils;
 public abstract class OntoenrichMetric extends Metric{
 	public OntoenrichMetric() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public OntoenrichMetric(Config config) {
 		super(config);
-		// TODO Auto-generated constructor stub
 	}
 
 	private static final float ONTOENRICH_LABEL_COVERAGE_THRESHOLD = 0.1f;
@@ -35,7 +33,7 @@ public abstract class OntoenrichMetric extends Metric{
 	}
 	
 	protected int calculateNumberOfClassesThresholdFromCoverage(float ontoenrichLabelCoverageThreshold) {
-		long nClasses = this.getOntology().classesInSignature().filter(owlClass -> (!OntologyUtils.isObsolete(owlClass, getOntology(), this.getConfig().getImports()))).count();
+		long nClasses = this.getNumberOfClasses();
 		return Math.max(2, Math.round((float)(nClasses) * ontoenrichLabelCoverageThreshold));
 	}
 	
@@ -45,5 +43,9 @@ public abstract class OntoenrichMetric extends Metric{
 	
 	protected float getOntoenrichLabelCoverageThreshold () {
 		return ONTOENRICH_LABEL_COVERAGE_THRESHOLD;
+	}
+	
+	protected long getNumberOfClasses() {		
+		return this.getOntology().classesInSignature().filter(owlClass -> (!OntologyUtils.isObsolete(owlClass, getOntology(), this.getConfig().getImports()) && !owlClass.isOWLThing())).count();
 	}
 }

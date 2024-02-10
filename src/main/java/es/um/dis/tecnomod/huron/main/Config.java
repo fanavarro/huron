@@ -20,12 +20,12 @@ public class Config implements Serializable {
 	private  Imports imports;
 	
 	/** The exporters. */
-	private List<ResultModelInterface> exporters;
+	private List<ResultModelInterface> resultModels;
 	
 	public Config() {
-		this.exporters = new ArrayList<>();
+		this.resultModels = new ArrayList<>();
 		this.imports = Imports.EXCLUDED;
-		this.exporters = new ArrayList<ResultModelInterface> ();
+		this.resultModels = new ArrayList<ResultModelInterface> ();
 	}
 	/**
 	 * Gets the imports.
@@ -50,8 +50,8 @@ public class Config implements Serializable {
 	 *
 	 * @return the exporters
 	 */
-	public List<ResultModelInterface> getExporters() {
-		return exporters;
+	public List<ResultModelInterface> getResultModels() {
+		return resultModels;
 	}
 
 	/**
@@ -59,8 +59,8 @@ public class Config implements Serializable {
 	 *
 	 * @param exporters the new exporters
 	 */
-	public void setExporters(List<ResultModelInterface> exporters) {
-		this.exporters = exporters;
+	public void setResultModels(List<ResultModelInterface> exporters) {
+		this.resultModels = exporters;
 	}
 	
 	
@@ -69,7 +69,7 @@ public class Config implements Serializable {
 	 *
 	 * @param exporter the exporter
 	 */
-	public void addExporter(ResultModelInterface exporter) {
-		this.exporters.add(exporter);
+	public void addResultModel(ResultModelInterface exporter) {
+		this.resultModels.add(exporter);
 	}
 }

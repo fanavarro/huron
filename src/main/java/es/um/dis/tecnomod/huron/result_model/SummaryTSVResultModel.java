@@ -5,12 +5,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 
+import es.um.dis.tecnomod.huron.dto.ObservationInfoDTO;
 import es.um.dis.tecnomod.huron.services.URIUtils;
 
 
@@ -33,11 +33,12 @@ public abstract class SummaryTSVResultModel extends TSVResultModel implements Re
 	}
 	
 	@Override
-	public synchronized void addObservation(String sourceDocumentIRI, String featureOfInterestIRI, String featureOfInterestTypeIRI,
-			String observablePropertyIRI, String metricUsedIRI, String instrumentIRI, String unitIRI, Object value,
-			Calendar timestamp) {
+	public synchronized void addObservation(ObservationInfoDTO observationInfo) {
 		
-		
+		String featureOfInterestIRI = observationInfo.getFeatureOfInterestIRI();
+		String sourceDocumentIRI = observationInfo.getSourceDocumentIRI();
+		String metricUsedIRI = observationInfo.getMetricUsedIRI();
+		Object value = observationInfo.getValue();
 		/* Here we only register ontology values */
 		if (featureOfInterestIRI.equals(sourceDocumentIRI)) {
 			this.table.put(rowCount, ONTOLOGY_COLUMN, featureOfInterestIRI);

@@ -28,7 +28,6 @@ import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory;
 import es.um.dis.tecnomod.huron.dto.MetricResult;
 import es.um.dis.tecnomod.huron.main.Config;
 import es.um.dis.tecnomod.huron.namespaces.Namespaces;
-import es.um.dis.tecnomod.huron.rdf_builder.RDFConstants;
 import es.um.dis.tecnomod.huron.services.OntologyGraphService;
 import es.um.dis.tecnomod.huron.services.OntologyGraphServiceImpl;
 import es.um.dis.tecnomod.huron.services.OntologyUtils;
@@ -255,7 +254,12 @@ public class SystematicNamingMetric extends OntoenrichMetric {
 
 	@Override
 	public String getObservablePropertyIRI() {
-		return RDFConstants.SYSTEMATIC_NAMING_PRINCIPLE;
+		return RDFUtils.SYSTEMATIC_NAMING_PRINCIPLE;
+	}
+	
+	@Override
+	public String getRankingFunctionIRI() {
+		return RDFUtils.RANKING_FUNCTION_HIGHER_BEST;
 	}
 
 }

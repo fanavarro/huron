@@ -38,6 +38,8 @@ import es.um.dis.tecnomod.huron.metrics.DescriptionsPerClassMetric;
 import es.um.dis.tecnomod.huron.metrics.DescriptionsPerDataPropertyMetric;
 import es.um.dis.tecnomod.huron.metrics.DescriptionsPerObjectPropertyMetric;
 import es.um.dis.tecnomod.huron.metrics.DescriptionsPerPropertyMetric;
+import es.um.dis.tecnomod.huron.metrics.LexicalRegularitiesPerClassMetric;
+import es.um.dis.tecnomod.huron.metrics.LexicalRegularityClassPercentageMetric;
 import es.um.dis.tecnomod.huron.metrics.LexicallySuggestLogicallyDefineMetric;
 import es.um.dis.tecnomod.huron.metrics.Metric;
 import es.um.dis.tecnomod.huron.metrics.NamesPerAnnotationPropertyMetric;
@@ -105,17 +107,17 @@ public class Huron {
 		Config config = new Config();
 		config.setImports(Imports.fromBoolean(includeImports));
 		if (outputFileLong != null) {
-			config.addExporter(new LongTSVResultModel(outputFileLong));
+			config.addResultModel(new LongTSVResultModel(outputFileLong));
 		}
 		if (outputFileWide != null) {
-			config.addExporter(new WideTSVResultModel(outputFileWide));
+			config.addResultModel(new WideTSVResultModel(outputFileWide));
 		}
 		if (rdfOutput != null) {
-			config.addExporter(new RDFResultModel(rdfOutput));
+			config.addResultModel(new RDFResultModel(rdfOutput));
 		}
 		
 		if (detailedFilesFolder != null) {
-			config.addExporter(new DetailedTSVResultModel(detailedFilesFolder));
+			config.addResultModel(new DetailedTSVResultModel(detailedFilesFolder));
 		}
 		
 		
@@ -168,7 +170,7 @@ public class Huron {
 		}
 		executor.shutdown();
 		
-		for (ResultModelInterface exporter : config.getExporters()) {
+		for (ResultModelInterface exporter : config.getResultModels()) {
 			exporter.export();
 		}
 	}
@@ -271,6 +273,8 @@ public class Huron {
 		List<Metric> metrics = new ArrayList<Metric>();
 		metrics.add(new NumberOfLexicalRegularitiesMetric(config));
 		metrics.add(new NumberOfLexicalRegularityClassesMetric(config));
+		metrics.add(new LexicalRegularitiesPerClassMetric(config));
+		metrics.add(new LexicalRegularityClassPercentageMetric(config));
 		metrics.add(new LexicallySuggestLogicallyDefineMetric(config));
 		metrics.add(new SystematicNamingMetric(config));
 		metrics.add(new NumberOfClassesMetric(config));
