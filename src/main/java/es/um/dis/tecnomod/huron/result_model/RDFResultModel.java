@@ -7,8 +7,8 @@ import java.io.IOException;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 
-import es.um.dis.tecnomod.huron.dto.ObservationInfoDTO;
-import es.um.dis.tecnomod.huron.services.RDFUtils;
+import es.um.dis.tecnomod.oquo.dto.ObservationInfoDTO;
+import es.um.dis.tecnomod.oquo.service.InstanceCreator;
 
 public class RDFResultModel implements ResultModelInterface {
 	
@@ -23,7 +23,7 @@ public class RDFResultModel implements ResultModelInterface {
 
 	@Override
 	public synchronized void addObservation(ObservationInfoDTO observationInfo) {
-		RDFUtils.createObservation(rdfModel, observationInfo);
+		InstanceCreator.createObservation(rdfModel, observationInfo);
 	}
 
 	@Override

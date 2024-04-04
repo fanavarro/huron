@@ -11,11 +11,11 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
-import es.um.dis.tecnomod.huron.dto.ObservationInfoDTO;
 import es.um.dis.tecnomod.huron.main.Config;
 import es.um.dis.tecnomod.huron.result_model.ResultModelInterface;
 import es.um.dis.tecnomod.huron.services.RDFUtils;
 import es.um.dis.tecnomod.huron.services.URIUtils;
+import es.um.dis.tecnomod.oquo.dto.ObservationInfoDTO;
 
 
 /**

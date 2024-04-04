@@ -2,7 +2,8 @@ package es.um.dis.tecnomod.huron.result_model;
 
 import java.io.IOException;
 
-import es.um.dis.tecnomod.huron.dto.ObservationInfoDTO;
+import es.um.dis.tecnomod.oquo.dto.ObservationInfoDTO;
+
 
 /**
  * The Interface ExporterInterface.

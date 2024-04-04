@@ -16,8 +16,8 @@ import java.util.logging.Logger;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 
-import es.um.dis.tecnomod.huron.dto.ObservationInfoDTO;
 import es.um.dis.tecnomod.huron.services.URIUtils;
+import es.um.dis.tecnomod.oquo.dto.ObservationInfoDTO;
 
 public class DetailedTSVResultModel extends TSVResultModel implements ResultModelInterface {
 	

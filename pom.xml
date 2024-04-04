@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>es.um.dis.tecnomod</groupId>
 	<artifactId>huron</artifactId>
-	<version>0.0.4</version>
+	<version>0.0.5-SNAPSHOT</version>
 
 	<properties>
 		<commons-cli.version>1.4</commons-cli.version>
@@ -17,6 +17,7 @@
 		<jena.version>3.17.0</jena.version>
 		<joinery-dataframe.version>1.10</joinery-dataframe.version>
 		<tablesaw.version>0.43.1</tablesaw.version>
+		<oquo-instance-creator.version>0.0.1-SNAPSHOT</oquo-instance-creator.version>
 	</properties>
 	<build>
 		<plugins>
@@ -54,6 +55,12 @@
 		</plugins>
 	</build>
 	<dependencies>
+		<dependency>
+			<groupId>es.um.dis.tecnomod</groupId>
+			<artifactId>oquo-instance-creator</artifactId>
+			<version>${oquo-instance-creator.version}</version>
+		</dependency>
+		
 		<!-- https://mvnrepository.com/artifact/commons-cli/commons-cli -->
 		<dependency>
 			<groupId>commons-cli</groupId>
