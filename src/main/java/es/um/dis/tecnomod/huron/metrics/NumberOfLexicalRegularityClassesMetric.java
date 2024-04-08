@@ -3,6 +3,7 @@ package es.um.dis.tecnomod.huron.metrics;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.jena.vocabulary.OWL;
@@ -14,18 +15,17 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
 import es.um.dis.tecnomod.huron.main.Config;
-import es.um.dis.tecnomod.huron.namespaces.Namespaces;
 import es.um.dis.tecnomod.huron.services.RDFUtils;
+import es.um.dis.tecnomod.oquo.utils.Namespaces;
+import es.um.dis.tecnomod.oquo.utils.RankingFunctionTypes;
 
 public class NumberOfLexicalRegularityClassesMetric extends OntoenrichMetric {
 	public NumberOfLexicalRegularityClassesMetric() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public NumberOfLexicalRegularityClassesMetric(Config config) {
 		super(config);
-		// TODO Auto-generated constructor stub
 	}
 
 	private static final String NAME = "Number of lexical regularities classes";
@@ -51,27 +51,15 @@ public class NumberOfLexicalRegularityClassesMetric extends OntoenrichMetric {
 		// Create detailed file with the lexical regularities if needed
 		
 		for (LexicalRegularity lexicalRegularity: lexicalRegularities) {
-			String pattern = lexicalRegularity.getStrPattern();
-			String metricValue = "1";
 			String lrClass = lexicalRegularity.getIdLabelsWhereItAppears().parallelStream()
 					.filter(x -> (x.getStrLabel().equalsIgnoreCase(lexicalRegularity.getStrPattern())))
 					.findFirst().orElse(new Label("",""))
 					.getIdLabel();
-			this.notifyExporterListeners(ontologyIRI, lrClass, OWL.Class.getURI(), Boolean.valueOf(true), timestamp);
-			boolean isLRClass = lexicalRegularity.getIsAClass();
-//			if(super.isOpenDetailedOutputFile()){
-//				for (Label label : lexicalRegularity.getIdLabelsWhereItAppears()) {
-//					String classExhibitingLR = label.getIdLabel();
-//					String labelExhibitingLR = label.getStrLabel();
-//					this.writeToDetailedOutputFile(
-//							String.format(Locale.ROOT, "%s\t%s\t%s\t%s\t%s\t%s\t%s\n", this.getName(), pattern,
-//									lrClass, isLRClass, classExhibitingLR, labelExhibitingLR, metricValue));
-//				}
-//			}
+			this.notifyExporterListeners(ontologyIRI, lrClass, OWL.Class.getURI(), Boolean.valueOf(true), timestamp, Collections.emptyList());
 		}
 		
 		double metricValue = lexicalRegularities.size();
-		this.notifyExporterListeners(ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), Double.valueOf(metricValue), timestamp);
+		this.notifyExporterListeners(ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), Double.valueOf(metricValue), timestamp, Collections.emptyList());
 
 		return new MetricResult(metricValue);
 	}
@@ -93,7 +81,7 @@ public class NumberOfLexicalRegularityClassesMetric extends OntoenrichMetric {
 	
 	@Override
 	public String getRankingFunctionIRI() {
-		return RDFUtils.RANKING_FUNCTION_HIGHER_BEST;
+		return RankingFunctionTypes.RANKING_FUNCTION_HIGHER_BEST;
 	}
 
 }

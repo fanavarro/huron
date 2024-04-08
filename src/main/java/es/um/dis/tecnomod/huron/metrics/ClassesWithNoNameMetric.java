@@ -3,6 +3,7 @@ package es.um.dis.tecnomod.huron.metrics;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 import org.apache.jena.vocabulary.OWL;
@@ -11,9 +12,12 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
 import es.um.dis.tecnomod.huron.main.Config;
-import es.um.dis.tecnomod.huron.namespaces.Namespaces;
 import es.um.dis.tecnomod.huron.services.OntologyUtils;
 import es.um.dis.tecnomod.huron.services.RDFUtils;
+import es.um.dis.tecnomod.oquo.dto.IssueInfoDTO;
+import es.um.dis.tecnomod.oquo.utils.IssueTypes;
+import es.um.dis.tecnomod.oquo.utils.Namespaces;
+import es.um.dis.tecnomod.oquo.utils.RankingFunctionTypes;
 
 /**
  * This class calculates the ratio of number of classes with no names to the number of all classes.
@@ -55,18 +59,18 @@ public class ClassesWithNoNameMetric extends AnnotationsPerEntityAbstractMetric 
 			}			
 			int localNumberOfNames = getNumberOfNames(owlClass);
 			if (localNumberOfNames == 0) {
-				
-				this.notifyExporterListeners(ontologyIRI, owlClass.getIRI().toString(), OWL.Class.getURI(), Boolean.valueOf(true), timestamp);
+				IssueInfoDTO issue = new IssueInfoDTO(IssueTypes.MAJOR_ISSUE, String.format("The class %s does not have any name.", owlClass.getIRI().toQuotedString()));
+				this.notifyExporterListeners(ontologyIRI, owlClass.getIRI().toString(), OWL.Class.getURI(), Boolean.valueOf(true), timestamp, issue);
 				numberOfClassesWithNoName++;
 			}else {
 				
-				this.notifyExporterListeners(ontologyIRI, owlClass.getIRI().toString(), OWL.Class.getURI(), Boolean.valueOf(false), timestamp);
+				this.notifyExporterListeners(ontologyIRI, owlClass.getIRI().toString(), OWL.Class.getURI(), Boolean.valueOf(false), timestamp, Collections.emptyList());
 			}
 			numberOfEntities ++;
 		}
 		
 		double metricValue = ((double) (numberOfClassesWithNoName)) / numberOfEntities;
-		this.notifyExporterListeners(ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), Double.valueOf(metricValue), timestamp);
+		this.notifyExporterListeners(ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), Double.valueOf(metricValue), timestamp, Collections.emptyList());
 
 		return new MetricResult(metricValue);	
 	}
@@ -94,6 +98,6 @@ public class ClassesWithNoNameMetric extends AnnotationsPerEntityAbstractMetric 
 	
 	@Override
 	public String getRankingFunctionIRI() {
-		return RDFUtils.RANKING_FUNCTION_LOWER_BEST;
+		return RankingFunctionTypes.RANKING_FUNCTION_LOWER_BEST;
 	}
 }

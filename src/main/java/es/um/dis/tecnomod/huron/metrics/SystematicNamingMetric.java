@@ -2,7 +2,9 @@ package es.um.dis.tecnomod.huron.metrics;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -27,20 +29,23 @@ import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
 import es.um.dis.tecnomod.huron.main.Config;
-import es.um.dis.tecnomod.huron.namespaces.Namespaces;
-import es.um.dis.tecnomod.huron.services.OntologyGraphService;
-import es.um.dis.tecnomod.huron.services.OntologyGraphServiceImpl;
 import es.um.dis.tecnomod.huron.services.OntologyUtils;
 import es.um.dis.tecnomod.huron.services.RDFUtils;
+import es.um.dis.tecnomod.oquo.dto.IssueInfoDTO;
+import es.um.dis.tecnomod.oquo.utils.IssueTypes;
+import es.um.dis.tecnomod.oquo.utils.Namespaces;
+import es.um.dis.tecnomod.oquo.utils.RankingFunctionTypes;
 
 /**
  * The Class SystematicNamingMetric.
  */
 public class SystematicNamingMetric extends OntoenrichMetric {
+	public SystematicNamingMetric() {
+		super();
+	}
 	
 	public SystematicNamingMetric(Config config) {
 		super(config);
-		this.ontologyGraphService = new OntologyGraphServiceImpl();	
 	}
 
 	/** The Constant LOGGER. */
@@ -52,15 +57,7 @@ public class SystematicNamingMetric extends OntoenrichMetric {
 	/** The reasoner. */
 	private OWLReasoner reasoner;
 	
-	/** The ontology graph service. */
-	private OntologyGraphService ontologyGraphService;
 	
-	/**
-	 * Instantiates a new systematic naming metric.
-	 */
-	public SystematicNamingMetric(){
-		this.ontologyGraphService = new OntologyGraphServiceImpl();
-	}
 
 	/* (non-Javadoc)
 	 * @see metrics.Metric#calculate()
@@ -91,7 +88,6 @@ public class SystematicNamingMetric extends OntoenrichMetric {
 		int negativeCasesCount = 0;
 		for (LexicalRegularity lexicalRegularity : lexicalRegularities) {
 			for (OWLClass owlClassA : this.getRepresentingClasses(lexicalEnvironment, lexicalRegularity)) {
-				int owlClassADepth = -1;
 				if (OntologyUtils.isObsolete(owlClassA, getOntology(), this.getConfig().getImports())) {
 					continue;
 				}
@@ -108,75 +104,29 @@ public class SystematicNamingMetric extends OntoenrichMetric {
 				int localNegativeCasesCount = localNegativeCases.size();
 				
 				double localMetricResult = (double) localPositiveCasesCount / (localPositiveCasesCount + localNegativeCasesCount);
-				this.notifyExporterListeners(ontologyIRI, owlClassA.getIRI().toString(), OWL.Class.getURI(), Double.valueOf(localMetricResult), timestamp);
-//				if(super.isOpenDetailedOutputFile()){
-//					if (owlClassADepth == -1){
-//						owlClassADepth = this.ontologyGraphService.getClassDepth(this.reasoner, owlClassA, this.getConfig().getImports());
-//					}
-//					double averageDepthLocalPositiveCases = this.getAverageDepth(localPositiveCases);
-//					double averageDepthLocalNegativeCases = this.getAverageDepth(localNegativeCases);
-//					double averageDistanceToLRClassLocalPositiveCases = this.getAverageDistanceToDepth(localPositiveCases, owlClassADepth);
-//					double averageDistanceToLRClassLocalNegativeCases = this.getAverageDistanceToDepth(localNegativeCases, owlClassADepth);
-//					
-//				}
+				
+
 				positiveCasesCount += localPositiveCasesCount;
 				negativeCasesCount += localNegativeCasesCount;
+				List<IssueInfoDTO> issues = new ArrayList<>();
 				for(OWLClass c : localNegativeCases){
 					String cLabel = lexicalEnvironment.getLabelById(c.getIRI().toString()).getStrLabel();
 					LOGGER.log(Level.INFO, String.format("The class %s is subclass of %s but there are no lexical regularities in common.", c.toStringID(), owlClassA.toStringID()));
-					// TODO: create issue here?
-					// RDFUtils.createIssue(rdfModel, metricProperty, owlClassA, String.format("Class %s ('%s') is subclass of %s ('%s') but there are no lexical regularities in common.", c.toStringID(), cLabel, owlClassA.toStringID(), classALabel));
+					issues.add(new IssueInfoDTO(IssueTypes.MINOR_ISSUE, String.format("Class %s ('%s') is subclass of %s ('%s') but there are no lexical regularities in common.", c.toStringID(), cLabel, owlClassA.toStringID(), classALabel)));
 				}
+				this.notifyExporterListeners(ontologyIRI, owlClassA.getIRI().toString(), OWL.Class.getURI(), Double.valueOf(localMetricResult), timestamp, issues);
 			}
 		}
 		reasoner.flush();
 		reasoner.dispose();
 		// STEP 5: return the calculated value
 		double metricValue = (double) positiveCasesCount / (positiveCasesCount + negativeCasesCount);
-		this.notifyExporterListeners(ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), Double.valueOf(metricValue), timestamp);
+		this.notifyExporterListeners(ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), Double.valueOf(metricValue), timestamp, Collections.emptyList());
 		
 		return new MetricResult(metricValue);
 
 	}
-	
-	/**
-	 * Gets the average distance to depth.
-	 *
-	 * @param owlClasses the owl classes
-	 * @param parentDepth the parent depth
-	 * @return the average distance to depth
-	 */
-	private double getAverageDistanceToDepth(Set<OWLClass> owlClasses, int parentDepth) {
-		int distanceToParentSum = 0;
-		int totalClasses = 0;
-		for(OWLClass owlClass : owlClasses){
-			int depth = this.ontologyGraphService.getClassDepth(this.reasoner, owlClass, this.getConfig().getImports());
-			if(depth != -1){
-				distanceToParentSum += Math.abs(depth - parentDepth);
-				totalClasses++;
-			}
-		}
-		return (double)distanceToParentSum/totalClasses;
-	}
-	
-	/**
-	 * Gets the average depth.
-	 *
-	 * @param owlClasses the owl classes
-	 * @return the average depth
-	 */
-	private double getAverageDepth(Set<OWLClass> owlClasses) {
-		int depthSum = 0;
-		int totalClasses = 0;
-		for(OWLClass owlClass : owlClasses){
-			int depth = this.ontologyGraphService.getClassDepth(this.reasoner, owlClass, this.getConfig().getImports());
-			if(depth != -1){
-				depthSum += depth;
-				totalClasses++;
-			}
-		}
-		return (double)depthSum/totalClasses;
-	}
+
 	
 	/**
 	 * Gets the classes with pattern.
@@ -259,7 +209,7 @@ public class SystematicNamingMetric extends OntoenrichMetric {
 	
 	@Override
 	public String getRankingFunctionIRI() {
-		return RDFUtils.RANKING_FUNCTION_HIGHER_BEST;
+		return RankingFunctionTypes.RANKING_FUNCTION_HIGHER_BEST;
 	}
 
 }

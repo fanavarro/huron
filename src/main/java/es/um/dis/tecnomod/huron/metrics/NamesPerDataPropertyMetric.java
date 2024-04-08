@@ -3,6 +3,7 @@ package es.um.dis.tecnomod.huron.metrics;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 import org.apache.jena.vocabulary.OWL;
@@ -11,9 +12,10 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
 import es.um.dis.tecnomod.huron.main.Config;
-import es.um.dis.tecnomod.huron.namespaces.Namespaces;
 import es.um.dis.tecnomod.huron.services.OntologyUtils;
 import es.um.dis.tecnomod.huron.services.RDFUtils;
+import es.um.dis.tecnomod.oquo.utils.Namespaces;
+import es.um.dis.tecnomod.oquo.utils.RankingFunctionTypes;
 
 /**
  * The Class NamesPerDataPropertyMetric.
@@ -53,13 +55,13 @@ public class NamesPerDataPropertyMetric extends AnnotationsPerEntityAbstractMetr
 			}
 			int localNumberOfNames = getNumberOfNames(owlDataProperty);
 			
-			this.notifyExporterListeners(ontologyIRI, owlDataProperty.getIRI().toString(), OWL.DatatypeProperty.getURI(), Integer.valueOf(localNumberOfNames), timestamp);
+			this.notifyExporterListeners(ontologyIRI, owlDataProperty.getIRI().toString(), OWL.DatatypeProperty.getURI(), Integer.valueOf(localNumberOfNames), timestamp, Collections.emptyList());
 			numberOfNames = numberOfNames + localNumberOfNames;
 			numberOfEntities ++;
 		}
 		
 		double metricValue = ((double) (numberOfNames)) / numberOfEntities;
-		this.notifyExporterListeners(ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), Double.valueOf(metricValue), timestamp);
+		this.notifyExporterListeners(ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), Double.valueOf(metricValue), timestamp, Collections.emptyList());
 		
 		return new MetricResult(metricValue);
 	}
@@ -88,6 +90,6 @@ public class NamesPerDataPropertyMetric extends AnnotationsPerEntityAbstractMetr
 	
 	@Override
 	public String getRankingFunctionIRI() {
-		return RDFUtils.RANKING_FUNCTION_HIGHER_BEST;
+		return RankingFunctionTypes.RANKING_FUNCTION_HIGHER_BEST;
 	}
 }

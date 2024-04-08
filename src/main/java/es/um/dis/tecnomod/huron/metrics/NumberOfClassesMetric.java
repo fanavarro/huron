@@ -3,15 +3,17 @@ package es.um.dis.tecnomod.huron.metrics;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Collections;
 
 import org.apache.jena.vocabulary.OWL;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
 import es.um.dis.tecnomod.huron.main.Config;
-import es.um.dis.tecnomod.huron.namespaces.Namespaces;
 import es.um.dis.tecnomod.huron.services.OntologyUtils;
 import es.um.dis.tecnomod.huron.services.RDFUtils;
+import es.um.dis.tecnomod.oquo.utils.Namespaces;
+import es.um.dis.tecnomod.oquo.utils.RankingFunctionTypes;
 
 /**
  * The Class NumberOfClassesMetric.
@@ -44,7 +46,7 @@ public class NumberOfClassesMetric extends Metric {
 		String ontologyIRI = RDFUtils.getOntologyIRI(getOntology());
 		double metricValue = getOntology().classesInSignature(this.getConfig().getImports()).filter(owlClass -> (!OntologyUtils.isObsolete(owlClass, getOntology(), this.getConfig().getImports()))).count();
 		
-		this.notifyExporterListeners(ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), Double.valueOf(metricValue), Calendar.getInstance());
+		this.notifyExporterListeners(ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), Double.valueOf(metricValue), Calendar.getInstance(), Collections.emptyList());
 		
 		return new MetricResult(metricValue);
 	}
@@ -75,6 +77,6 @@ public class NumberOfClassesMetric extends Metric {
 	
 	@Override
 	public String getRankingFunctionIRI() {
-		return RDFUtils.RANKING_FUNCTION_HIGHER_BEST;
+		return RankingFunctionTypes.RANKING_FUNCTION_HIGHER_BEST;
 	}
 }

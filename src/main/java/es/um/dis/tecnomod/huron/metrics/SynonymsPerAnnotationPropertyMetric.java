@@ -3,6 +3,7 @@ package es.um.dis.tecnomod.huron.metrics;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 import org.apache.jena.vocabulary.OWL;
@@ -11,9 +12,10 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
 import es.um.dis.tecnomod.huron.main.Config;
-import es.um.dis.tecnomod.huron.namespaces.Namespaces;
 import es.um.dis.tecnomod.huron.services.OntologyUtils;
 import es.um.dis.tecnomod.huron.services.RDFUtils;
+import es.um.dis.tecnomod.oquo.utils.Namespaces;
+import es.um.dis.tecnomod.oquo.utils.RankingFunctionTypes;
 
 /**
  * The Class SynonymsPerAnnotationPropertyMetric.
@@ -53,13 +55,13 @@ public class SynonymsPerAnnotationPropertyMetric extends AnnotationsPerEntityAbs
 			}
 			int localNumberOfSynonyms = getNumberOfSynonyms(owlAnnotationProperty);
 			
-			this.notifyExporterListeners(ontologyIRI, owlAnnotationProperty.getIRI().toString(), OWL.AnnotationProperty.getURI(), Integer.valueOf(localNumberOfSynonyms), timestamp);
+			this.notifyExporterListeners(ontologyIRI, owlAnnotationProperty.getIRI().toString(), OWL.AnnotationProperty.getURI(), Integer.valueOf(localNumberOfSynonyms), timestamp, Collections.emptyList());
 			numberOfSynonyms = numberOfSynonyms + localNumberOfSynonyms;
 			numberOfEntities ++;
 		}
 		
 		double metricValue = ((double) (numberOfSynonyms)) / numberOfEntities;
-		this.notifyExporterListeners(ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), Double.valueOf(metricValue), timestamp);
+		this.notifyExporterListeners(ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), Double.valueOf(metricValue), timestamp, Collections.emptyList());
 		return new MetricResult(metricValue);	
 	}
 
@@ -87,7 +89,7 @@ public class SynonymsPerAnnotationPropertyMetric extends AnnotationsPerEntityAbs
 	
 	@Override
 	public String getRankingFunctionIRI() {
-		return RDFUtils.RANKING_FUNCTION_HIGHER_BEST;
+		return RankingFunctionTypes.RANKING_FUNCTION_HIGHER_BEST;
 	}
 }
 

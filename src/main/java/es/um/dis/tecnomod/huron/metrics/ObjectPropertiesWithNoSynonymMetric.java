@@ -3,6 +3,7 @@ package es.um.dis.tecnomod.huron.metrics;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 import org.apache.jena.vocabulary.OWL;
@@ -11,8 +12,11 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
 import es.um.dis.tecnomod.huron.main.Config;
-import es.um.dis.tecnomod.huron.namespaces.Namespaces;
 import es.um.dis.tecnomod.huron.services.RDFUtils;
+import es.um.dis.tecnomod.oquo.dto.IssueInfoDTO;
+import es.um.dis.tecnomod.oquo.utils.IssueTypes;
+import es.um.dis.tecnomod.oquo.utils.Namespaces;
+import es.um.dis.tecnomod.oquo.utils.RankingFunctionTypes;
 
 public class ObjectPropertiesWithNoSynonymMetric extends AnnotationsPerEntityAbstractMetric {
 
@@ -42,20 +46,18 @@ public class ObjectPropertiesWithNoSynonymMetric extends AnnotationsPerEntityAbs
 			}				
 			int localNumberOfSynonyms = this.getNumberOfSynonyms(owlObjectProperty);
 			if (localNumberOfSynonyms == 0) {
-				
-				this.notifyExporterListeners(ontologyIRI, owlObjectProperty.getIRI().toString(), OWL.ObjectProperty.getURI(), Boolean.valueOf(true), timestamp);
-				// TODO: Create issue here?
-				// RDFUtils.createIssue(rdfModel, metricProperty, owlObjectProperty, String.format("The entity %s does not have any synonym.", owlObjectProperty.getIRI().toQuotedString()));
+				IssueInfoDTO issue = new IssueInfoDTO(IssueTypes.TRIVIAL_ISSUE, String.format("The object property %s does not have any synonym.", owlObjectProperty.getIRI().toQuotedString()));
+				this.notifyExporterListeners(ontologyIRI, owlObjectProperty.getIRI().toString(), OWL.ObjectProperty.getURI(), Boolean.valueOf(true), timestamp, issue);
 				numberOfObjectPropertiesWithNoSynonym++;
 			}else {
 				
-				this.notifyExporterListeners(ontologyIRI, owlObjectProperty.getIRI().toString(), OWL.ObjectProperty.getURI(), Boolean.valueOf(false), timestamp);
+				this.notifyExporterListeners(ontologyIRI, owlObjectProperty.getIRI().toString(), OWL.ObjectProperty.getURI(), Boolean.valueOf(false), timestamp, Collections.emptyList());
 			}
 			numberOfEntities ++;
 		}
 		
 		double metricValue = ((double) (numberOfObjectPropertiesWithNoSynonym)) / numberOfEntities;
-		this.notifyExporterListeners(ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), Double.valueOf(metricValue), timestamp);
+		this.notifyExporterListeners(ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), Double.valueOf(metricValue), timestamp, Collections.emptyList());
 		
 		return new MetricResult(metricValue);	
 	}
@@ -77,6 +79,6 @@ public class ObjectPropertiesWithNoSynonymMetric extends AnnotationsPerEntityAbs
 	
 	@Override
 	public String getRankingFunctionIRI() {
-		return RDFUtils.RANKING_FUNCTION_LOWER_BEST;
+		return RankingFunctionTypes.RANKING_FUNCTION_LOWER_BEST;
 	}
 }

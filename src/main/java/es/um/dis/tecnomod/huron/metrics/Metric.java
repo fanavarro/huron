@@ -3,7 +3,9 @@ package es.um.dis.tecnomod.huron.metrics;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -15,7 +17,9 @@ import es.um.dis.tecnomod.huron.main.Config;
 import es.um.dis.tecnomod.huron.result_model.ResultModelInterface;
 import es.um.dis.tecnomod.huron.services.RDFUtils;
 import es.um.dis.tecnomod.huron.services.URIUtils;
+import es.um.dis.tecnomod.oquo.dto.IssueInfoDTO;
 import es.um.dis.tecnomod.oquo.dto.ObservationInfoDTO;
+import es.um.dis.tecnomod.oquo.utils.ScaleTypes;
 
 
 /**
@@ -169,7 +173,7 @@ public abstract class Metric {
 	}
 	
 	public String getScaleTypeIRI() {
-		return RDFUtils.RAW_SCALE;
+		return ScaleTypes.RAW_SCALE;
 	}
 	
 	public abstract String getRankingFunctionIRI();
@@ -195,14 +199,22 @@ public abstract class Metric {
 		this.config = config;
 	}
 	
-	public void notifyExporterListeners(String sourceDocumentIRI, String featureOfInterestIRI, String featureOfInterestTypeIRI, Object value, Calendar timestamp) {
-		ObservationInfoDTO observationInfo = getObservationInfo(sourceDocumentIRI, featureOfInterestIRI, featureOfInterestTypeIRI, value, timestamp);
+	public void notifyExporterListeners(String sourceDocumentIRI, String featureOfInterestIRI, String featureOfInterestTypeIRI, Object value, Calendar timestamp, List<IssueInfoDTO> issues) {
+		ObservationInfoDTO observationInfo = getObservationInfo(sourceDocumentIRI, featureOfInterestIRI, featureOfInterestTypeIRI, value, timestamp, issues);
 		for (ResultModelInterface resultModel : this.getConfig().getResultModels()) {
 			resultModel.addObservation(observationInfo);
 		}
 	}
 	
-	protected ObservationInfoDTO getObservationInfo(String sourceDocumentIRI, String featureOfInterestIRI, String featureOfInterestTypeIRI, Object value, Calendar timestamp) {
+	public void notifyExporterListeners(String sourceDocumentIRI, String featureOfInterestIRI, String featureOfInterestTypeIRI, Object value, Calendar timestamp, IssueInfoDTO issue) {
+		List<IssueInfoDTO> issues = new ArrayList<>();
+		if (issue != null) {
+			issues.add(issue);
+		}
+		this.notifyExporterListeners(sourceDocumentIRI, featureOfInterestIRI, featureOfInterestTypeIRI, value, timestamp, issues);
+	}
+	
+	protected ObservationInfoDTO getObservationInfo(String sourceDocumentIRI, String featureOfInterestIRI, String featureOfInterestTypeIRI, Object value, Calendar timestamp, List<IssueInfoDTO> issues) {
 		ObservationInfoDTO observationInfo = new ObservationInfoDTO();
 		observationInfo.setSourceDocumentIRI(sourceDocumentIRI);
 		observationInfo.setFeatureOfInterestIRI(featureOfInterestIRI);
@@ -216,6 +228,7 @@ public abstract class Metric {
 		observationInfo.setScaleIRI(this.getScaleIRI());
 		observationInfo.setScaleTypeIRI(this.getScaleTypeIRI());
 		observationInfo.setRankingFunctionIRI(this.getRankingFunctionIRI());
+		observationInfo.setIssues(issues);
 		return observationInfo;
 	}
 

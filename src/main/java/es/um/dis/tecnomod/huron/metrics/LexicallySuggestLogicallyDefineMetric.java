@@ -2,8 +2,10 @@ package es.um.dis.tecnomod.huron.metrics;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -27,22 +29,19 @@ import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
 import es.um.dis.tecnomod.huron.main.Config;
-import es.um.dis.tecnomod.huron.namespaces.Namespaces;
 import es.um.dis.tecnomod.huron.services.OntologyGraphService;
 import es.um.dis.tecnomod.huron.services.OntologyGraphServiceImpl;
 import es.um.dis.tecnomod.huron.services.OntologyUtils;
 import es.um.dis.tecnomod.huron.services.RDFUtils;
+import es.um.dis.tecnomod.oquo.dto.IssueInfoDTO;
+import es.um.dis.tecnomod.oquo.utils.IssueTypes;
+import es.um.dis.tecnomod.oquo.utils.Namespaces;
+import es.um.dis.tecnomod.oquo.utils.RankingFunctionTypes;
 
 /**
  * The Class LexicallySuggestLogicallyDefineMetric.
  */
 public class LexicallySuggestLogicallyDefineMetric extends OntoenrichMetric {
-	
-	public LexicallySuggestLogicallyDefineMetric(Config config) {
-		super(config);
-		ontologyGraphService = new OntologyGraphServiceImpl();
-		// TODO Auto-generated constructor stub
-	}
 
 	/** The Constant LOGGER. */
 	private final static Logger LOGGER = Logger.getLogger(LexicallySuggestLogicallyDefineMetric.class.getName());
@@ -69,6 +68,11 @@ public class LexicallySuggestLogicallyDefineMetric extends OntoenrichMetric {
 	 * Instantiates a new lexically suggest logically define metric.
 	 */
 	public LexicallySuggestLogicallyDefineMetric() {
+		ontologyGraphService = new OntologyGraphServiceImpl();
+	}
+	
+	public LexicallySuggestLogicallyDefineMetric(Config config) {
+		super(config);
 		ontologyGraphService = new OntologyGraphServiceImpl();
 	}
 
@@ -103,6 +107,7 @@ public class LexicallySuggestLogicallyDefineMetric extends OntoenrichMetric {
 			for (OWLClass owlClassA : this.getRepresentingClasses(lexicalEnvironment, lexicalRegularity)) {
 				Set<OWLClass> localPositiveCases = new HashSet<OWLClass>();
 				Set<OWLClass> localNegativeCases = new HashSet<OWLClass>();
+				List<IssueInfoDTO> issues = new ArrayList<>();
 				if (OntologyUtils.isObsolete(owlClassA, getOntology(), this.getConfig().getImports())) {
 					continue;
 				}
@@ -121,23 +126,14 @@ public class LexicallySuggestLogicallyDefineMetric extends OntoenrichMetric {
 						localNegativeCases.add(owlClassCi);
 						LOGGER.log(Level.INFO, String.format("%s (%s) not related with %s (%s)",
 								owlClassA.toStringID(), lexicalRegularity.getStrPattern(), owlClassCi.toStringID(), l.getStrLabel()));
-						//TODO: create issue here?
-//						RDFUtils.createIssue(rdfModel, metricProperty, owlClassA, String.format("The entity %s ('%s') is not related with the entity %s ('%s')",
-//								owlClassA.toStringID(), lexicalRegularity.getStrPattern(), owlClassCi.toStringID(), l.getStrLabel()));
+						
+						issues.add(new IssueInfoDTO(IssueTypes.MINOR_ISSUE, String.format("The entity %s ('%s') is not related with the entity %s ('%s')",
+								owlClassA.toStringID(), lexicalRegularity.getStrPattern(), owlClassCi.toStringID(), l.getStrLabel())));
 					}
 				}
 				double localMetricResult = (double) localPositiveCases.size() / (localPositiveCases.size() + localNegativeCases.size());
-				this.notifyExporterListeners(ontologyIRI, owlClassA.getIRI().toString(), OWL.Class.getURI(), Double.valueOf(localMetricResult), timestamp);
+				this.notifyExporterListeners(ontologyIRI, owlClassA.getIRI().toString(), OWL.Class.getURI(), Double.valueOf(localMetricResult), timestamp, issues);
 				
-
-//				if(super.isOpenDetailedOutputFile()){
-//					int owlClassADepth = this.ontologyGraphService.getClassDepth(this.reasoner, owlClassA, this.getConfig().getImports());
-//					double averageDepthLocalPositiveCases = this.getAverageDepth(localPositiveCases);
-//					double averageDepthLocalNegativeCases = this.getAverageDepth(localNegativeCases);
-//					double averageDistanceToLRClassLocalPositiveCases = this.getAverageDistanceToDepth(localPositiveCases, owlClassADepth);
-//					double averageDistanceToLRClassLocalNegativeCases = this.getAverageDistanceToDepth(localNegativeCases, owlClassADepth);
-//					
-//				}
 				positiveCasesCount += localPositiveCases.size();
 				negativeCasesCount += localNegativeCases.size();
 			}
@@ -148,52 +144,12 @@ public class LexicallySuggestLogicallyDefineMetric extends OntoenrichMetric {
 
 		// STEP 5: return the calculated value
 		double metricValue = (double) positiveCasesCount / (positiveCasesCount + negativeCasesCount);
-		this.notifyExporterListeners(ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), Double.valueOf(metricValue), timestamp);
+		this.notifyExporterListeners(ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), Double.valueOf(metricValue), timestamp, Collections.emptyList());
 
 		return new MetricResult(metricValue);
 
 	}
 
-	
-
-	/**
-	 * Gets the average distance to depth.
-	 *
-	 * @param owlClasses the owl classes
-	 * @param parentDepth the parent depth
-	 * @return the average distance to depth
-	 */
-	private double getAverageDistanceToDepth(Set<OWLClass> owlClasses, int parentDepth) {
-		int distanceToParentSum = 0;
-		int totalClasses = 0;
-		for(OWLClass owlClass : owlClasses){
-			int depth = this.ontologyGraphService.getClassDepth(this.reasoner, owlClass, this.getConfig().getImports());
-			if(depth != -1){
-				distanceToParentSum += Math.abs(depth - parentDepth);
-				totalClasses++;
-			}
-		}
-		return (double)distanceToParentSum/totalClasses;
-	}
-
-	/**
-	 * Gets the average depth.
-	 *
-	 * @param owlClasses the owl classes
-	 * @return the average depth
-	 */
-	private double getAverageDepth(Set<OWLClass> owlClasses) {
-		int depthSum = 0;
-		int totalClasses = 0;
-		for(OWLClass owlClass : owlClasses){
-			int depth = this.ontologyGraphService.getClassDepth(this.reasoner, owlClass, this.getConfig().getImports());
-			if(depth != -1){
-				depthSum += depth;
-				totalClasses++;
-			}
-		}
-		return (double)depthSum/totalClasses;
-	}
 
 	/**
 	 * Gets the representing classes.
@@ -254,6 +210,6 @@ public class LexicallySuggestLogicallyDefineMetric extends OntoenrichMetric {
 
 	@Override
 	public String getRankingFunctionIRI() {
-		return RDFUtils.RANKING_FUNCTION_HIGHER_BEST;
+		return RankingFunctionTypes.RANKING_FUNCTION_HIGHER_BEST;
 	}
 }

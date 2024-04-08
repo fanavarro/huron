@@ -3,6 +3,7 @@ package es.um.dis.tecnomod.huron.metrics;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.jena.vocabulary.OWL;
@@ -12,8 +13,9 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
 import es.um.dis.tecnomod.huron.main.Config;
-import es.um.dis.tecnomod.huron.namespaces.Namespaces;
 import es.um.dis.tecnomod.huron.services.RDFUtils;
+import es.um.dis.tecnomod.oquo.utils.Namespaces;
+import es.um.dis.tecnomod.oquo.utils.RankingFunctionTypes;
 
 public class LexicalRegularitiesPerClassMetric extends OntoenrichMetric {
 	
@@ -46,7 +48,7 @@ public class LexicalRegularitiesPerClassMetric extends OntoenrichMetric {
 		long nclasses = this.getNumberOfClasses();
 
 		double metricValue = Double.valueOf(lexicalRegularities.size()) / Double.valueOf(nclasses);
-		this.notifyExporterListeners(ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), Double.valueOf(metricValue), Calendar.getInstance());
+		this.notifyExporterListeners(ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), Double.valueOf(metricValue), Calendar.getInstance(), Collections.emptyList());
 
 		return new MetricResult(metricValue);
 	}
@@ -70,7 +72,7 @@ public class LexicalRegularitiesPerClassMetric extends OntoenrichMetric {
 	
 	@Override
 	public String getRankingFunctionIRI() {
-		return RDFUtils.RANKING_FUNCTION_HIGHER_BEST;
+		return RankingFunctionTypes.RANKING_FUNCTION_HIGHER_BEST;
 	}
 
 }
