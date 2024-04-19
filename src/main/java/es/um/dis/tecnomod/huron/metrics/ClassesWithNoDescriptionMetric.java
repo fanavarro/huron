@@ -50,12 +50,12 @@ public class ClassesWithNoDescriptionMetric extends AnnotationsPerEntityAbstract
 			int localNumberOfDescriptions = this.getNumberOfDescriptions(owlClass);
 			if (localNumberOfDescriptions == 0) {
 				IssueInfoDTO issue = new IssueInfoDTO(IssueTypes.MAJOR_ISSUE, String.format("The class %s does not have any description.", owlClass.getIRI().toQuotedString()));
-				this.notifyExporterListeners(ontologyIRI, owlClass.getIRI().toString(), OWL.Class.getURI(), Boolean.valueOf(true), timestamp, issue);
+				this.notifyExporterListeners(ontologyIRI, owlClass.getIRI().toString(), OWL.Class.getURI(), Integer.valueOf(1), timestamp, issue);
 				
 				numberOfClassesWithNoDescription++;
 			}else {
 				
-				this.notifyExporterListeners(ontologyIRI, owlClass.getIRI().toString(), OWL.Class.getURI(), Boolean.valueOf(false), timestamp, Collections.emptyList());
+				this.notifyExporterListeners(ontologyIRI, owlClass.getIRI().toString(), OWL.Class.getURI(), Integer.valueOf(0), timestamp, Collections.emptyList());
 			}
 			numberOfEntities ++;
 		}

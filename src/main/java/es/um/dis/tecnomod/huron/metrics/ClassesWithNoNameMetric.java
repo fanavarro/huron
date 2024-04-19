@@ -60,11 +60,11 @@ public class ClassesWithNoNameMetric extends AnnotationsPerEntityAbstractMetric 
 			int localNumberOfNames = getNumberOfNames(owlClass);
 			if (localNumberOfNames == 0) {
 				IssueInfoDTO issue = new IssueInfoDTO(IssueTypes.MAJOR_ISSUE, String.format("The class %s does not have any name.", owlClass.getIRI().toQuotedString()));
-				this.notifyExporterListeners(ontologyIRI, owlClass.getIRI().toString(), OWL.Class.getURI(), Boolean.valueOf(true), timestamp, issue);
+				this.notifyExporterListeners(ontologyIRI, owlClass.getIRI().toString(), OWL.Class.getURI(), Integer.valueOf(1), timestamp, issue);
 				numberOfClassesWithNoName++;
 			}else {
 				
-				this.notifyExporterListeners(ontologyIRI, owlClass.getIRI().toString(), OWL.Class.getURI(), Boolean.valueOf(false), timestamp, Collections.emptyList());
+				this.notifyExporterListeners(ontologyIRI, owlClass.getIRI().toString(), OWL.Class.getURI(), Integer.valueOf(0), timestamp, Collections.emptyList());
 			}
 			numberOfEntities ++;
 		}
