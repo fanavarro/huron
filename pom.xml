@@ -17,7 +17,7 @@
 		<jena.version>3.17.0</jena.version>
 		<joinery-dataframe.version>1.10</joinery-dataframe.version>
 		<tablesaw.version>0.43.1</tablesaw.version>
-		<oquo-instance-creator.version>0.0.1-SNAPSHOT</oquo-instance-creator.version>
+		<oquo-instance-creator.version>0.0.1</oquo-instance-creator.version>
 	</properties>
 	<build>
 		<plugins>
