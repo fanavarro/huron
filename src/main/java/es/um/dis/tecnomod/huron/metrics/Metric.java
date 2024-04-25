@@ -16,7 +16,6 @@ import es.um.dis.tecnomod.huron.dto.MetricResult;
 import es.um.dis.tecnomod.huron.main.Config;
 import es.um.dis.tecnomod.huron.result_model.ResultModelInterface;
 import es.um.dis.tecnomod.huron.services.RDFUtils;
-import es.um.dis.tecnomod.huron.services.URIUtils;
 import es.um.dis.tecnomod.oquo.dto.IssueInfoDTO;
 import es.um.dis.tecnomod.oquo.dto.ObservationInfoDTO;
 import es.um.dis.tecnomod.oquo.utils.ScaleTypes;
@@ -166,10 +165,7 @@ public abstract class Metric {
 	 * @return the scale IRI
 	 */
 	public String getScaleIRI() {
-		String prefix = URIUtils.getNamespaceFromURI(this.getIRI());
-		String metricName = URIUtils.getNameFromURI(this.getIRI());
-		String scaleName = Character.toLowerCase(metricName.charAt(0)) + metricName.substring(1) + "Scale";
-		return prefix + scaleName;
+		return this.getIRI() + "Scale";
 	}
 	
 	public String getScaleTypeIRI() {
