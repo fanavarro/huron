@@ -59,10 +59,11 @@ import es.um.dis.tecnomod.huron.metrics.SynonymsPerDataPropertyMetric;
 import es.um.dis.tecnomod.huron.metrics.SynonymsPerObjectPropertyMetric;
 import es.um.dis.tecnomod.huron.metrics.SynonymsPerPropertyMetric;
 import es.um.dis.tecnomod.huron.metrics.SystematicNamingMetric;
+import es.um.dis.tecnomod.huron.result_model.DetailedRDFResultModel;
 import es.um.dis.tecnomod.huron.result_model.DetailedTSVResultModel;
 import es.um.dis.tecnomod.huron.result_model.LongTSVResultModel;
-import es.um.dis.tecnomod.huron.result_model.RDFResultModel;
 import es.um.dis.tecnomod.huron.result_model.ResultModelInterface;
+import es.um.dis.tecnomod.huron.result_model.SummaryRDFResultModel;
 import es.um.dis.tecnomod.huron.result_model.WideTSVResultModel;
 import es.um.dis.tecnomod.huron.tasks.MetricCalculationTask;
 import es.um.dis.tecnomod.huron.tasks.MetricCalculationTaskResult;
@@ -88,7 +89,8 @@ public class Huron {
 		File inputFile = new File(cmd.getOptionValue('i'));
 		File outputFileLong = cmd.getOptionValue("output-long", null) != null ? new File(cmd.getOptionValue("output-long")) : null;
 		File outputFileWide = cmd.getOptionValue("output-wide", null) != null ? new File(cmd.getOptionValue("output-wide")) : null;
-		File rdfOutput = cmd.getOptionValue("output-rdf", null) != null ? new File(cmd.getOptionValue("output-rdf")) : null;
+		File detailedRdfOutput = cmd.getOptionValue("output-detailed-rdf", null) != null ? new File(cmd.getOptionValue("output-detailed-rdf")) : null;
+		File summaryRdfOutput = cmd.getOptionValue("output-summary-rdf", null) != null ? new File(cmd.getOptionValue("output-summary-rdf")) : null;
 		File detailedFilesFolder = cmd.getOptionValue("detailed-files", null) != null ? new File(cmd.getOptionValue("detailed-files")) : null;
 		int threads = Integer.parseInt(cmd.getOptionValue('t', "1"));
 		//boolean includeDetailedFiles = cmd.hasOption('v');
@@ -112,8 +114,11 @@ public class Huron {
 		if (outputFileWide != null) {
 			config.addResultModel(new WideTSVResultModel(outputFileWide));
 		}
-		if (rdfOutput != null) {
-			config.addResultModel(new RDFResultModel(rdfOutput));
+		if (detailedRdfOutput != null) {
+			config.addResultModel(new DetailedRDFResultModel(detailedRdfOutput));
+		}
+		if (summaryRdfOutput != null) {
+			config.addResultModel(new SummaryRDFResultModel(summaryRdfOutput));
 		}
 		
 		if (detailedFilesFolder != null) {
@@ -234,9 +239,13 @@ public class Huron {
         importOption.setRequired(false);
         options.addOption(importOption);
         
-        Option rdfOutput = new Option(null, "output-rdf", true, "Output results in RDF in the specified file");
-        rdfOutput.setRequired(false);
-        options.addOption(rdfOutput);
+        Option detailedRdfOutput = new Option(null, "output-detailed-rdf", true, "Output results in RDF in the specified file, including information about all the entities of the ontology.");
+        detailedRdfOutput.setRequired(false);
+        options.addOption(detailedRdfOutput);
+        
+        Option summaryRdfOutput = new Option(null, "output-summary-rdf", true, "Output results in RDF in the specified file, skipping information about ontology entities.");
+        summaryRdfOutput.setRequired(false);
+        options.addOption(summaryRdfOutput);
         
         CommandLineParser parser = new DefaultParser();
         HelpFormatter formatter = new HelpFormatter();
