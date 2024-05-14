@@ -12,7 +12,8 @@ Where
 - **--input** Input file, which be an owl ontology, or a folder containing owl ontologies.
 - **--output-long** Output tsv file with the metrics in long format with the columns 'ontology', 'metric' and 'value'.
 - **--output-wide** Output tsv file with the metrics in wide format, where the metrics are in different columns.
-- **--output-rdf** Output RDF file according to [oquo](https://purl.archive.org/oquo) ontology.
+- **--output-detailed-rdf** Output RDF file according to [oquo](https://purl.archive.org/oquo) ontology, including information about all entities in the ontology.
+- **--output-summary-rdf** Output RDF file according to [oquo](https://purl.archive.org/oquo) ontology, including only information about the ontology.
 - **--detailed-files** Generate a report for each metric in the folder passed as argument.
 - **--threads** Number of threads to use in parallel.
 - **--imports** Consider imported entities from external ontologies (import clause) when calculating the metrics.
