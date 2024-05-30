@@ -72,7 +72,7 @@ public class NamesPerAnnotationPropertyMetric extends AnnotationsPerEntityAbstra
 	
 	@Override
 	public String getIRI() {
-		return Namespaces.OQUO_NS + "DescriptionsPerAnnotationPropertyMetric";
+		return Namespaces.OQUO_NS + "NamesPerAnnotationPropertyMetric";
 	}
 
 
