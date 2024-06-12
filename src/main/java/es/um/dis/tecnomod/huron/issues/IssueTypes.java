@@ -6,44 +6,44 @@ package es.um.dis.tecnomod.huron.issues;
 public class IssueTypes {
 	
 	/** The Constant ANNOTATION_PROPERTY_WITH_NO_DESCRIPTION_ISSUE. */
-	public static final String ANNOTATION_PROPERTY_WITH_NO_DESCRIPTION_ISSUE = "https://purl.archive.org/oquo-huron#AnnotationPropertyWithNoDescriptionIssue";
+	public static final String ANNOTATION_PROPERTY_WITH_NO_DESCRIPTION_ISSUE = "https://purl.archive.org/oquo#AnnotationPropertyWithNoDescriptionIssue";
 	
 	/** The Constant CLASS_WITH_NO_DESCRIPTION_ISSUE. */
-	public static final String CLASS_WITH_NO_DESCRIPTION_ISSUE = "https://purl.archive.org/oquo-huron#ClassWithNoDescriptionIssue";
+	public static final String CLASS_WITH_NO_DESCRIPTION_ISSUE = "https://purl.archive.org/oquo#ClassWithNoDescriptionIssue";
 	
 	/** The Constant DATA_PROPERTY_WITH_NO_DESCRIPTION_ISSUE. */
-	public static final String DATA_PROPERTY_WITH_NO_DESCRIPTION_ISSUE = "https://purl.archive.org/oquo-huron#DataPropertyWithNoDescriptionIssue";
+	public static final String DATA_PROPERTY_WITH_NO_DESCRIPTION_ISSUE = "https://purl.archive.org/oquo#DataPropertyWithNoDescriptionIssue";
 	
 	/** The Constant OBJECT_PROPERTY_WITH_NO_DESCRIPTION_ISSUE. */
-	public static final String OBJECT_PROPERTY_WITH_NO_DESCRIPTION_ISSUE = "https://purl.archive.org/oquo-huron#ObjectPropertyWithNoDescriptionIssue";
+	public static final String OBJECT_PROPERTY_WITH_NO_DESCRIPTION_ISSUE = "https://purl.archive.org/oquo#ObjectPropertyWithNoDescriptionIssue";
 
 	/** The Constant ANNOTATION_PROPERTY_WITH_NO_NAME_ISSUE. */
-	public static final String ANNOTATION_PROPERTY_WITH_NO_NAME_ISSUE = "https://purl.archive.org/oquo-huron#AnnotationPropertyWithNoNameIssue";
+	public static final String ANNOTATION_PROPERTY_WITH_NO_NAME_ISSUE = "https://purl.archive.org/oquo#AnnotationPropertyWithNoNameIssue";
 	
 	/** The Constant CLASS_WITH_NO_NAME_ISSUE. */
-	public static final String CLASS_WITH_NO_NAME_ISSUE = "https://purl.archive.org/oquo-huron#ClassWithNoNameIssue";
+	public static final String CLASS_WITH_NO_NAME_ISSUE = "https://purl.archive.org/oquo#ClassWithNoNameIssue";
 	
 	/** The Constant DATA_PROPERTY_WITH_NO_NAME_ISSUE. */
-	public static final String DATA_PROPERTY_WITH_NO_NAME_ISSUE = "https://purl.archive.org/oquo-huron#DataPropertyWithNoNameIssue";
+	public static final String DATA_PROPERTY_WITH_NO_NAME_ISSUE = "https://purl.archive.org/oquo#DataPropertyWithNoNameIssue";
 	
 	/** The Constant OBJECT_PROPERTY_WITH_NO_NAME_ISSUE. */
-	public static final String OBJECT_PROPERTY_WITH_NO_NAME_ISSUE = "https://purl.archive.org/oquo-huron#ObjectPropertyWithNoNameIssue";
+	public static final String OBJECT_PROPERTY_WITH_NO_NAME_ISSUE = "https://purl.archive.org/oquo#ObjectPropertyWithNoNameIssue";
 
 	/** The Constant ANNOTATION_PROPERTY_WITH_NO_SYNONYMS_ISSUE. */
-	public static final String ANNOTATION_PROPERTY_WITH_NO_SYNONYMS_ISSUE = "https://purl.archive.org/oquo-huron#AnnotationPropertyWithNoSynonymsIssue";
+	public static final String ANNOTATION_PROPERTY_WITH_NO_SYNONYMS_ISSUE = "https://purl.archive.org/oquo#AnnotationPropertyWithNoSynonymsIssue";
 	
 	/** The Constant CLASS_WITH_NO_SYNONYMS_ISSUE. */
-	public static final String CLASS_WITH_NO_SYNONYMS_ISSUE = "https://purl.archive.org/oquo-huron#ClassWithNoSynonymsIssue";
+	public static final String CLASS_WITH_NO_SYNONYMS_ISSUE = "https://purl.archive.org/oquo#ClassWithNoSynonymsIssue";
 	
 	/** The Constant DATA_PROPERTY_WITH_NO_SYNONYMS_ISSUE. */
-	public static final String DATA_PROPERTY_WITH_NO_SYNONYMS_ISSUE = "https://purl.archive.org/oquo-huron#DataPropertyWithNoSynonymsIssue";
+	public static final String DATA_PROPERTY_WITH_NO_SYNONYMS_ISSUE = "https://purl.archive.org/oquo#DataPropertyWithNoSynonymsIssue";
 	
 	/** The Constant OBJECT_PROPERTY_WITH_NO_SYNONYMS_ISSUE. */
-	public static final String OBJECT_PROPERTY_WITH_NO_SYNONYMS_ISSUE = "https://purl.archive.org/oquo-huron#ObjectPropertyWithNoSynonymsIssue";
+	public static final String OBJECT_PROPERTY_WITH_NO_SYNONYMS_ISSUE = "https://purl.archive.org/oquo#ObjectPropertyWithNoSynonymsIssue";
 
 	/** The Constant LEXICALLY_SUGGEST_LOGICALLY_DEFINE_ISSUE. */
-	public static final String LEXICALLY_SUGGEST_LOGICALLY_DEFINE_ISSUE = "https://purl.archive.org/oquo-huron#LexicallySuggestLogicallyDefineIssue";
+	public static final String LEXICALLY_SUGGEST_LOGICALLY_DEFINE_ISSUE = "https://purl.archive.org/oquo#LexicallySuggestLogicallyDefineIssue";
 	
 	/** The Constant SYSTEMATIC_NAMING_ISSUE. */
-	public static final String SYSTEMATIC_NAMING_ISSUE = "https://purl.archive.org/oquo-huron#SystematicNamingIssue";
+	public static final String SYSTEMATIC_NAMING_ISSUE = "https://purl.archive.org/oquo#SystematicNamingIssue";
 }
