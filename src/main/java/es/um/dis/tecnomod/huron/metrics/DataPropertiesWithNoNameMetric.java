@@ -11,10 +11,10 @@ import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
+import es.um.dis.tecnomod.huron.issues.IssueTypes;
 import es.um.dis.tecnomod.huron.main.Config;
 import es.um.dis.tecnomod.huron.services.RDFUtils;
 import es.um.dis.tecnomod.oquo.dto.IssueInfoDTO;
-import es.um.dis.tecnomod.oquo.utils.IssueTypes;
 import es.um.dis.tecnomod.oquo.utils.Namespaces;
 import es.um.dis.tecnomod.oquo.utils.RankingFunctionTypes;
 
@@ -48,7 +48,7 @@ public class DataPropertiesWithNoNameMetric extends AnnotationsPerEntityAbstract
 			}			
 			int localNumberOfNames = getNumberOfNames(owlDataProperty);
 			if (localNumberOfNames == 0) {
-				IssueInfoDTO issue = new IssueInfoDTO(IssueTypes.MAJOR_ISSUE, String.format("The data property %s does not have any name.", owlDataProperty.getIRI().toQuotedString()));
+				IssueInfoDTO issue = new IssueInfoDTO(IssueTypes.DATA_PROPERTY_WITH_NO_NAME_ISSUE, String.format("The data property %s does not have any name.", owlDataProperty.getIRI().toQuotedString()));
 				this.notifyExporterListeners(ontologyIRI, owlDataProperty.getIRI().toString(), OWL.DatatypeProperty.getURI(), Integer.valueOf(1), timestamp, issue);
 				numberOfDataPropertiesWithNoName++;
 			}else {

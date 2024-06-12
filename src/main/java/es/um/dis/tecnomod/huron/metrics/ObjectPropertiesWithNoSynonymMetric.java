@@ -11,10 +11,10 @@ import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
+import es.um.dis.tecnomod.huron.issues.IssueTypes;
 import es.um.dis.tecnomod.huron.main.Config;
 import es.um.dis.tecnomod.huron.services.RDFUtils;
 import es.um.dis.tecnomod.oquo.dto.IssueInfoDTO;
-import es.um.dis.tecnomod.oquo.utils.IssueTypes;
 import es.um.dis.tecnomod.oquo.utils.Namespaces;
 import es.um.dis.tecnomod.oquo.utils.RankingFunctionTypes;
 
@@ -22,12 +22,10 @@ public class ObjectPropertiesWithNoSynonymMetric extends AnnotationsPerEntityAbs
 
 	public ObjectPropertiesWithNoSynonymMetric() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public ObjectPropertiesWithNoSynonymMetric(Config config) {
 		super(config);
-		// TODO Auto-generated constructor stub
 	}
 
 	/** The Constant NAME. */
@@ -46,7 +44,7 @@ public class ObjectPropertiesWithNoSynonymMetric extends AnnotationsPerEntityAbs
 			}				
 			int localNumberOfSynonyms = this.getNumberOfSynonyms(owlObjectProperty);
 			if (localNumberOfSynonyms == 0) {
-				IssueInfoDTO issue = new IssueInfoDTO(IssueTypes.TRIVIAL_ISSUE, String.format("The object property %s does not have any synonym.", owlObjectProperty.getIRI().toQuotedString()));
+				IssueInfoDTO issue = new IssueInfoDTO(IssueTypes.OBJECT_PROPERTY_WITH_NO_SYNONYMS_ISSUE, String.format("The object property %s does not have any synonym.", owlObjectProperty.getIRI().toQuotedString()));
 				this.notifyExporterListeners(ontologyIRI, owlObjectProperty.getIRI().toString(), OWL.ObjectProperty.getURI(), Integer.valueOf(1), timestamp, issue);
 				numberOfObjectPropertiesWithNoSynonym++;
 			}else {

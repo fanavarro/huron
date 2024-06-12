@@ -28,11 +28,11 @@ import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
+import es.um.dis.tecnomod.huron.issues.IssueTypes;
 import es.um.dis.tecnomod.huron.main.Config;
 import es.um.dis.tecnomod.huron.services.OntologyUtils;
 import es.um.dis.tecnomod.huron.services.RDFUtils;
 import es.um.dis.tecnomod.oquo.dto.IssueInfoDTO;
-import es.um.dis.tecnomod.oquo.utils.IssueTypes;
 import es.um.dis.tecnomod.oquo.utils.Namespaces;
 import es.um.dis.tecnomod.oquo.utils.RankingFunctionTypes;
 
@@ -112,7 +112,7 @@ public class SystematicNamingMetric extends OntoenrichMetric {
 				for(OWLClass c : localNegativeCases){
 					String cLabel = lexicalEnvironment.getLabelById(c.getIRI().toString()).getStrLabel();
 					LOGGER.log(Level.INFO, String.format("The class %s is subclass of %s but there are no lexical regularities in common.", c.toStringID(), owlClassA.toStringID()));
-					issues.add(new IssueInfoDTO(IssueTypes.MINOR_ISSUE, String.format("Class %s ('%s') is subclass of %s ('%s') but there are no lexical regularities in common.", c.toStringID(), cLabel, owlClassA.toStringID(), classALabel)));
+					issues.add(new IssueInfoDTO(IssueTypes.SYSTEMATIC_NAMING_ISSUE, String.format("Class %s ('%s') is subclass of %s ('%s') but there are no lexical regularities in common.", c.toStringID(), cLabel, owlClassA.toStringID(), classALabel)));
 				}
 				this.notifyExporterListeners(ontologyIRI, owlClassA.getIRI().toString(), OWL.Class.getURI(), Double.valueOf(localMetricResult), timestamp, issues);
 			}

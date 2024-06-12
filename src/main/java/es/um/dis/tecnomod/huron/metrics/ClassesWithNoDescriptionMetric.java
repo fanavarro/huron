@@ -11,11 +11,11 @@ import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
+import es.um.dis.tecnomod.huron.issues.IssueTypes;
 import es.um.dis.tecnomod.huron.main.Config;
 import es.um.dis.tecnomod.huron.services.OntologyUtils;
 import es.um.dis.tecnomod.huron.services.RDFUtils;
 import es.um.dis.tecnomod.oquo.dto.IssueInfoDTO;
-import es.um.dis.tecnomod.oquo.utils.IssueTypes;
 import es.um.dis.tecnomod.oquo.utils.Namespaces;
 import es.um.dis.tecnomod.oquo.utils.RankingFunctionTypes;
 
@@ -23,13 +23,11 @@ public class ClassesWithNoDescriptionMetric extends AnnotationsPerEntityAbstract
 
 	public ClassesWithNoDescriptionMetric() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 
 	public ClassesWithNoDescriptionMetric(Config config) {
 		super(config);
-		// TODO Auto-generated constructor stub
 	}
 
 
@@ -49,7 +47,7 @@ public class ClassesWithNoDescriptionMetric extends AnnotationsPerEntityAbstract
 			}				
 			int localNumberOfDescriptions = this.getNumberOfDescriptions(owlClass);
 			if (localNumberOfDescriptions == 0) {
-				IssueInfoDTO issue = new IssueInfoDTO(IssueTypes.MAJOR_ISSUE, String.format("The class %s does not have any description.", owlClass.getIRI().toQuotedString()));
+				IssueInfoDTO issue = new IssueInfoDTO(IssueTypes.CLASS_WITH_NO_DESCRIPTION_ISSUE, String.format("The class %s does not have any description.", owlClass.getIRI().toQuotedString()));
 				this.notifyExporterListeners(ontologyIRI, owlClass.getIRI().toString(), OWL.Class.getURI(), Integer.valueOf(1), timestamp, issue);
 				
 				numberOfClassesWithNoDescription++;

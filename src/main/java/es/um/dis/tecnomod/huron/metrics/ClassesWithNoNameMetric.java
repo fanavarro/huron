@@ -11,11 +11,11 @@ import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
+import es.um.dis.tecnomod.huron.issues.IssueTypes;
 import es.um.dis.tecnomod.huron.main.Config;
 import es.um.dis.tecnomod.huron.services.OntologyUtils;
 import es.um.dis.tecnomod.huron.services.RDFUtils;
 import es.um.dis.tecnomod.oquo.dto.IssueInfoDTO;
-import es.um.dis.tecnomod.oquo.utils.IssueTypes;
 import es.um.dis.tecnomod.oquo.utils.Namespaces;
 import es.um.dis.tecnomod.oquo.utils.RankingFunctionTypes;
 
@@ -59,7 +59,7 @@ public class ClassesWithNoNameMetric extends AnnotationsPerEntityAbstractMetric 
 			}			
 			int localNumberOfNames = getNumberOfNames(owlClass);
 			if (localNumberOfNames == 0) {
-				IssueInfoDTO issue = new IssueInfoDTO(IssueTypes.MAJOR_ISSUE, String.format("The class %s does not have any name.", owlClass.getIRI().toQuotedString()));
+				IssueInfoDTO issue = new IssueInfoDTO(IssueTypes.CLASS_WITH_NO_NAME_ISSUE, String.format("The class %s does not have any name.", owlClass.getIRI().toQuotedString()));
 				this.notifyExporterListeners(ontologyIRI, owlClass.getIRI().toString(), OWL.Class.getURI(), Integer.valueOf(1), timestamp, issue);
 				numberOfClassesWithNoName++;
 			}else {

@@ -28,13 +28,13 @@ import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
+import es.um.dis.tecnomod.huron.issues.IssueTypes;
 import es.um.dis.tecnomod.huron.main.Config;
 import es.um.dis.tecnomod.huron.services.OntologyGraphService;
 import es.um.dis.tecnomod.huron.services.OntologyGraphServiceImpl;
 import es.um.dis.tecnomod.huron.services.OntologyUtils;
 import es.um.dis.tecnomod.huron.services.RDFUtils;
 import es.um.dis.tecnomod.oquo.dto.IssueInfoDTO;
-import es.um.dis.tecnomod.oquo.utils.IssueTypes;
 import es.um.dis.tecnomod.oquo.utils.Namespaces;
 import es.um.dis.tecnomod.oquo.utils.RankingFunctionTypes;
 
@@ -127,7 +127,7 @@ public class LexicallySuggestLogicallyDefineMetric extends OntoenrichMetric {
 						LOGGER.log(Level.INFO, String.format("%s (%s) not related with %s (%s)",
 								owlClassA.toStringID(), lexicalRegularity.getStrPattern(), owlClassCi.toStringID(), l.getStrLabel()));
 						
-						issues.add(new IssueInfoDTO(IssueTypes.MINOR_ISSUE, String.format("The entity %s ('%s') is not related with the entity %s ('%s')",
+						issues.add(new IssueInfoDTO(IssueTypes.LEXICALLY_SUGGEST_LOGICALLY_DEFINE_ISSUE, String.format("The entity %s ('%s') is not related with the entity %s ('%s')",
 								owlClassA.toStringID(), lexicalRegularity.getStrPattern(), owlClassCi.toStringID(), l.getStrLabel())));
 					}
 				}

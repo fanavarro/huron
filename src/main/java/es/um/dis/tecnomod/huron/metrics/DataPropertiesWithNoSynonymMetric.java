@@ -11,10 +11,10 @@ import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
+import es.um.dis.tecnomod.huron.issues.IssueTypes;
 import es.um.dis.tecnomod.huron.main.Config;
 import es.um.dis.tecnomod.huron.services.RDFUtils;
 import es.um.dis.tecnomod.oquo.dto.IssueInfoDTO;
-import es.um.dis.tecnomod.oquo.utils.IssueTypes;
 import es.um.dis.tecnomod.oquo.utils.Namespaces;
 import es.um.dis.tecnomod.oquo.utils.RankingFunctionTypes;
 
@@ -22,13 +22,11 @@ public class DataPropertiesWithNoSynonymMetric extends AnnotationsPerEntityAbstr
 
 	public DataPropertiesWithNoSynonymMetric() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 
 	public DataPropertiesWithNoSynonymMetric(Config config) {
 		super(config);
-		// TODO Auto-generated constructor stub
 	}
 
 
@@ -48,7 +46,7 @@ public class DataPropertiesWithNoSynonymMetric extends AnnotationsPerEntityAbstr
 			}				
 			int localNumberOfSynonyms = this.getNumberOfSynonyms(owlDataProperty);
 			if (localNumberOfSynonyms == 0) {
-				IssueInfoDTO issue = new IssueInfoDTO(IssueTypes.TRIVIAL_ISSUE, String.format("The data property %s does not have any synonym.", owlDataProperty.getIRI().toQuotedString()));
+				IssueInfoDTO issue = new IssueInfoDTO(IssueTypes.DATA_PROPERTY_WITH_NO_SYNONYMS_ISSUE, String.format("The data property %s does not have any synonym.", owlDataProperty.getIRI().toQuotedString()));
 				this.notifyExporterListeners(ontologyIRI, owlDataProperty.getIRI().toString(), OWL.DatatypeProperty.getURI(), Integer.valueOf(1), timestamp, issue);
 				numberOfDataPropertiesWithNoSynonym++;
 			}else {
