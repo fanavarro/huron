@@ -10,6 +10,9 @@ public abstract class TSVResultModel implements ResultModelInterface {
 	protected static final String COLUMN_SEPARATOR_STRING = "\t";
 	
 	protected String getStringValue(Object object) {
+		if (object == null) {
+			return null;
+		}
 		if (object instanceof String) {
 			return QUOTE_STRING + object.toString() + QUOTE_STRING;
 		}

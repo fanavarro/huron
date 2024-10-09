@@ -43,7 +43,7 @@ public class NumberOfClassesMetric extends Metric {
 	 */
 	@Override
 	public MetricResult calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
-		String ontologyIRI = RDFUtils.getOntologyIRI(getOntology());
+		String ontologyIRI = RDFUtils.getOntologyIdentifier(getOntology());
 		double metricValue = getOntology().classesInSignature(this.getConfig().getImports()).filter(owlClass -> (!OntologyUtils.isObsolete(owlClass, getOntology(), this.getConfig().getImports()))).count();
 		
 		this.notifyExporterListeners(ontologyIRI, ontologyIRI, OWL.Ontology.getURI(), Double.valueOf(metricValue), Calendar.getInstance(), Collections.emptyList());

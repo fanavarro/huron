@@ -66,7 +66,7 @@ public class SystematicNamingMetric extends OntoenrichMetric {
 	public MetricResult calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
 		/* Write header for detailed output file */
 		
-		String ontologyIRI = RDFUtils.getOntologyIRI(getOntology());
+		String ontologyIRI = RDFUtils.getOntologyIdentifier(getOntology());
 		Calendar timestamp = Calendar.getInstance();
 		
 		// STEP 1: create the lexical environment

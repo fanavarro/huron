@@ -37,7 +37,7 @@ public class ClassesWithNoDescriptionMetric extends AnnotationsPerEntityAbstract
 	@Override
 	public MetricResult calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
 		
-		String ontologyIRI = RDFUtils.getOntologyIRI(getOntology());
+		String ontologyIRI = RDFUtils.getOntologyIdentifier(getOntology());
 		Calendar timestamp = Calendar.getInstance();
 		int numberOfClassesWithNoDescription = 0;
 		int numberOfEntities = 0;

@@ -38,7 +38,7 @@ public class LexicalRegularityClassPercentageMetric extends OntoenrichMetric {
 		
 		Calendar timestamp = Calendar.getInstance();
 		
-		String ontologyIRI = RDFUtils.getOntologyIRI(getOntology());
+		String ontologyIRI = RDFUtils.getOntologyIdentifier(getOntology());
 		
 		// STEP 1: create the lexical environment
 		LexicalEnvironment lexicalEnvironment = this.getLexicalEnvironment();

@@ -36,7 +36,7 @@ public class LexicalRegularitiesPerClassMetric extends OntoenrichMetric {
 		/* Write header for detailed output file */
 		
 		
-		String ontologyIRI = RDFUtils.getOntologyIRI(getOntology());
+		String ontologyIRI = RDFUtils.getOntologyIdentifier(getOntology());
 		
 		// STEP 1: create the lexical environment
 		LexicalEnvironment lexicalEnvironment = this.getLexicalEnvironment();

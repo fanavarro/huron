@@ -39,7 +39,7 @@ public class AnnotationPropertiesWithNoNameMetric extends AnnotationsPerEntityAb
 	@Override
 	public MetricResult calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
 		
-		String ontologyIRI = RDFUtils.getOntologyIRI(getOntology());
+		String ontologyIRI = RDFUtils.getOntologyIdentifier(getOntology());
 		Calendar timestamp = Calendar.getInstance();
 		int numberOfAnnotationPropertiesWithNoName = 0;
 		int numberOfEntities = 0;

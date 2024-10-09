@@ -26,7 +26,7 @@ public class RDFUtils {
 	 * available, return null.
 	 * 
 	 * @param ontology
-	 * @return
+	 * @return Version IRI, ontology IRI, or null.
 	 */
 	public static String getOntologyIRI(OWLOntology ontology) {
 		IRI ontologyIRI = ontology.getOntologyID().getVersionIRI()
@@ -36,4 +36,25 @@ public class RDFUtils {
 		}
 		return null;
 	}
+	
+	/**
+	 * Returns the identifier of the ontology. In this order:
+	 * 1. The version IRI.
+	 * 2. The ontology IRI
+	 * 3. The ontology file name.
+	 * @param ontology
+	 * @return
+	 */
+	public static String getOntologyIdentifier(OWLOntology ontology) {
+		String ontologyIRI = getOntologyIRI(ontology);
+		if (ontologyIRI != null) {
+			return ontologyIRI;
+		}
+		IRI ontologyDocumentIRI = ontology.getOWLOntologyManager().getOntologyDocumentIRI(ontology);
+		return ontologyDocumentIRI.getFragment();
+	}
+//	public static String getOntologyIdentifier(OWLOntology ontology) {
+//		IRI ontologyDocumentIRI = ontology.getOWLOntologyManager().getOntologyDocumentIRI(ontology);
+//		return ontologyDocumentIRI.getFragment();
+//	}
 }

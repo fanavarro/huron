@@ -2,6 +2,7 @@ package es.um.dis.tecnomod.huron.tasks;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -12,10 +13,12 @@ import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.MissingImportHandlingStrategy;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.model.OWLOntologyIRIMapper;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 import es.um.dis.tecnomod.huron.dto.MetricResult;
 import es.um.dis.tecnomod.huron.metrics.Metric;
+import es.um.dis.tecnomod.huron.utils.CatalogXmlIRIMapper;
 
 /**
  * The Class MetricCalculationTask.
@@ -56,6 +59,11 @@ public class MetricCalculationTask implements Callable<List<MetricCalculationTas
 		this.ontologyManager = OWLManager.createConcurrentOWLOntologyManager();
 		/* Prevent exceptions when an import cannot be loaded*/
 		this.ontologyManager.getOntologyConfigurator().setMissingImportHandlingStrategy(MissingImportHandlingStrategy.SILENT);
+		/* Load catalog file for local file imports declaration */
+		OWLOntologyIRIMapper iriMapper = this.getIRIMapper(ontologyFile.getAbsolutePath());
+		if (iriMapper != null) {
+			this.ontologyManager.getIRIMappers().add(iriMapper);
+		}
 		this.metrics = metrics;
 		this.ontologyFile = ontologyFile;
 	}
@@ -99,6 +107,21 @@ public class MetricCalculationTask implements Callable<List<MetricCalculationTas
 	 */
 	public File getOntologyFile(){
 		return this.ontologyFile;
+	}
+	
+	private OWLOntologyIRIMapper getIRIMapper(String ontologyPath) {
+		File ontologyFile = new File(ontologyPath);
+		File parentFolder = ontologyFile.getParentFile();
+		Path catalogPath = Path.of(parentFolder.getAbsolutePath(), "catalog-v001.xml");
+		if (catalogPath.toFile().exists()) {
+			try {
+				return new CatalogXmlIRIMapper(catalogPath.toFile().getAbsolutePath());
+			} catch (IOException e) {
+				LOGGER.log(Level.WARNING, "Error loading catalog file.", e);
+				return null;
+			}
+		}
+		return null;
 	}
 
 }

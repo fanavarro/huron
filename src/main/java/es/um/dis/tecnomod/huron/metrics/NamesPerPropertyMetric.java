@@ -45,7 +45,7 @@ public class NamesPerPropertyMetric extends AnnotationsPerEntityAbstractMetric{
 	@Override
 	public MetricResult calculate() throws OWLOntologyCreationException, FileNotFoundException, IOException, Exception {
 		
-		String ontologyIRI = RDFUtils.getOntologyIRI(getOntology());
+		String ontologyIRI = RDFUtils.getOntologyIdentifier(getOntology());
 		Calendar timestamp = Calendar.getInstance();
 		int numberOfNames = 0;
 		int totalProperties = 0;
