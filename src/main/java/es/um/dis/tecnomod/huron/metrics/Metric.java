@@ -225,6 +225,7 @@ public abstract class Metric {
 		observationInfo.setScaleTypeIRI(this.getScaleTypeIRI());
 		observationInfo.setRankingFunctionIRI(this.getRankingFunctionIRI());
 		observationInfo.setIssues(issues);
+		observationInfo.setDetails(null);
 		return observationInfo;
 	}
 

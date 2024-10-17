@@ -127,8 +127,8 @@ public class LexicallySuggestLogicallyDefineMetric extends OntoenrichMetric {
 						LOGGER.log(Level.INFO, String.format("%s (%s) not related with %s (%s)",
 								owlClassA.toStringID(), lexicalRegularity.getStrPattern(), owlClassCi.toStringID(), l.getStrLabel()));
 						
-						issues.add(new IssueInfoDTO(IssueTypes.LEXICALLY_SUGGEST_LOGICALLY_DEFINE_ISSUE, String.format("The entity %s ('%s') is not related with the entity %s ('%s')",
-								owlClassA.toStringID(), lexicalRegularity.getStrPattern(), owlClassCi.toStringID(), l.getStrLabel())));
+						issues.add(new IssueInfoDTO(IssueTypes.LEXICALLY_SUGGEST_LOGICALLY_DEFINE_ISSUE, String.format("The class %s ('%s') is exhibiting the name of the class %s ('%s'), which suggest a semantic relationship between them. Nonetheless, this relationship is not explicit in the ontology. If they are related, an axiom should be created in the ontology relating them.",
+								owlClassCi.toStringID(), l.getStrLabel(), owlClassA.toStringID(), lexicalRegularity.getStrPattern())));
 					}
 				}
 				double localMetricResult = (double) localPositiveCases.size() / (localPositiveCases.size() + localNegativeCases.size());

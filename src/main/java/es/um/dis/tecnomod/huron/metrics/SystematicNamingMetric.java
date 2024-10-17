@@ -112,7 +112,7 @@ public class SystematicNamingMetric extends OntoenrichMetric {
 				for(OWLClass c : localNegativeCases){
 					String cLabel = lexicalEnvironment.getLabelById(c.getIRI().toString()).getStrLabel();
 					LOGGER.log(Level.INFO, String.format("The class %s is subclass of %s but there are no lexical regularities in common.", c.toStringID(), owlClassA.toStringID()));
-					issues.add(new IssueInfoDTO(IssueTypes.SYSTEMATIC_NAMING_ISSUE, String.format("Class %s ('%s') is subclass of %s ('%s') but there are no lexical regularities in common.", c.toStringID(), cLabel, owlClassA.toStringID(), classALabel)));
+					issues.add(new IssueInfoDTO(IssueTypes.SYSTEMATIC_NAMING_ISSUE, String.format("Class %s ('%s') is subclass of %s ('%s') but there are no lexical regularities in common. Genus diferentia naming style is recommended, e.g. '%s %s'", c.toStringID(), cLabel, owlClassA.toStringID(), classALabel, cLabel, classALabel)));
 				}
 				this.notifyExporterListeners(ontologyIRI, owlClassA.getIRI().toString(), OWL.Class.getURI(), Double.valueOf(localMetricResult), timestamp, issues);
 			}
