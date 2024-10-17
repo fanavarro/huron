@@ -3,6 +3,7 @@ package es.um.dis.tecnomod.huron.tasks;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -112,7 +113,7 @@ public class MetricCalculationTask implements Callable<List<MetricCalculationTas
 	private OWLOntologyIRIMapper getIRIMapper(String ontologyPath) {
 		File ontologyFile = new File(ontologyPath);
 		File parentFolder = ontologyFile.getParentFile();
-		Path catalogPath = Path.of(parentFolder.getAbsolutePath(), "catalog-v001.xml");
+		Path catalogPath = Paths.get(parentFolder.getAbsolutePath(), "catalog-v001.xml");
 		if (catalogPath.toFile().exists()) {
 			try {
 				return new CatalogXmlIRIMapper(catalogPath.toFile().getAbsolutePath());
