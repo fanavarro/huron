@@ -16,7 +16,7 @@ public class NumberOfLexicalRegularitiesMetricTest {
 	public void test() throws FileNotFoundException, IOException, Exception {
 		// STEP 1: create the object
 		OWLOntologyManager m = OWLManager.createOWLOntologyManager();
-		OWLOntology ontology = m.loadOntologyFromOntologyDocument(this.getClass().getResourceAsStream("/example2.owl"));
+		OWLOntology ontology = m.loadOntologyFromOntologyDocument(getClass().getResourceAsStream("/example2.owl"));
 		
 
 		// STEP 2: calculate the metric

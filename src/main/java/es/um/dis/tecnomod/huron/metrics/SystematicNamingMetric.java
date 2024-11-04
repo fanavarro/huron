@@ -40,6 +40,10 @@ import es.um.dis.tecnomod.oquo.utils.RankingFunctionTypes;
  * The Class SystematicNamingMetric.
  */
 public class SystematicNamingMetric extends OntoenrichMetric {
+	private static final String ISSUE_MSG_TEMPLATE = "Class %s ('%s') is subclass of %s ('%s') but there are no lexical regularities in common. Genus diferentia naming style is recommended, e.g. '%s %s'";
+
+
+
 	public SystematicNamingMetric() {
 		super();
 	}
@@ -111,8 +115,10 @@ public class SystematicNamingMetric extends OntoenrichMetric {
 				List<IssueInfoDTO> issues = new ArrayList<>();
 				for(OWLClass c : localNegativeCases){
 					String cLabel = lexicalEnvironment.getLabelById(c.getIRI().toString()).getStrLabel();
-					LOGGER.log(Level.INFO, String.format("The class %s is subclass of %s but there are no lexical regularities in common.", c.toStringID(), owlClassA.toStringID()));
-					issues.add(new IssueInfoDTO(IssueTypes.SYSTEMATIC_NAMING_ISSUE, String.format("Class %s ('%s') is subclass of %s ('%s') but there are no lexical regularities in common. Genus diferentia naming style is recommended, e.g. '%s %s'", c.toStringID(), cLabel, owlClassA.toStringID(), classALabel, cLabel, classALabel)));
+					String issueMsg = String.format(ISSUE_MSG_TEMPLATE, c.toStringID(), cLabel, owlClassA.toStringID(), classALabel, cLabel, classALabel);
+					LOGGER.log(Level.INFO, issueMsg);
+					IssueInfoDTO issue = new IssueInfoDTO(IssueTypes.SYSTEMATIC_NAMING_ISSUE, owlClassA.toStringID(), c.toStringID(), issueMsg); 
+					issues.add(issue);
 				}
 				this.notifyExporterListeners(ontologyIRI, owlClassA.getIRI().toString(), OWL.Class.getURI(), Double.valueOf(localMetricResult), timestamp, issues);
 			}

@@ -49,7 +49,7 @@ public class ClassesWithNoSynonymMetric extends AnnotationsPerEntityAbstractMetr
 			}				
 			int localNumberOfSynonyms = this.getNumberOfSynonyms(owlClass);
 			if (localNumberOfSynonyms == 0) {
-				IssueInfoDTO issue = new IssueInfoDTO(IssueTypes.CLASS_WITH_NO_SYNONYMS_ISSUE, String.format("The class %s does not have any synonym.", owlClass.getIRI().toQuotedString()));
+				IssueInfoDTO issue = new IssueInfoDTO(IssueTypes.CLASS_WITH_NO_SYNONYMS_ISSUE, owlClass.getIRI().toString(), String.format("The class %s does not have any synonym.", owlClass.getIRI().toQuotedString()));
 				this.notifyExporterListeners(ontologyIRI, owlClass.getIRI().toString(), OWL.Class.getURI(), Integer.valueOf(1), timestamp, issue);
 				numberOfClassesWithNoSynonym++;
 			}else {

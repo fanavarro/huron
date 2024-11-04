@@ -46,7 +46,7 @@ public class AnnotationPropertiesWithNoNameMetric extends AnnotationsPerEntityAb
 		for(OWLAnnotationProperty owlAnnotationProperty : super.getOntology().annotationPropertiesInSignature(this.getConfig().getImports()).collect(Collectors.toList())){
 			int localNumberOfNames = getNumberOfNames(owlAnnotationProperty);
 			if (localNumberOfNames == 0) {
-				IssueInfoDTO issue = new IssueInfoDTO(IssueTypes.ANNOTATION_PROPERTY_WITH_NO_NAME_ISSUE, String.format("The annotation property %s does not have any name.", owlAnnotationProperty.getIRI().toQuotedString()));
+				IssueInfoDTO issue = new IssueInfoDTO(IssueTypes.ANNOTATION_PROPERTY_WITH_NO_NAME_ISSUE, owlAnnotationProperty.getIRI().toString(), String.format("The annotation property %s does not have any name.", owlAnnotationProperty.getIRI().toQuotedString()));
 				this.notifyExporterListeners(ontologyIRI, owlAnnotationProperty.getIRI().toString(), OWL.AnnotationProperty.getURI(), Integer.valueOf(1), timestamp, issue);
 
 				numberOfAnnotationPropertiesWithNoName++;

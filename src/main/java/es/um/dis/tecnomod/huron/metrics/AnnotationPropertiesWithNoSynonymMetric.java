@@ -48,7 +48,7 @@ public class AnnotationPropertiesWithNoSynonymMetric extends AnnotationsPerEntit
 		for(OWLAnnotationProperty owlAnnotationProperty : super.getOntology().annotationPropertiesInSignature(this.getConfig().getImports()).collect(Collectors.toList())){	
 			int localNumberOfSynonyms = this.getNumberOfSynonyms(owlAnnotationProperty);
 			if (localNumberOfSynonyms == 0) {
-				IssueInfoDTO issue = new IssueInfoDTO(IssueTypes.ANNOTATION_PROPERTY_WITH_NO_SYNONYMS_ISSUE, String.format("The annotation property %s does not have any synonym.", owlAnnotationProperty.getIRI().toQuotedString()));
+				IssueInfoDTO issue = new IssueInfoDTO(IssueTypes.ANNOTATION_PROPERTY_WITH_NO_SYNONYMS_ISSUE, owlAnnotationProperty.getIRI().toString(), String.format("The annotation property %s does not have any synonym.", owlAnnotationProperty.getIRI().toQuotedString()));
 				this.notifyExporterListeners(ontologyIRI, owlAnnotationProperty.getIRI().toString(), OWL.AnnotationProperty.getURI(), Integer.valueOf(1), timestamp, issue);
 				numberOfAnnotationPropertiesWithNoSynonym++;
 			}else {

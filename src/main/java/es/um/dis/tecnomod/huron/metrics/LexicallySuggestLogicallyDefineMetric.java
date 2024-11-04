@@ -43,6 +43,8 @@ import es.um.dis.tecnomod.oquo.utils.RankingFunctionTypes;
  */
 public class LexicallySuggestLogicallyDefineMetric extends OntoenrichMetric {
 
+	private static final String ISSUE_MSG_TEMPLATE = "The class %s ('%s') is exhibiting the name of the class %s ('%s'), which suggest a semantic relationship between them. Nonetheless, this relationship is not explicit in the ontology. If they are related, an axiom should be created in the ontology relating them.";
+
 	/** The Constant LOGGER. */
 	private final static Logger LOGGER = Logger.getLogger(LexicallySuggestLogicallyDefineMetric.class.getName());
 	
@@ -124,11 +126,10 @@ public class LexicallySuggestLogicallyDefineMetric extends OntoenrichMetric {
 						localPositiveCases.add(owlClassCi);
 					} else {
 						localNegativeCases.add(owlClassCi);
-						LOGGER.log(Level.INFO, String.format("%s (%s) not related with %s (%s)",
-								owlClassA.toStringID(), lexicalRegularity.getStrPattern(), owlClassCi.toStringID(), l.getStrLabel()));
-						
-						issues.add(new IssueInfoDTO(IssueTypes.LEXICALLY_SUGGEST_LOGICALLY_DEFINE_ISSUE, String.format("The class %s ('%s') is exhibiting the name of the class %s ('%s'), which suggest a semantic relationship between them. Nonetheless, this relationship is not explicit in the ontology. If they are related, an axiom should be created in the ontology relating them.",
-								owlClassCi.toStringID(), l.getStrLabel(), owlClassA.toStringID(), lexicalRegularity.getStrPattern())));
+						String issueMsg = String.format(ISSUE_MSG_TEMPLATE, owlClassCi.toStringID(), l.getStrLabel(), owlClassA.toStringID(), lexicalRegularity.getStrPattern());
+						LOGGER.log(Level.INFO, issueMsg);
+						IssueInfoDTO issue = new IssueInfoDTO(IssueTypes.LEXICALLY_SUGGEST_LOGICALLY_DEFINE_ISSUE, owlClassA.toStringID(), owlClassCi.toStringID(), issueMsg);
+						issues.add(issue);
 					}
 				}
 				double localMetricResult = (double) localPositiveCases.size() / (localPositiveCases.size() + localNegativeCases.size());

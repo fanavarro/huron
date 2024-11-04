@@ -46,7 +46,7 @@ public class ObjectPropertiesWithNoDescriptionMetric extends AnnotationsPerEntit
 			}			
 			int localNumberOfDescriptions = this.getNumberOfDescriptions(owlObjectProperty);
 			if (localNumberOfDescriptions == 0) {
-				IssueInfoDTO issue = new IssueInfoDTO(IssueTypes.OBJECT_PROPERTY_WITH_NO_DESCRIPTION_ISSUE, String.format("The object property %s does not have any description.", owlObjectProperty.getIRI().toQuotedString()));
+				IssueInfoDTO issue = new IssueInfoDTO(IssueTypes.OBJECT_PROPERTY_WITH_NO_DESCRIPTION_ISSUE, owlObjectProperty.getIRI().toString(), String.format("The object property %s does not have any description.", owlObjectProperty.getIRI().toQuotedString()));
 				this.notifyExporterListeners(ontologyIRI, owlObjectProperty.getIRI().toString(), OWL.ObjectProperty.getURI(), Integer.valueOf(1), timestamp, issue);
 				numberOfObjectPropertiesWithNoDescription++;
 			}else {

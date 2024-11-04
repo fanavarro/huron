@@ -48,7 +48,7 @@ public class ObjectPropertiesWithNoNameMetric extends AnnotationsPerEntityAbstra
 			}			
 			int localNumberOfNames = getNumberOfNames(owlObjectProperty);
 			if (localNumberOfNames == 0) {
-				IssueInfoDTO issue = new IssueInfoDTO(IssueTypes.OBJECT_PROPERTY_WITH_NO_NAME_ISSUE, String.format("The object property %s does not have any name.", owlObjectProperty.getIRI().toQuotedString()));
+				IssueInfoDTO issue = new IssueInfoDTO(IssueTypes.OBJECT_PROPERTY_WITH_NO_NAME_ISSUE, owlObjectProperty.getIRI().toString(), String.format("The object property %s does not have any name.", owlObjectProperty.getIRI().toQuotedString()));
 				this.notifyExporterListeners(ontologyIRI, owlObjectProperty.getIRI().toString(), OWL.ObjectProperty.getURI(), Integer.valueOf(1), timestamp, issue);
 				numberOfObjectPropertiesWithNoName++;
 			}else {

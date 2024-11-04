@@ -45,7 +45,7 @@ public class AnnotationPropertiesWithNoDescriptionMetric extends AnnotationsPerE
 		for(OWLAnnotationProperty owlAnnotationProperty : super.getOntology().annotationPropertiesInSignature(this.getConfig().getImports()).collect(Collectors.toList())){		
 			int localNumberOfDescriptions = this.getNumberOfDescriptions(owlAnnotationProperty);
 			if (localNumberOfDescriptions == 0) {
-				IssueInfoDTO issue = new IssueInfoDTO(IssueTypes.ANNOTATION_PROPERTY_WITH_NO_DESCRIPTION_ISSUE, String.format("The annotation property %s does not have any description.", owlAnnotationProperty.getIRI().toQuotedString()));
+				IssueInfoDTO issue = new IssueInfoDTO(IssueTypes.ANNOTATION_PROPERTY_WITH_NO_DESCRIPTION_ISSUE, owlAnnotationProperty.getIRI().toString(), String.format("The annotation property %s does not have any description.", owlAnnotationProperty.getIRI().toQuotedString()));
 				this.notifyExporterListeners(ontologyIRI, owlAnnotationProperty.getIRI().toString(), OWL.AnnotationProperty.getURI(), Integer.valueOf(1), timestamp, issue);
 				numberOfAnnotationPropertiesWithNoDescription++;
 			}else {

@@ -46,7 +46,7 @@ public class DataPropertiesWithNoSynonymMetric extends AnnotationsPerEntityAbstr
 			}				
 			int localNumberOfSynonyms = this.getNumberOfSynonyms(owlDataProperty);
 			if (localNumberOfSynonyms == 0) {
-				IssueInfoDTO issue = new IssueInfoDTO(IssueTypes.DATA_PROPERTY_WITH_NO_SYNONYMS_ISSUE, String.format("The data property %s does not have any synonym.", owlDataProperty.getIRI().toQuotedString()));
+				IssueInfoDTO issue = new IssueInfoDTO(IssueTypes.DATA_PROPERTY_WITH_NO_SYNONYMS_ISSUE, owlDataProperty.getIRI().toString(), String.format("The data property %s does not have any synonym.", owlDataProperty.getIRI().toQuotedString()));
 				this.notifyExporterListeners(ontologyIRI, owlDataProperty.getIRI().toString(), OWL.DatatypeProperty.getURI(), Integer.valueOf(1), timestamp, issue);
 				numberOfDataPropertiesWithNoSynonym++;
 			}else {
