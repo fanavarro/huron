@@ -1,0 +1,30 @@
+<mxfile host="Electron" modified="2025-02-10T16:08:23.623Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.6.8 Chrome/114.0.5735.289 Electron/25.5.0 Safari/537.36" etag="bDE7aMrhsLm8w1I6-E3s" version="21.6.8" type="device">
+  <diagram name="Página-1" id="knLTLHtpxczCyWxC_RDJ">
+    <mxGraphModel dx="1434" dy="838" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <object label="" hola="" id="0">
+          <mxCell />
+        </object>
+        <mxCell id="1" parent="0" />
+        <mxCell id="RC7RYxTen_2BNZckp5yk-16" value="oquo-core" style="swimlane;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="310" y="240" width="200" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="RC7RYxTen_2BNZckp5yk-17" value="&lt;div&gt;Common entities to represent&lt;/div&gt;&lt;div&gt;quality models and evaluation&lt;/div&gt;&lt;div&gt;results&lt;br&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="RC7RYxTen_2BNZckp5yk-16" vertex="1">
+          <mxGeometry x="10" y="35" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="RC7RYxTen_2BNZckp5yk-29" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" parent="1" source="RC7RYxTen_2BNZckp5yk-18" target="RC7RYxTen_2BNZckp5yk-16" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="RC7RYxTen_2BNZckp5yk-18" value="oquo-huron" style="swimlane;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="310" y="455" width="200" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="RC7RYxTen_2BNZckp5yk-19" value="Huron metrics and scales" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="RC7RYxTen_2BNZckp5yk-18" vertex="1">
+          <mxGeometry x="20" y="50" width="160" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="RC7RYxTen_2BNZckp5yk-33" value="imports" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=2" parent="1" vertex="1">
+          <mxGeometry x="350" y="400" width="60" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
